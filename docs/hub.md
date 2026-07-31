@@ -2,91 +2,283 @@
 
 ## 📐 Philosophie & Raison d'Être du Hub
 
-Le **Hub Central** est le chef d'orchestre opérationnel de Maya. Il est né d'un constat simple : au fur et à mesure que l'assistant s'enrichit en fonctionnalités (recherche Steam, contrôle des lumières WiZ, moteurs créatifs, veille web), la gestion directe des outils par le LLM devient complexe et instable.
+Le **Hub Central** est le chef d'orchestre opérationnel de Maya. Il est né d'un constat simple : au fur et à mesure que l'assistant s'enrichit en fonctionnalités (recherche Steam, contrôle des lumières WiZ, moteurs créatifs, veille web, autonomie), la gestion directe des outils par le LLM devient complexe et instable.
 
-### Les objectifs clés du Hub :
-1. **Architecture "Plug & Play" :** Pouvoir ajouter, tester, désactiver ou retirer un outil MCP en quelques secondes sans devoir recoder le pipeline principal.
-2. **Standardisation :** Unifier la façon dont le LLM (Gemma 4) interagit avec le monde extérieur via la norme MCP (*Model Context Protocol*).
-3. **Exécution transparente :** Le Hub s'initialise et démarre automatiquement au lancement du projet en tâche de fond.
+### 🎯 Objectifs principaux
+
+1. **Architecture Plug & Play**
+   - Ajouter, tester, désactiver ou retirer un outil MCP en quelques secondes.
+   - Aucun besoin de modifier le pipeline principal.
+
+2. **Standardisation**
+   - Uniformiser toutes les interactions avec le monde extérieur grâce au **Model Context Protocol (MCP)**.
+
+3. **Exécution transparente**
+   - Le Hub démarre automatiquement avec Maya.
+   - Fonctionne en tâche de fond sans intervention de l'utilisateur.
 
 ---
 
-## 🏗️ Architecture du Hub & Flux d'Exécution
+# 🏗️ Architecture du Hub
 
 ```text
-                 ┌────────────────────────┐
-                 │  Moteur LLM (Gemma 4)  │
-                 └───────────┬────────────┘
-                             │ (Appel d'outil / Intent)
-                             ▼
-                 ┌────────────────────────┐
-                 │    HUB CENTRAL MCP     │
-                 │  (Routeur & Gestion)   │
-                 └───────────┬────────────┘
-                             │
-  ┌─────────────────┬────────┴───────────┬─────────────────┐
-  ▼                 ▼                    ▼                 ▼
-┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-│  Domotique   │  │  DeepSearch  │  │ MCP Créatif  │  │    Plugin    │
-│  (Lumières)  │  │ (R&D / Web)  │  │  (Critique)  │  │    MEMORY    │
-└──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
+                  ┌────────────────────────┐
+                  │      Moteur LLM        │
+                  └───────────┬────────────┘
+                              │
+               (Intent / Appel d'outil via MCP)
+                              │
+                              ▼
+                  ┌────────────────────────┐
+                  │    HUB CENTRAL MCP     │
+                  │   Routeur & Gestion    │
+                  └───────────┬────────────┘
+                              │
+      ┌───────────────────────┼────────────────────────┐
+      ▼                       ▼                        ▼
+┌──────────────┐      ┌──────────────┐        ┌──────────────┐
+│  Domotique   │      │  DeepSearch  │        │ MCP Créatif  │
+│ (Lumières)   │      │ (Web / R&D)  │        │  Critique    │
+└──────────────┘      └──────────────┘        └──────────────┘
+                              │
+                              ▼
+                     ┌────────────────┐
+                     │ Plugin MEMORY  │
+                     │ Compétences    │
+                     └────────────────┘
 ```
 
 ---
 
-## 🛠️ Modules & Outils Actuels du Hub
+# 🛠️ Modules Opérationnels
 
-### 1. 💡 Module Domotique — Contrôle WiZ Local
-* **Scan Réseau Autonome :** Le module scanne le réseau Wi-Fi local pour détecter dynamiquement les ampoules connectées WiZ allumées et récupérer leurs adresses IP.
-* **Fonctionnalités :** Permet à Maya d'allumer, éteindre ou changer la couleur et l'ambiance des lumières sur simple demande vocale ou textuelle.
+## 💡 Module Domotique — Contrôle WiZ Local
 
-### 2. 🎨 Module MCP Créatif — Système de Boucle Critique à 3 Prompts
-Pour éviter d'obtenir des résultats génériques ou de mauvaise qualité, le MCP Créatif utilise un pipeline d'auto-correction en 3 étapes (exemple pour la création musicale) :
-* **Prompt 1 (Génération) :** Génération de plusieurs propositions brutes basées sur le thème et le style demandés.
-* **Prompt 2 (Critique) :** Le LLM bascule dans le rôle d'un critique exigeant pour analyser et noter les différentes propositions.
-* **Prompt 3 (Sélection & Refactor) :** Un dernier filtre analyse les critiques, retient ou affine la meilleure proposition et délivre le résultat final.
+**Statut :** ✅ Validé
 
-### 3. 🔍 Module DeepSearch (R&D — En cours de développement)
-* **Principe :** Effectue des recherches web approfondies en arrière-plan.
-* **Traitement Invisible :** Les résultats bruts de recherche sont transmis au LLM de manière transparente pour l'utilisateur. Le LLM en extrait une synthèse claire qu'il renvoie au Hub pour archivage dans le plugin MEMORY.
+### Fonctionnement
 
-### 4. 🧠 Plugin MEMORY du Hub (Compétences & Savoir-Faire)
-> ⚠️ **Distinct de la mémoire de personnalité de Maya :** Ce plugin stocke exclusivement le savoir-faire applicatif, les procédures et les données issues des recherches web.
+- Scan automatique du réseau local.
+- Détection dynamique des ampoules WiZ allumées.
+- Récupération automatique des adresses IP.
 
-* **Mode Manuel :** L'utilisateur peut demander à Maya d'enregistrer explicitement une consigne, une procédure ou une information clé dans ce module.
-* **Mode Autonome :** Alimenté automatiquement par les recherches web du module DeepSearch et le système d'apprentissage autonome.
+### Fonctionnalités
+
+- Allumer les lumières.
+- Éteindre les lumières.
+- Modifier les couleurs.
+- Changer l'ambiance lumineuse.
+- Contrôle par commande vocale ou textuelle.
 
 ---
 
-## 🧪 R&D : Le Système d'Apprentissage Autonome en Temps Mort (Idle Auto-Learning)
+## 🎨 Module MCP Créatif — Boucle Critique à 3 Prompts
 
-Le module d'apprentissage autonome tire parti des périodes d'inactivité de l'utilisateur pour enrichir continuellement les connaissances et les compétences de Maya sans impacter les performances du PC.
+**Statut :** ✅ Validé
+
+Afin d'éviter les productions génériques, Maya utilise un pipeline de réflexion en trois étapes.
+
+### Étape 1 — Génération
+
+Création de plusieurs propositions à partir :
+
+- du thème demandé ;
+- du style souhaité ;
+- des contraintes éventuelles.
+
+### Étape 2 — Critique
+
+Le LLM adopte le rôle d'un critique exigeant.
+
+Il :
+
+- analyse chaque proposition ;
+- relève les points faibles ;
+- attribue une note.
+
+### Étape 3 — Sélection & Refactor
+
+Une dernière passe :
+
+- sélectionne la meilleure proposition ;
+- améliore le contenu si nécessaire ;
+- renvoie uniquement la version finale.
+
+---
+
+## 🔍 Module DeepSearch — Recherche Web Avancée
+
+**Statut :** ✅ Validé (V1)
+
+### Principe
+
+Le module effectue des recherches web via les outils MCP du Hub.
+
+### Traitement interne
+
+En arrière-plan, il peut :
+
+- lancer plusieurs recherches ;
+- effectuer des recherches secondaires ;
+- croiser les informations ;
+- produire une synthèse finale.
+
+### Utilisation
+
+Le module peut être appelé :
+
+- directement par l'utilisateur ;
+- automatiquement par le Scheduler d'Auto-Learning.
+
+---
+
+## 🧠 Plugin MEMORY
+
+**Statut :** ✅ Validé
+
+> ⚠️ Ce plugin est totalement indépendant de la mémoire de personnalité de Maya.
+
+Il stocke uniquement :
+
+- les compétences ;
+- les procédures ;
+- les connaissances techniques ;
+- les informations validées provenant des recherches.
+
+### Mode Manuel
+
+L'utilisateur peut demander explicitement :
+
+- d'enregistrer une procédure ;
+- de mémoriser une information importante ;
+- de conserver un savoir-faire.
+
+### Mode Autonome
+
+Le plugin est alimenté automatiquement par les synthèses validées du module DeepSearch.
+
+---
+
+# ⚙️ Système d'Apprentissage Autonome (Idle Auto-Learning)
+
+**Statut :** ✅ Validé (V1)
+
+Le système exploite les périodes d'inactivité afin d'améliorer continuellement les connaissances de Maya sans perturber l'utilisateur.
+
+## Flux d'exécution
 
 ```text
-  [ Inactivité utilisateur (20 min) ]
-                 │
-                 ▼
-   [ Le Hub MCP prend la main ] ──► [ Vérification : Max 3 recherches/jour ]
-                 │
-                 ▼
-   [ Sélecteur de Sujets par Pondération ]
-   (Actu IA, Actu Cuisine, Nouveaux Outils, Analyse du ton/Naturalité)
-                 │
-                 ▼
-   [ Exécution de la recherche (DeepSearch) ] (Invisible)
-                 │
-                 ▼
-   [ Synthèse & Archivage ] ──► Stockage dans le plugin MEMORY du Hub
+      [ Inactivité utilisateur (20 min) ]
+                     │
+                     ▼
+      [ Scheduler Autonome du Hub ]
+                     │
+                     ▼
+[ Vérification : Idle + Limite quotidienne ]
+                     │
+                     ▼
+      [ priority.py - Round Robin ]
+                     │
+                     ▼
+     [ Executor + DeepSearch ]
+                     │
+                     ▼
+     [ Filtre Sémantique IA ]
+                     │
+         ┌───────────┴───────────┐
+         ▼                       ▼
+   Doublon / Redondant      Nouvelle information
+         │                       │
+         ▼                       ▼
+     NO_NEW_INFO          Validation IA
+         │                       │
+         ▼                       ▼
+ Pas de sauvegarde       Archivage Plugin MEMORY
 ```
 
-### Déroulement & Règles d'Inférence :
+---
 
-* **Détection de l'Inactivité (Watchdog) :** Au lancement du Hub, un compte à rebours est initialisé. Si aucune interaction (vocale ou textuelle) n'est détectée pendant 20 minutes, le système bascule en mode *Background Processing*.
-* **Quota de Sécurité :** Le système est bridé à **3 sessions d'apprentissage maximum par jour** pour préserver la bande passante et la charge système.
-* **Distribution des Sujets par Pondération (Weight System) :**  
-  Un algorithme de poids scrute l'historique des recherches passées pour équilibrer les axes d'apprentissage et éviter la répétition :
-  * 📰 Actualités & Veille IA
-  * 🍳 Cuisine & Recettes
-  * 🛠️ Découverte de nouveaux outils & compétences (pour auto-proposer de nouvelles fonctions)
-  * 💬 Analyse des conversations passées (pour affiner le ton et rendre les réponses de plus en plus naturelles)
-* **Exécution & Stockage Silencieux :** Le LLM effectue la recherche via DeepSearch, synthétise l'information pertinente et l'enregistre discrètement dans le plugin MEMORY du Hub. Maya acquiert ainsi de nouveaux savoirs de manière autonome.
+# 🧠 Logique d'Exécution
+
+## ⏱️ Détection d'Inactivité (Idle Guard)
+
+Le composant **idle_manager** surveille en permanence l'activité utilisateur.
+
+Après **20 minutes d'inactivité continue**, le Scheduler est autorisé à lancer une mission autonome.
+
+---
+
+## 🚧 Gestion de l'État Busy
+
+Pendant toute recherche ou appel d'outil :
+
+```text
+busy = True
+```
+
+À la fin de la tâche :
+
+- `busy` repasse à `False` ;
+- le timer d'inactivité est réinitialisé ;
+- aucun déclenchement en cascade n'est possible.
+
+---
+
+## 🔄 Rotation Temporelle des Objectifs (Round Robin)
+
+Les objectifs définis dans `goals.json` ne sont jamais considérés comme "terminés".
+
+Le Scheduler sélectionne toujours :
+
+1. l'objectif dont `last_checked` est le plus ancien ;
+2. en respectant les priorités en cas d'égalité.
+
+Exemple de rotation :
+
+```text
+Actualités IA
+      ↓
+Cuisine
+      ↓
+Blender
+      ↓
+Communication
+      ↓
+Actualités IA
+      ↓
+...
+```
+
+Cette approche garantit une veille continue et équilibrée.
+
+---
+
+## 🧹 Filtre Sémantique Anti-Pollution
+
+Avant toute sauvegarde, une seconde analyse IA compare la nouvelle synthèse avec les connaissances déjà présentes.
+
+### Cas n°1 — Information déjà connue
+
+Le modèle répond :
+
+```text
+NO_NEW_INFO
+```
+
+Conséquences :
+
+- aucune sauvegarde ;
+- aucune pollution de la mémoire.
+
+### Cas n°2 — Nouvelle information pertinente
+
+Si la recherche apporte :
+
+- des faits précis ;
+- des nouveautés concrètes ;
+- des connaissances réellement utiles ;
+
+alors :
+
+- la synthèse est validée ;
+- elle est archivée automatiquement dans le **Plugin MEMORY**.
