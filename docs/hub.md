@@ -2,20 +2,45 @@
 
 ## 📐 Philosophie & Raison d'Être du Hub
 
-Le **Hub Central** est le chef d'orchestre opérationnel de Maya. Il est né d'un constat simple : au fur et à mesure que l'assistant s'enrichit en fonctionnalités (recherche Steam, contrôle des lumières WiZ, moteurs créatifs, veille web, autonomie), la gestion directe des outils par le LLM devient complexe et instable.
+Le **Hub Central** est le chef d'orchestre opérationnel de Maya.
 
-### 🎯 Objectifs principaux
+Il est né d'un constat simple : au fur et à mesure que l'assistant s'enrichit en fonctionnalités (recherche Steam, contrôle des lumières WiZ, moteurs créatifs, veille web, autonomie), la gestion directe des outils par le LLM devient complexe et instable.
 
-1. **Architecture Plug & Play**
-   - Ajouter, tester, désactiver ou retirer un outil MCP en quelques secondes.
-   - Aucun besoin de modifier le pipeline principal.
+---
 
-2. **Standardisation**
-   - Uniformiser toutes les interactions avec le monde extérieur grâce au **Model Context Protocol (MCP)**.
+# 🎯 Objectifs principaux
 
-3. **Exécution transparente**
-   - Le Hub démarre automatiquement avec Maya.
-   - Fonctionne en tâche de fond sans intervention de l'utilisateur.
+## 1. Architecture Plug & Play
+
+- Ajouter un outil MCP en quelques secondes.
+- Tester un plugin indépendamment.
+- Activer ou désactiver un module à chaud.
+- Retirer un plugin sans modifier le pipeline principal.
+
+---
+
+## 2. Standardisation & Interface Web
+
+Le Hub centralise toutes les interactions avec le monde extérieur grâce au **Model Context Protocol (MCP)**.
+
+Il fournit également une interface Web moderne permettant de piloter l'ensemble du système.
+
+### Caractéristiques
+
+- Interface Glassmorphism + Cyberpunk Neon
+- Gestion des plugins en temps réel
+- Gestion des services système
+- Dashboard Flask
+
+---
+
+## 3. Exécution Transparente
+
+Le Hub :
+
+- démarre automatiquement avec Maya (ou comme service dédié) ;
+- fonctionne en tâche de fond ;
+- expose un panneau de contrôle Flask accessible en permanence.
 
 ---
 
@@ -29,17 +54,17 @@ Le **Hub Central** est le chef d'orchestre opérationnel de Maya. Il est né d'u
                (Intent / Appel d'outil via MCP)
                               │
                               ▼
-                  ┌────────────────────────┐
-                  │    HUB CENTRAL MCP     │
-                  │   Routeur & Gestion    │
-                  └───────────┬────────────┘
+                  ┌────────────────────────┐         ┌────────────────────────┐
+                  │    HUB CENTRAL MCP     │◄───────►│   Web Dashboard (Flask)│
+                  │   Routeur & Gestion    │         │  UI Glassmorphism Neon │
+                  └───────────┬────────────┘         └────────────────────────┘
                               │
       ┌───────────────────────┼────────────────────────┐
       ▼                       ▼                        ▼
-┌──────────────┐      ┌──────────────┐        ┌──────────────┐
-│  Domotique   │      │  DeepSearch  │        │ MCP Créatif  │
-│ (Lumières)   │      │ (Web / R&D)  │        │  Critique    │
-└──────────────┘      └──────────────┘        └──────────────┘
+┌──────────────┐       ┌──────────────┐         ┌──────────────┐
+│  Domotique   │       │  DeepSearch  │         │ MCP Créatif  │
+│ (Lumières)   │       │ (Web / R&D)  │         │  Critique    │
+└──────────────┘       └──────────────┘         └──────────────┘
                               │
                               ▼
                      ┌────────────────┐
@@ -50,85 +75,123 @@ Le **Hub Central** est le chef d'orchestre opérationnel de Maya. Il est né d'u
 
 ---
 
+# 🎛️ Dashboard Web
+
+Le Hub intègre un serveur Flask permettant de visualiser et contrôler l'ensemble du système.
+
+## Fonctionnalités
+
+### 📊 Visualisation dynamique
+
+- Détection automatique des plugins.
+- Affichage de leurs capacités MCP.
+
+### 🔄 Activation / Désactivation à chaud
+
+Switchs permettant d'activer ou désactiver :
+
+- les plugins MCP ;
+- les services système (Auto-Learning, etc.).
+
+Aucun redémarrage n'est nécessaire.
+
+### 🎨 Interface
+
+- Glassmorphism
+- Cyberpunk Neon
+- Cartes interactives
+- Animations et effets de survol
+
+### 🌐 API REST
+
+Endpoints disponibles :
+
+- `/api/toggle_plugin`
+- `/api/toggle_service`
+
+---
+
 # 🛠️ Modules Opérationnels
 
-## 💡 Module Domotique — Contrôle WiZ Local
+---
+
+## 💡 Module Domotique — WiZ
 
 **Statut :** ✅ Validé
 
 ### Fonctionnement
 
 - Scan automatique du réseau local.
-- Détection dynamique des ampoules WiZ allumées.
-- Récupération automatique des adresses IP.
+- Détection des ampoules WiZ.
+- Récupération automatique des IP.
 
 ### Fonctionnalités
 
-- Allumer les lumières.
-- Éteindre les lumières.
-- Modifier les couleurs.
-- Changer l'ambiance lumineuse.
-- Contrôle par commande vocale ou textuelle.
+- Allumer les lumières
+- Éteindre les lumières
+- Modifier les couleurs
+- Changer l'ambiance
+- Contrôle vocal ou textuel
 
 ---
 
-## 🎨 Module MCP Créatif — Boucle Critique à 3 Prompts
+## 🎨 Module MCP Créatif
 
 **Statut :** ✅ Validé
 
-Afin d'éviter les productions génériques, Maya utilise un pipeline de réflexion en trois étapes.
+Afin d'éviter les productions génériques, Maya utilise une boucle de réflexion en trois étapes.
 
-### Étape 1 — Génération
+### 1. Génération
 
-Création de plusieurs propositions à partir :
+Création de plusieurs propositions selon :
 
-- du thème demandé ;
-- du style souhaité ;
-- des contraintes éventuelles.
+- le thème ;
+- le style demandé ;
+- les contraintes éventuelles.
 
-### Étape 2 — Critique
+### 2. Critique
 
-Le LLM adopte le rôle d'un critique exigeant.
+Le LLM joue le rôle d'un critique exigeant.
 
 Il :
 
 - analyse chaque proposition ;
-- relève les points faibles ;
+- identifie les points faibles ;
 - attribue une note.
 
-### Étape 3 — Sélection & Refactor
+### 3. Sélection & Refactor
 
-Une dernière passe :
+Dernière passe :
 
-- sélectionne la meilleure proposition ;
-- améliore le contenu si nécessaire ;
-- renvoie uniquement la version finale.
+- sélection de la meilleure proposition ;
+- amélioration si nécessaire ;
+- retour uniquement de la version finale.
 
 ---
 
-## 🔍 Module DeepSearch — Recherche Web Avancée
+## 🔍 Module DeepSearch
 
 **Statut :** ✅ Validé (V1)
 
 ### Principe
 
-Le module effectue des recherches web via les outils MCP du Hub.
+Le module effectue des recherches Web via les outils MCP du Hub.
 
-### Traitement interne
+### Traitement
 
-En arrière-plan, il peut :
+Il peut automatiquement :
 
 - lancer plusieurs recherches ;
 - effectuer des recherches secondaires ;
-- croiser les informations ;
+- croiser les sources ;
 - produire une synthèse finale.
 
 ### Utilisation
 
 Le module peut être appelé :
 
-- directement par l'utilisateur ;
-- automatiquement par le Scheduler d'Auto-Learning.
+- par l'utilisateur ;
+- automatiquement par l'Auto-Learning.
 
 ---
 
@@ -143,142 +206,113 @@ Il stocke uniquement :
 - les compétences ;
 - les procédures ;
 - les connaissances techniques ;
-- les informations validées provenant des recherches.
-
-### Mode Manuel
-
-L'utilisateur peut demander explicitement :
-
-- d'enregistrer une procédure ;
-- de mémoriser une information importante ;
-- de conserver un savoir-faire.
-
-### Mode Autonome
-
-Le plugin est alimenté automatiquement par les synthèses validées du module DeepSearch.
+- les informations validées issues des recherches.
 
 ---
 
-# ⚙️ Système d'Apprentissage Autonome (Idle Auto-Learning)
+# ⚙️ Auto-Learning
 
-**Statut :** ✅ Validé (V1)
+**Statut :** ✅ Validé (V2 — Planification Fixe)
 
-Le système exploite les périodes d'inactivité afin d'améliorer continuellement les connaissances de Maya sans perturber l'utilisateur.
+Le système réalise automatiquement des missions de veille afin d'enrichir les connaissances de Maya.
 
-## Flux d'exécution
+Il peut être activé ou désactivé à tout moment depuis le Dashboard.
+
+---
+
+# 🔄 Flux d'exécution
 
 ```text
-      [ Inactivité utilisateur (20 min) ]
+      [ Cycle toutes les 20 minutes ]
                      │
                      ▼
-      [ Scheduler Autonome du Hub ]
+        [ Scheduler Autonome du Hub ]
                      │
                      ▼
-[ Vérification : Idle + Limite quotidienne ]
+[ Service activé + Limite 1x/jour/sujet ]
                      │
                      ▼
-      [ priority.py - Round Robin ]
+          [ priority.py (Round Robin) ]
                      │
                      ▼
-     [ Executor + DeepSearch ]
+          [ Executor + DeepSearch ]
                      │
                      ▼
-     [ Filtre Sémantique IA ]
+          [ Filtre Sémantique IA ]
                      │
          ┌───────────┴───────────┐
          ▼                       ▼
-   Doublon / Redondant      Nouvelle information
+   Doublon détecté         Nouvelle information
          │                       │
          ▼                       ▼
-     NO_NEW_INFO          Validation IA
+   NO_NEW_INFO             Validation IA
          │                       │
          ▼                       ▼
- Pas de sauvegarde       Archivage Plugin MEMORY
+ Pas de sauvegarde      Archivage Plugin MEMORY
 ```
 
 ---
 
-# 🧠 Logique d'Exécution
+# 🧠 Logique de Planification
 
-## ⏱️ Détection d'Inactivité (Idle Guard)
+## ⏱️ Fréquence
 
-Le composant **idle_manager** surveille en permanence l'activité utilisateur.
+Le Scheduler se réveille automatiquement toutes les **20 minutes**.
 
-Après **20 minutes d'inactivité continue**, le Scheduler est autorisé à lancer une mission autonome.
+Cette nouvelle version ne possède plus :
 
----
+- d'Idle Tracker ;
+- de détection d'inactivité utilisateur ;
+- de gestion de statut *busy*.
 
-## 🚧 Gestion de l'État Busy
-
-Pendant toute recherche ou appel d'outil :
-
-```text
-busy = True
-```
-
-À la fin de la tâche :
-
-- `busy` repasse à `False` ;
-- le timer d'inactivité est réinitialisé ;
-- aucun déclenchement en cascade n'est possible.
+L'exécution est désormais entièrement basée sur une cadence fixe.
 
 ---
 
-## 🔄 Rotation Temporelle des Objectifs (Round Robin)
+## 📅 Limite : 1 exécution par jour et par sujet
 
-Les objectifs définis dans `goals.json` ne sont jamais considérés comme "terminés".
+Chaque sujet présent dans `goals.json` ne peut être traité qu'une seule fois par jour.
 
-Le Scheduler sélectionne toujours :
+Si un sujet a déjà été exécuté aujourd'hui :
 
-1. l'objectif dont `last_checked` est le plus ancien ;
-2. en respectant les priorités en cas d'égalité.
-
-Exemple de rotation :
-
-```text
-Actualités IA
-      ↓
-Cuisine
-      ↓
-Blender
-      ↓
-Communication
-      ↓
-Actualités IA
-      ↓
-...
-```
-
-Cette approche garantit une veille continue et équilibrée.
+➡️ le Scheduler passe automatiquement au sujet suivant.
 
 ---
 
-## 🧹 Filtre Sémantique Anti-Pollution
+## 🔄 Rotation Round Robin
 
-Avant toute sauvegarde, une seconde analyse IA compare la nouvelle synthèse avec les connaissances déjà présentes.
+Le Scheduler parcourt les objectifs dans l'ordre de priorité.
 
-### Cas n°1 — Information déjà connue
+Il sélectionne le premier sujet :
 
-Le modèle répond :
+- actif ;
+- non exécuté aujourd'hui.
+
+Lorsque tous les sujets ont été traités :
+
+- aucune nouvelle recherche n'est lancée ;
+- le Scheduler attend simplement le jour suivant.
+
+---
+
+# 🧹 Filtre Sémantique
+
+Avant chaque sauvegarde, une seconde analyse IA compare la nouvelle synthèse avec les connaissances déjà présentes.
+
+## Cas 1
+
+Information déjà connue
 
 ```text
 NO_NEW_INFO
 ```
 
-Conséquences :
+➡️ aucune sauvegarde.
 
-- aucune sauvegarde ;
-- aucune pollution de la mémoire.
+---
 
-### Cas n°2 — Nouvelle information pertinente
+## Cas 2
 
-Si la recherche apporte :
+Nouvelle information pertinente
 
-- des faits précis ;
-- des nouveautés concrètes ;
-- des connaissances réellement utiles ;
-
-alors :
-
-- la synthèse est validée ;
-- elle est archivée automatiquement dans le **Plugin MEMORY**.
+La synthèse est validée puis automatiquement archivée dans le **Plugin MEMORY**.
