@@ -287,7 +287,7 @@ L'ensemble de l'architecture est conçu pour fonctionner entièrement en local.
 
 # 📚 Documentation
 
-## 🛠️ `dev.journey.md`
+## 🛠️ [`dev.journey.md`](./docs/dev.journey.md)
 
 - Historique du projet
 - Choix techniques
@@ -296,21 +296,21 @@ L'ensemble de l'architecture est conçu pour fonctionner entièrement en local.
 
 ---
 
-## 🔌 `hub.md`
+## 🔌 [`hub.md`](./docs/hub.md)
 
 Documentation complète du Hub MCP :
 
-- architecture ;
-- plugins ;
+- Architecture ;
+- Plugins ;
 - DeepSearch ;
 - Auto-Learning ;
 - Scheduler ;
 - Round-Robin ;
-- filtre `NO_NEW_INFO`.
+- Filtre `NO_NEW_INFO`.
 
 ---
 
-## 🧠 `memory.md`
+## 🧠 [`memory.md`](./docs/memory.md)
 
 Architecture de la mémoire :
 
@@ -321,15 +321,15 @@ Architecture de la mémoire :
 
 ---
 
-## 🎭 `plugin.md`
+## 🎭 [`plugin.md`](./docs/plugin.md)
 
 Documentation de l'interface :
 
 - Avatar VRM ;
-- moteur graphique ;
+- Moteur graphique ;
 - STT ;
 - TTS ;
-- évolution depuis OpenLLMVTuber.
+- Évolution depuis OpenLLMVTuber.
 
 ---
 
