@@ -1,31 +1,41 @@
 # 🤖 Project M.A.Y.A.
 
 > **M**odular **A**vatar & **Y**oked **A**gent  
-> *Built on the M.A.Y.A. principle: **M**ost **A**dvanced, **Y**et **A**cceptable.*
+> Built on the **M.A.Y.A.** principle:
+>
+> **M**ost **A**dvanced, **Y**et **A**cceptable
+
+---
 
 # 📖 Architecture & System Design Documentation
 
-Ce dépôt documente l'architecture, le design système et les concepts d'ingénierie du projet **Maya**.
+Ce dépôt documente l'architecture, le design système et les principaux concepts d'ingénierie du projet **M.A.Y.A.**
 
-> **Le code source est maintenu dans un dépôt privé.**
+> ⚠️ **Le code source est maintenu dans un dépôt privé.**
 
 ---
 
 # 📌 Pourquoi ce projet ?
 
-Le projet **Maya** est né d'un constat d'insatisfaction face aux assistants IA commerciaux (ChatGPT, Gemini, etc.) au début de l'année 2026.
+Le projet **M.A.Y.A.** est né d'un constat d'insatisfaction face aux assistants IA commerciaux (ChatGPT, Gemini, etc.) au début de l'année 2026.
 
-## Les limites observées
+L'objectif était de concevoir un véritable compagnon IA, capable d'évoluer dans le temps tout en restant entièrement local.
 
-### 🧠 Perte de contexte
+---
 
-Même avec de larges fenêtres de contexte, les assistants finissent par oublier :
+# Les limites observées
+
+## 🧠 Perte de contexte
+
+Même avec de très larges fenêtres de contexte, les assistants finissent par oublier :
 
 - la personnalité ;
 - les habitudes ;
 - les informations importantes accumulées au fil des jours.
 
-### 💬 Style de réponse rigide
+---
+
+## 💬 Style de réponse rigide
 
 Les réponses deviennent souvent :
 
@@ -34,9 +44,11 @@ Les réponses deviennent souvent :
 - répétitives ;
 - peu naturelles.
 
-### 🔒 Contrôle & Vie privée
+---
 
-L'objectif était de construire un véritable compagnon IA :
+## 🔒 Contrôle & Vie privée
+
+L'objectif était de construire un assistant :
 
 - entièrement local ;
 - totalement personnalisable ;
@@ -50,22 +62,21 @@ L'objectif était de construire un véritable compagnon IA :
 [LM Studio + AnythingLLM]
             │
             ▼
-     [SillyTavern]
+      [SillyTavern]
             │
             ▼
-    [OpenLLMVTuber]
+   [OpenLLMVTuber]
             │
             ▼
-   [Architecture Maya V1]
- (Hub Central + Mémoire Multicouche)
+  [Architecture Maya V1]
+(Hub Central + Dashboard Web + Mémoire Multicouche)
 ```
+
+---
 
 ## Phase 1 — Les bases
 
-Premières expérimentations avec :
-
-- LM Studio
-- AnythingLLM
+Premières expérimentations avec **LM Studio** et **AnythingLLM**.
 
 Objectif :
 
@@ -77,7 +88,7 @@ Objectif :
 
 Migration vers **SillyTavern** afin de donner une personnalité et une interface au modèle.
 
-Résultat :
+Constat :
 
 - système fonctionnel ;
 - mais lourd ;
@@ -85,87 +96,72 @@ Résultat :
 
 ---
 
-## Phase 3 — La modularité
+## Phase 3 — Modularité & Hub Central
 
-Découverte d'**OpenLLMVTuber**.
+Adoption d'**OpenLLMVTuber** comme socle visuel et audio.
 
-Cette interface devient le socle :
-
-- visuel ;
-- audio ;
-- modulaire.
-
-Elle servira ensuite de base à l'architecture Maya.
+Développement du **Hub Central MCP** accompagné d'un **Dashboard Web** moderne permettant de piloter dynamiquement les modules et services système.
 
 ---
 
-# 🧠 Évolution du Système de Mémoire
+# 🧠 Évolution du système de mémoire
 
 L'un des principaux défis d'un compagnon IA local est de conserver un historique sur le long terme sans saturer la fenêtre de contexte.
 
 ---
 
-## V1 — Le Journal Manuel
+## V1 — Journal manuel
 
-### Principe
+Une commande `/save` permet au LLM de résumer la journée dans un fichier texte réinjecté au prompt système.
 
-Une commande `/save` permet au LLM de résumer la journée dans un fichier texte.
+### Limite
 
-### Fonctionnement
-
-Le journal est directement réinjecté dans le prompt système.
-
-### Limite rencontrée
-
-Après quelques semaines :
-
-- le prompt devient énorme ;
-- les performances chutent ;
-- le contexte finit par saturer.
+Le prompt devenait rapidement énorme et les performances diminuaient fortement.
 
 ---
 
-## V2 — Mémoire Multicouche Auto-Évolutive
+## V2 — Mémoire multicouche auto-évolutive
 
-Pour résoudre ce problème, la mémoire est entièrement repensée.
+La mémoire est désormais séparée en plusieurs couches.
 
-### Journal Récent
+### 📄 Journal récent
 
-- conserve les 30 derniers jours ;
-- sert au contexte immédiat.
-
-### Journal d'Archives
-
-Les anciennes entrées sont déplacées automatiquement.
-
-### Core de Personnalité
-
-L'identité profonde de Maya est isolée dans un fichier indépendant, injecté en permanence.
-
-### Auto-Évolution
-
-Lors du passage vers les archives :
-
-- les habitudes sont analysées ;
-- les comportements récurrents sont détectés ;
-- une mise à jour du Core peut être proposée afin de faire évoluer naturellement la personnalité.
+Conserve les **30 derniers jours**.
 
 ---
 
-# 🏗️ Architecture Globale
+### 📚 Journal d'archives
+
+Les anciennes entrées sont automatiquement déplacées.
+
+---
+
+### 🧬 Core de personnalité
+
+L'identité profonde de Maya est isolée dans un fichier dédié et injectée en permanence.
+
+---
+
+### 📈 Auto-évolution
+
+Analyse automatique des habitudes afin de faire évoluer naturellement la personnalité.
+
+---
+
+# 🏗️ Architecture globale
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
 │                 1. Mémoire Multicouche                  │
-│      Core • Journal 30 jours • Archives • Habitudes     │
+│     Core • Journal 30 jours • Archives • Habitudes      │
 └────────────────────────────┬────────────────────────────┘
                              │
-                   Context + Prompt
+                      Context + Prompt
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────┐
 │                  2. Moteur LLM Local                    │
-│             Génération de la pensée / réponse           │
+│        Génération de la pensée / réponse                │
 └────────────────────────────┬────────────────────────────┘
                              │
                     Texte + Tool Calls
@@ -173,115 +169,79 @@ Lors du passage vers les archives :
                              ▼
 ┌─────────────────────────────────────────────────────────┐
 │                 3. Hub Central (MCP)                    │
-│          Orchestration & Exécution des outils           │
+│         Orchestration & Exécution des outils            │
 │                                                         │
-│ • Plugin MEMORY (Compétences)                           │
+│  Dashboard Web (Glassmorphism / Neon UI)                │
+│                                                         │
+│ • Plugin MEMORY                                         │
 │ • Domotique WiZ                                         │
 │ • DeepSearch                                            │
 │ • Auto-Learning                                         │
-│ • Filtre Sémantique Anti-Doublons                       │
+│ • Filtre Sémantique                                     │
 └────────────────────────────┬────────────────────────────┘
                              │
-                 Réponse enrichie + Actions
+                  Réponse enrichie + Actions
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────┐
 │              4. Interface & Incarnation                 │
-│      Avatar VRM • Overlay Desktop Pet • Synthèse Vocale │
-└─────────────────────────────────────────────────────────┘
+│ Avatar VRM • Desktop Pet • Synthèse vocale              │
+└────────────────────────────┴────────────────────────────┘
 ```
 
 ---
 
-# ✨ Fonctionnalités Clés
-
-## 🎭 Incarnation Visuelle & Audio
-
-- Avatar VRM interactif.
-- Synthèse vocale locale.
-- STT avec Fast-Whisper.
-- TTS Edge-TTS ou Kokoro.
+# ✨ Fonctionnalités clés
 
 ---
 
-## 🧠 Mémoire Structurée
+## 🎭 Incarnation visuelle & audio
 
-### Court Terme
-
-Contexte immédiat de la conversation.
-
-### Long Terme
-
-Historique complet des journaux.
-
-### Core
-
-Personnalité permanente de Maya.
-
-### Compétences
-
-Mémoire des procédures, savoir-faire et connaissances applicatives.
+- Avatar VRM interactif
+- Synthèse vocale locale (Edge-TTS / Kokoro)
+- Speech-to-Text avec Fast-Whisper
 
 ---
 
-## 🌱 Auto-Évolution du Caractère
+## 🎛️ Hub Central & Dashboard
 
-Analyse automatique des archives afin :
-
-- d'identifier les habitudes ;
-- d'enrichir progressivement le Core.
-
----
-
-## 🔌 Hub MCP Modulaire
-
-Le Hub central orchestre tous les outils :
-
-- Domotique WiZ
-- DeepSearch
-- Plugin MEMORY
-- Modules créatifs
-- Extensions futures
-
-L'ajout d'un nouveau plugin ne nécessite aucune modification du pipeline principal.
+- Interface Web moderne (Glassmorphism + Neon)
+- Activation / désactivation des plugins à chaud
+- Activation / désactivation des services système
+- Inspection des capacités MCP en temps réel
 
 ---
 
-## 🤖 Idle Auto-Learning (V1)
+## 🧠 Mémoire structurée
 
-Lorsque l'utilisateur est inactif :
+Séparation stricte entre :
 
-- le Scheduler attend 20 minutes d'inactivité continue ;
-- sélectionne automatiquement un objectif via une rotation **Round-Robin** basée sur `last_checked` ;
-- lance une recherche DeepSearch ;
-- applique un filtre sémantique.
+- contexte court terme ;
+- archives long terme ;
+- Core de personnalité ;
+- compétences techniques.
 
-Deux cas sont possibles :
+Le Core peut évoluer automatiquement selon les habitudes observées.
 
-```text
-Nouvelle information
-        │
-        ▼
-Sauvegarde Plugin MEMORY
+---
 
-----------------------------
+## 🤖 Auto-Learning (V2)
 
-Information déjà connue
-        │
-        ▼
-NO_NEW_INFO
-(Aucune sauvegarde)
-```
+Le système fonctionne selon une cadence fixe.
 
-Cette mécanique permet une veille autonome continue sans polluer la mémoire.
+### Fonctionnement
+
+- Vérification toutes les **20 minutes**
+- Maximum **1 exécution par jour et par sujet**
+- Rotation automatique **Round Robin**
+- Filtre sémantique **NO_NEW_INFO**
+- Archivage uniquement des nouvelles connaissances
 
 ---
 
 ## 🔒 100 % Local & Privé
 
-Aucune donnée personnelle n'est envoyée vers des serveurs externes.
-
-L'ensemble de l'architecture est conçu pour fonctionner entièrement en local.
+Aucune donnée personnelle n'est envoyée vers des services cloud.
 
 ---
 
@@ -322,10 +282,12 @@ L'ensemble de l'architecture est conçu pour fonctionner entièrement en local.
 | Domaine | Technologies |
 |----------|--------------|
 | **Langage** | Python 3.11+ |
-| **Interface** | Tauri + Three.js + VRM |
-| **LLM** | LM Studio / Ollama / llama.cpp |
-| **Modèles recommandés** | Gemma 4 12B / E4B |
-| **Protocole d'outils** | MCP (Model Context Protocol) |
+| **Hub** | Flask + HTML5 + CSS3 |
+| **Dashboard** | Glassmorphism / Neon UI |
+| **Avatar** | Tauri + Three.js + VRM |
+| **LLM** | LM Studio · Ollama · llama.cpp |
+| **Modèles recommandés** | Gemma 4 12B · E4B |
+| **Protocoles** | MCP (Model Context Protocol) |
 | **Speech-to-Text** | Fast-Whisper |
-| **Text-to-Speech** | Edge-TTS / Kokoro |
-| **Stockage mémoire** | Fichiers texte (`.txt`) |
+| **Text-to-Speech** | Edge-TTS · Kokoro |
+| **Mémoire** | Fichiers texte (.txt) |
