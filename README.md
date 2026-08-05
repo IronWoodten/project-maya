@@ -287,49 +287,33 @@ L'ensemble de l'architecture est conçu pour fonctionner entièrement en local.
 
 # 📚 Documentation
 
-## 🛠️ [`dev.journey.md`](./docs/dev.journey.md)
-
-- Historique du projet
-- Choix techniques
-- Architecture
-- Roadmap vers la V1.0
-
----
-
-## 🔌 [`hub.md`](./docs/hub.md)
-
-Documentation complète du Hub MCP :
-
-- Architecture ;
-- Plugins ;
-- DeepSearch ;
-- Auto-Learning ;
-- Scheduler ;
-- Round-Robin ;
-- Filtre `NO_NEW_INFO`.
+* 🛠️ [**`dev.journey.md`**](./docs/dev.journey.md)
+  * Historique du projet
+  * Choix techniques
+  * Architecture
+  * Roadmap vers la V1.0
 
 ---
 
-## 🧠 [`memory.md`](./docs/memory.md)
-
-Architecture de la mémoire :
-
-- Core ;
-- Journal 30 jours ;
-- Archives ;
-- Compétences.
+* 🔌 [**`hub.md`**](./docs/hub.md)
+  * Architecture & Plugins
+  * DeepSearch & Auto-Learning
+  * Scheduler & Round-Robin
+  * Filtre `NO_NEW_INFO`
 
 ---
 
-## 🎭 [`plugin.md`](./docs/plugin.md)
+* 🧠 [**`memory.md`**](./docs/memory.md)
+  * Core & Personnalité
+  * Journal 30 jours & Archives
+  * Compétences
 
-Documentation de l'interface :
+---
 
-- Avatar VRM ;
-- Moteur graphique ;
-- STT ;
-- TTS ;
-- Évolution depuis OpenLLMVTuber.
+* 🎭 [**`plugin.md`**](./docs/plugin.md)
+  * Avatar VRM & Moteur graphique
+  * STT & TTS
+  * Évolution depuis OpenLLMVTuber
 
 ---
 
