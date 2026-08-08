@@ -4,7 +4,11 @@
 
 Le **Hub Central** est le chef d'orchestre opérationnel de Maya.
 
-Il est né d'un constat simple : au fur et à mesure que l'assistant s'enrichit en fonctionnalités (recherche Steam, contrôle des lumières WiZ, moteurs créatifs, veille web, autonomie), la gestion directe des outils par le LLM devient complexe et instable.
+Il est né d'un constat simple : au fur et à mesure que l'assistant s'enrichit en fonctionnalités et en outils, la gestion directe de chaque intégration par l'interface ou le LLM devient complexe et difficile à maintenir.
+
+Le Hub fournit donc une couche intermédiaire centralisée entre Maya et ses différents outils.
+
+Cette architecture permet de conserver une interface principale relativement indépendante des outils qu'elle utilise.
 
 ---
 
@@ -12,35 +16,57 @@ Il est né d'un constat simple : au fur et à mesure que l'assistant s'enrichit 
 
 ## 1. Architecture Plug & Play
 
-- Ajouter un outil MCP en quelques secondes.
-- Tester un plugin indépendamment.
-- Activer ou désactiver un module à chaud.
-- Retirer un plugin sans modifier le pipeline principal.
+Le Hub est conçu autour d'une architecture modulaire permettant :
+
+- d'ajouter un outil sans modifier le pipeline principal ;
+- de tester un plugin indépendamment ;
+- d'activer ou désactiver un module ;
+- de retirer un plugin sans modifier l'interface principale ;
+- de centraliser la découverte et l'exécution des outils.
+
+L'objectif est que l'ajout d'une nouvelle compétence ne nécessite pas de modifier l'ensemble de Maya.
 
 ---
 
-## 2. Standardisation & Interface Web
+## 2. Centralisation des outils
 
-Le Hub centralise toutes les interactions avec le monde extérieur grâce au **Model Context Protocol (MCP)**.
+Le Hub centralise les interactions entre Maya et les différents outils disponibles.
 
-Il fournit également une interface Web moderne permettant de piloter l'ensemble du système.
+L'interface Maya n'a donc pas besoin de connaître l'implémentation interne de chaque plugin.
+
+```text
+                 ┌─────────────────────┐
+                 │      Maya UI        │
+                 └──────────┬──────────┘
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │      Maya Hub       │
+                 │        MCP          │
+                 └──────────┬──────────┘
+                            │
+              ┌─────────────┼─────────────┐
+              ▼             ▼             ▼
+           Plugin 1      Plugin 2      Plugin 3
+```
+
+Cette séparation permet notamment de faire évoluer les outils sans devoir réécrire l'interface.
+
+---
+
+## 3. Interface Web de supervision
+
+Le Hub fournit également une interface Web permettant de visualiser et de contrôler son fonctionnement.
 
 ### Caractéristiques
 
-- Interface Glassmorphism + Cyberpunk Neon
-- Gestion des plugins en temps réel
-- Gestion des services système
 - Dashboard Flask
-
----
-
-## 3. Exécution Transparente
-
-Le Hub :
-
-- démarre automatiquement avec Maya (ou comme service dédié) ;
-- fonctionne en tâche de fond ;
-- expose un panneau de contrôle Flask accessible en permanence.
+- Interface Glassmorphism / Cyberpunk Neon
+- Visualisation des plugins
+- Visualisation de leurs capacités
+- Gestion de l'état des plugins
+- Gestion des services associés
+- Accès aux fonctions de supervision du Hub
 
 ---
 
@@ -51,79 +77,114 @@ Le Hub :
                   │      Moteur LLM        │
                   └───────────┬────────────┘
                               │
-               (Intent / Appel d'outil via MCP)
+                     Appel d'outil / MCP
                               │
                               ▼
-                  ┌────────────────────────┐         ┌────────────────────────┐
-                  │    HUB CENTRAL MCP     │◄───────►│   Web Dashboard (Flask)│
-                  │   Routeur & Gestion    │         │  UI Glassmorphism Neon │
-                  └───────────┬────────────┘         └────────────────────────┘
-                              │
-      ┌───────────────────────┼────────────────────────┐
-      ▼                       ▼                        ▼
-┌──────────────┐       ┌──────────────┐         ┌──────────────┐
-│  Domotique   │       │  DeepSearch  │         │ MCP Créatif  │
-│ (Lumières)   │       │ (Web / R&D)  │         │  Critique    │
-└──────────────┘       └──────────────┘         └──────────────┘
-                              │
-                              ▼
-                     ┌────────────────┐
-                     │ Plugin MEMORY  │
-                     │ Compétences    │
-                     └────────────────┘
+                  ┌────────────────────────┐
+                  │    HUB CENTRAL MCP     │◄───────────────┐
+                  │   Routeur & Gestion    │                │
+                  └───────────┬────────────┘                │
+                              │                             │
+             ┌────────────────┼────────────────┐            │
+             ▼                ▼                ▼            │
+      ┌──────────────┐ ┌──────────────┐ ┌──────────────┐    │
+      │  Domotique   │ │  DeepSearch  │ │ MCP Créatif  │    │
+      │   WiZ        │ │  Recherche   │ │   Créatif    │    │
+      └──────────────┘ └──────────────┘ └──────────────┘    │
+             │                │                │             │
+             └────────────────┼────────────────┘             │
+                              ▼                              │
+                     ┌────────────────┐                      │
+                     │ Plugin MEMORY  │                      │
+                     │ Compétences    │                      │
+                     └────────────────┘                      │
+                                                            │
+                                                            ▼
+                                                ┌──────────────────────┐
+                                                │   Web Dashboard      │
+                                                │       Flask          │
+                                                └──────────────────────┘
 ```
+
+Le Hub constitue ainsi la couche centrale entre le moteur de Maya et les fonctionnalités externes.
 
 ---
 
 # 🎛️ Dashboard Web
 
-Le Hub intègre un serveur Flask permettant de visualiser et contrôler l'ensemble du système.
+Le Hub intègre un serveur Flask permettant de visualiser et contrôler le système.
 
 ## Fonctionnalités
 
 ### 📊 Visualisation dynamique
 
-- Détection automatique des plugins.
-- Affichage de leurs capacités MCP.
+Le Dashboard permet notamment :
 
-### 🔄 Activation / Désactivation à chaud
+- la détection des plugins disponibles ;
+- l'affichage de leurs informations ;
+- l'affichage de leurs capacités ;
+- la visualisation de l'état des différents composants.
 
-Switchs permettant d'activer ou désactiver :
+---
+
+## 🔄 Activation / Désactivation
+
+Les modules peuvent être activés ou désactivés depuis l'interface du Hub.
+
+Cela permet de contrôler notamment :
 
 - les plugins MCP ;
-- les services système (Auto-Learning, etc.).
+- certains services du système ;
+- les fonctions d'autonomie lorsque celles-ci sont disponibles.
 
-Aucun redémarrage n'est nécessaire.
+L'objectif est de limiter les manipulations manuelles dans les fichiers de configuration.
 
-### 🎨 Interface
+---
 
-- Glassmorphism
-- Cyberpunk Neon
-- Cartes interactives
-- Animations et effets de survol
+## 🎨 Interface
 
-### 🌐 API REST
+Le Dashboard utilise actuellement une interface orientée supervision avec :
 
-Endpoints disponibles :
+- Glassmorphism ;
+- éléments Cyberpunk Neon ;
+- cartes interactives ;
+- indicateurs d'état ;
+- contrôles des différents modules.
+
+---
+
+## 🌐 API
+
+Le Hub expose une API permettant à l'interface et aux autres composants de communiquer avec lui.
+
+Les endpoints comprennent notamment :
 
 - `/api/toggle_plugin`
 - `/api/toggle_service`
+
+Cette API constitue également une couche d'abstraction entre l'interface utilisateur et le fonctionnement interne du Hub.
 
 ---
 
 # 🛠️ Modules Opérationnels
 
+Le Hub permet d'intégrer plusieurs types d'outils sous forme de plugins indépendants.
+
 ---
 
 ## 💡 Module Domotique — WiZ
 
-**Statut :** ✅ Validé
+**Statut :** ✅ Fonctionnel
 
 ### Fonctionnement
 
-- Scan automatique du réseau local.
-- Détection des ampoules WiZ.
-- Récupération automatique des IP.
+Le module permet de communiquer avec les éclairages WiZ présents sur le réseau local.
+
+Il peut notamment :
+
+- détecter les périphériques disponibles ;
+- récupérer leurs informations réseau ;
+- envoyer les commandes aux éclairages.
 
 ### Fonctionnalités
 
@@ -131,92 +192,104 @@ Endpoints disponibles :
 - Éteindre les lumières
 - Modifier les couleurs
 - Changer l'ambiance
-- Contrôle vocal ou textuel
+- Contrôler les lumières depuis Maya
+
+Le module est isolé du reste de l'interface et communique avec Maya via le Hub.
 
 ---
 
 ## 🎨 Module MCP Créatif
 
-**Statut :** ✅ Validé
+**Statut :** ✅ Fonctionnel
 
-Afin d'éviter les productions génériques, Maya utilise une boucle de réflexion en trois étapes.
+Le module créatif permet à Maya d'utiliser une approche en plusieurs étapes afin d'améliorer la qualité des productions.
 
 ### 1. Génération
 
-Création de plusieurs propositions selon :
+Plusieurs propositions peuvent être produites en fonction :
 
-- le thème ;
-- le style demandé ;
-- les contraintes éventuelles.
+- du thème ;
+- du style demandé ;
+- des contraintes éventuelles.
 
 ### 2. Critique
 
-Le LLM joue le rôle d'un critique exigeant.
+Une seconde étape analyse les propositions générées.
 
-Il :
+Le système peut notamment :
 
-- analyse chaque proposition ;
-- identifie les points faibles ;
-- attribue une note.
+- identifier les points faibles ;
+- comparer les différentes propositions ;
+- attribuer une évaluation.
 
 ### 3. Sélection & Refactor
 
-Dernière passe :
+Une dernière étape permet :
 
-- sélection de la meilleure proposition ;
-- amélioration si nécessaire ;
-- retour uniquement de la version finale.
+- de sélectionner la proposition la plus pertinente ;
+- de l'améliorer si nécessaire ;
+- de retourner uniquement le résultat final.
+
+Cette architecture permet de séparer la génération de la phase d'évaluation et d'amélioration.
 
 ---
 
 ## 🔍 Module DeepSearch
 
-**Statut :** ✅ Validé (V1)
+**Statut :** ✅ Fonctionnel
 
 ### Principe
 
-Le module effectue des recherches Web via les outils MCP du Hub.
+Le module DeepSearch permet à Maya d'effectuer des recherches Web et de produire une synthèse structurée des informations collectées.
 
 ### Traitement
 
-Il peut automatiquement :
+Il peut notamment :
 
 - lancer plusieurs recherches ;
 - effectuer des recherches secondaires ;
-- croiser les sources ;
+- croiser différentes sources ;
+- analyser les informations récupérées ;
 - produire une synthèse finale.
 
 ### Utilisation
 
 Le module peut être appelé :
 
-- par l'utilisateur ;
-- automatiquement par l'Auto-Learning.
+- directement par l'utilisateur ;
+- par les systèmes autonomes de Maya lorsque ceux-ci sont activés.
 
 ---
 
 ## 🧠 Plugin MEMORY
 
-**Statut :** ✅ Validé
+**Statut :** ✅ Fonctionnel
 
 > ⚠️ Ce plugin est totalement indépendant de la mémoire de personnalité de Maya.
 
-Il stocke uniquement :
+Le Plugin MEMORY est destiné à conserver des informations exploitables par les compétences et outils de Maya.
 
-- les compétences ;
-- les procédures ;
-- les connaissances techniques ;
-- les informations validées issues des recherches.
+Il peut notamment stocker :
+
+- des compétences ;
+- des procédures ;
+- des connaissances techniques ;
+- des informations validées issues de recherches ;
+- des résultats destinés à être réutilisés ultérieurement.
+
+Cette mémoire est distincte du système de journal/personnalité de Maya.
 
 ---
 
 # ⚙️ Auto-Learning
 
-**Statut :** ✅ Validé (V2 — Planification Fixe)
+**Statut :** ✅ Fonctionnel
 
-Le système réalise automatiquement des missions de veille afin d'enrichir les connaissances de Maya.
+Le système d'Auto-Learning permet à Maya d'effectuer automatiquement certaines missions de recherche et de veille afin d'enrichir ses connaissances.
 
-Il peut être activé ou désactivé à tout moment depuis le Dashboard.
+Il fonctionne indépendamment de l'activité de l'utilisateur et peut être activé ou désactivé depuis le Hub.
+
+Le système actuel repose sur une planification à cadence fixe.
 
 ---
 
@@ -229,10 +302,13 @@ Il peut être activé ou désactivé à tout moment depuis le Dashboard.
         [ Scheduler Autonome du Hub ]
                      │
                      ▼
-[ Service activé + Limite 1x/jour/sujet ]
+       [ Service Auto-Learning actif ]
                      │
                      ▼
-          [ priority.py (Round Robin) ]
+          [ Vérification des objectifs ]
+                     │
+                     ▼
+          [ priority.py / Round Robin ]
                      │
                      ▼
           [ Executor + DeepSearch ]
@@ -259,60 +335,228 @@ Il peut être activé ou désactivé à tout moment depuis le Dashboard.
 
 Le Scheduler se réveille automatiquement toutes les **20 minutes**.
 
-Cette nouvelle version ne possède plus :
+L'architecture actuelle ne repose plus sur :
 
-- d'Idle Tracker ;
-- de détection d'inactivité utilisateur ;
-- de gestion de statut *busy*.
+- un Idle Tracker ;
+- une détection d'inactivité utilisateur ;
+- une gestion du statut `busy`.
 
-L'exécution est désormais entièrement basée sur une cadence fixe.
+L'exécution de l'Auto-Learning repose désormais sur une **cadence fixe**.
 
 ---
 
-## 📅 Limite : 1 exécution par jour et par sujet
+## 📅 Limite : une exécution par jour et par sujet
 
-Chaque sujet présent dans `goals.json` ne peut être traité qu'une seule fois par jour.
+Chaque sujet présent dans `goals.json` peut être traité au maximum une fois par jour.
 
-Si un sujet a déjà été exécuté aujourd'hui :
+Si un sujet a déjà été exécuté pendant la journée :
 
 ➡️ le Scheduler passe automatiquement au sujet suivant.
+
+Cette limite évite de répéter inutilement les mêmes recherches.
 
 ---
 
 ## 🔄 Rotation Round Robin
 
-Le Scheduler parcourt les objectifs dans l'ordre de priorité.
+Le Scheduler parcourt les objectifs selon leur ordre de priorité.
 
-Il sélectionne le premier sujet :
+Il sélectionne le premier sujet qui est :
 
 - actif ;
-- non exécuté aujourd'hui.
+- disponible ;
+- non exécuté pendant la journée.
 
 Lorsque tous les sujets ont été traités :
 
 - aucune nouvelle recherche n'est lancée ;
-- le Scheduler attend simplement le jour suivant.
+- le Scheduler attend le jour suivant.
 
 ---
 
 # 🧹 Filtre Sémantique
 
-Avant chaque sauvegarde, une seconde analyse IA compare la nouvelle synthèse avec les connaissances déjà présentes.
+Avant qu'une nouvelle information soit sauvegardée, une seconde analyse IA compare la synthèse obtenue avec les connaissances déjà présentes dans le Plugin MEMORY.
 
-## Cas 1
+Cette étape permet d'éviter l'accumulation d'informations redondantes.
 
-Information déjà connue
+---
+
+## Cas 1 — Information déjà connue
+
+Si l'information est considérée comme déjà présente :
 
 ```text
 NO_NEW_INFO
 ```
 
-➡️ aucune sauvegarde.
+➡️ aucune sauvegarde n'est effectuée.
 
 ---
 
-## Cas 2
+## Cas 2 — Nouvelle information pertinente
 
-Nouvelle information pertinente
+Si une information nouvelle et pertinente est détectée :
 
-La synthèse est validée puis automatiquement archivée dans le **Plugin MEMORY**.
+1. la synthèse est validée ;
+2. l'information est préparée pour archivage ;
+3. elle est enregistrée dans le **Plugin MEMORY**.
+
+```text
+Nouvelle recherche
+       │
+       ▼
+   Synthèse IA
+       │
+       ▼
+Comparaison avec MEMORY
+       │
+   ┌───┴────┐
+   ▼        ▼
+Connue    Nouvelle
+   │        │
+   ▼        ▼
+ Ignorer   Valider
+            │
+            ▼
+       MEMORY / Save
+```
+
+---
+
+# 🔗 Relation avec l'Interface Maya
+
+L'interface propriétaire ne communique pas directement avec chaque plugin.
+
+Elle utilise le Hub comme point central de communication.
+
+```text
+┌──────────────────────────────┐
+│        Interface Maya        │
+│                              │
+│  Chat / VRM / TTS / Status   │
+└───────────────┬──────────────┘
+                │
+                ▼
+┌──────────────────────────────┐
+│          Maya Hub            │
+│                              │
+│      Routage des outils      │
+└───────────────┬──────────────┘
+                │
+      ┌─────────┼─────────┐
+      ▼         ▼         ▼
+    WiZ     DeepSearch   Créatif
+      │         │         │
+      └─────────┼─────────┘
+                ▼
+             MEMORY
+```
+
+Cette architecture permet à l'interface de rester indépendante de la liste des plugins disponibles.
+
+L'ajout d'un nouveau plugin ne nécessite donc pas de modifier le fonctionnement fondamental de l'interface.
+
+---
+
+# 🧩 Architecture des Plugins
+
+Chaque plugin constitue un module indépendant du Hub.
+
+Le Plugin Manager est responsable de la découverte et de la gestion des plugins disponibles.
+
+Le principe général est :
+
+```text
+Maya Hub
+   │
+   ▼
+Plugin Manager
+   │
+   ├── Plugin A
+   ├── Plugin B
+   ├── Plugin C
+   └── Plugin D
+```
+
+Chaque plugin peut exposer ses propres capacités et actions au Hub.
+
+Cette organisation permet de maintenir une architecture modulaire et extensible.
+
+---
+
+# 🛡️ Principe d'Isolation
+
+Le Hub a été conçu afin que les outils restent isolés du cœur de Maya.
+
+Une erreur ou une modification dans un plugin ne doit pas nécessiter de modifier :
+
+- l'interface utilisateur ;
+- le système VRM ;
+- le système vocal ;
+- l'historique des conversations ;
+- le moteur LLM.
+
+Cette isolation constitue l'un des principaux avantages de l'architecture actuelle.
+
+---
+
+# 📊 État actuel du Hub
+
+| Composant | État |
+|---|---|
+| Hub Central | ✅ Fonctionnel |
+| Plugin Manager | ✅ Fonctionnel |
+| API Hub | ✅ Fonctionnelle |
+| Dashboard Web | ✅ Fonctionnel |
+| Architecture modulaire | ✅ Fonctionnelle |
+| Connexion avec l'interface Maya | ✅ Fonctionnelle |
+| Indicateur de connexion côté interface | ✅ Fonctionnel |
+| Module WiZ | ✅ Fonctionnel |
+| Module MCP Créatif | ✅ Fonctionnel |
+| Module DeepSearch | ✅ Fonctionnel |
+| Plugin MEMORY | ✅ Fonctionnel |
+| Auto-Learning | ✅ Fonctionnel |
+
+---
+
+# 🚀 Philosophie du Hub
+
+Le Hub n'a pas vocation à devenir un second cœur de Maya.
+
+Son rôle est de fournir une **couche d'abstraction stable entre Maya et ses outils**.
+
+Cela permet de faire évoluer séparément :
+
+- l'interface ;
+- le LLM ;
+- la mémoire ;
+- les outils ;
+- les systèmes d'autonomie ;
+- les services externes.
+
+Le Hub devient ainsi le point de contrôle central de l'écosystème Maya.
+
+> **Maya réfléchit.**
+>
+> **Le Hub lui donne les moyens d'agir.**
+
+---
+
+# 🔮 Évolutions futures
+
+Les évolutions du Hub devront préserver son principe fondamental :
+
+> **Ajouter des capacités sans augmenter inutilement la complexité du cœur de Maya.**
+
+Les évolutions pourront notamment concerner :
+
+- l'amélioration de la gestion des plugins ;
+- l'amélioration du Dashboard ;
+- de nouveaux outils MCP ;
+- l'amélioration de la supervision des services ;
+- l'amélioration de l'Auto-Learning ;
+- une meilleure gestion des erreurs et états de connexion ;
+- la simplification du déploiement du Hub avec Maya.
+
+La priorité reste cependant la **stabilité de l'architecture actuelle** avant l'ajout de nouvelles fonctionnalités.
