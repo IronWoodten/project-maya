@@ -150,6 +150,7 @@ La base fonctionnelle est désormais **solide et éprouvée**. L'objectif n'est 
 
 ### 🗺️ Piliers de la V1.0
 
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                  APPLICATION MAYA V1.0                  │
 ├─────────────────────────────────────────────────────────┤
