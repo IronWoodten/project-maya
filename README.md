@@ -37,13 +37,13 @@ Elle regroupe notamment :
 
 ## Interface Maya
 
-img width="781" height="913" alt="image" src="https://github.com/user-attachments/assets/00aa587b-57b0-4b96-931f-5f3bfa4582e3" />
+ <img width="819" height="899" alt="Capture d&#39;écran 2026-08-09 200059" src="https://github.com/user-attachments/assets/5bd824de-93f1-40f6-ab21-b0479721a51a" />
 
 ## Maya Hub
 
 Le **Maya Hub** constitue la couche centrale permettant à Maya d'utiliser ses différents outils (**DeepSearch, MEMORY, Auto-Learning**).
 
-img width="794" height="754" alt="Capture d&#39;écran 2026-08-08 085321" src="https://github.com/user-attachments/assets/327714f0-a386-4186-a283-633ffba4a883" />
+<img width="794" height="754" alt="Capture d&#39;écran 2026-08-08 085321" src="https://github.com/user-attachments/assets/436ec5fc-cc89-4c1e-94e7-a48e02173fe7" />
 
 # 📌 Pourquoi ce projet ?
 
@@ -229,6 +229,8 @@ La mémoire est désormais séparée en plusieurs couches :
 - contrôle du nombre de messages d'historique réinjectés dans le prompt ;
 - édition du System Prompt et des sujets d'Auto-Learning.
 
+- <img width="1369" height="890" alt="Capture d&#39;écran 2026-08-09 195450" src="https://github.com/user-attachments/assets/9dbad52c-d914-4ac1-a221-5bd25756220d" />
+
 ## 💬 Gestion des conversations
 
 - enregistrement des sessions de chat ;
@@ -261,8 +263,6 @@ La mémoire est désormais séparée en plusieurs couches :
 | Auto-Learning & Scheduler | ✅ Fonctionnel |
 | Indicateur de connexion Hub | ✅ Fonctionnel |
 
-
-<img width="1369" height="890" alt="Capture d&#39;écran 2026-08-09 195450" src="https://github.com/user-attachments/assets/9dbad52c-d914-4ac1-a221-5bd25756220d" />
 
 ---
 
