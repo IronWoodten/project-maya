@@ -13,7 +13,7 @@
 
 L'objectif est de construire un compagnon capable de conserver son contexte dans le temps, d'utiliser différents outils de manière autonome et d'interagir avec l'utilisateur à travers une véritable incarnation visuelle et vocale.
 
-Le projet évolue aujourd'hui d'un prototype expérimental vers une **application complète avec interface propriétaire, avatar VRM, système vocal, historique des conversations et Hub centralisé pour les outils**.
+Le projet évolue aujourd'hui d'un prototype expérimental vers une **application complète avec interface propriétaire, avatar VRM, système vocal hybride, historique des conversations et Hub centralisé pour les outils**.
 
 > ⚠️ **Le code source est maintenu dans un dépôt privé.**
 >
@@ -27,35 +27,23 @@ L'interface propriétaire de Maya est désormais fonctionnelle et constitue le c
 
 Elle regroupe notamment :
 
-- l'avatar VRM ;
-- le système de conversation ;
-- le TTS ;
-- l'historique des conversations ;
-- la gestion des anciennes discussions ;
-- la personnalisation de l'interface ;
-- l'état de connexion aux outils du Hub.
+- l'avatar VRM avec **clignement d'yeux naturel automatique** et gestion d'expressions ;
+- le système de conversation temps réel ;
+- le panneau de **paramètres intégré (Options UI)** pour contrôler à chaud le LLM, le contexte et la voix ;
+- le moteur vocal hybride (**Edge-TTS** en ligne / **Piper TTS** 100 % local) ;
+- l'historique des conversations avec reprise et suppression de sessions ;
+- la personnalisation de l'interface (modèles VRM, arrière-plans) ;
+- l'état de connexion en direct aux outils du Hub.
 
 ## Interface Maya
 
-> 📸 **Screenshot de l'interface actuelle à ajouter ici**
-
-<!--
-![Interface actuelle de Maya](./docs/images/maya-interface.png)
--->
-
----
+img width="781" height="913" alt="image" src="https://github.com/user-attachments/assets/00aa587b-57b0-4b96-931f-5f3bfa4582e3" />
 
 ## Maya Hub
 
-Le **Maya Hub** constitue la couche centrale permettant à Maya d'utiliser ses différents outils.
+Le **Maya Hub** constitue la couche centrale permettant à Maya d'utiliser ses différents outils (**DeepSearch, MEMORY, Auto-Learning**).
 
-> 📸 **Screenshot du Hub actuel à ajouter ici**
-
-<!--
-![Dashboard actuel du Maya Hub](./docs/images/maya-hub.png)
--->
-
----
+img width="794" height="754" alt="Capture d&#39;écran 2026-08-08 085321" src="https://github.com/user-attachments/assets/327714f0-a386-4186-a283-633ffba4a883" />
 
 # 📌 Pourquoi ce projet ?
 
@@ -100,31 +88,27 @@ L'objectif était de construire un assistant :
 
 # 🚀 Évolution du projet
 
-```text
-[LM Studio + AnythingLLM]
-            │
-            ▼
-      [SillyTavern]
-            │
-            ▼
-   [OpenLLMVTuber]
-            │
-            ▼
-┌───────────────────────────────┐
-│       Architecture Maya      │
-│                               │
-│  Interface propriétaire       │
-│  Avatar VRM                   │
-│  TTS                          │
-│  Historique                   │
-│  Hub Central MCP              │
-│  Mémoire multicouche          │
-│  Plugins                      │
-│  Auto-Learning                │
-└───────────────────────────────┘
-```
-
----
+    [LM Studio + AnythingLLM]
+                │
+                ▼
+          [SillyTavern]
+                │
+                ▼
+         [OpenLLMVTuber]
+                │
+                ▼
+    ┌───────────────────────────────┐
+    │       Architecture Maya       │
+    │                               │
+    │  Interface propriétaire       │
+    │  Avatar VRM + Eye Blink       │
+    │  TTS (Edge-TTS & Piper Local) │
+    │  Panneau Options UI dynamique │
+    │  Historique & Sessions        │
+    │  Hub Central MCP              │
+    │  Mémoire multicouche          │
+    │  Plugins & Auto-Learning      │
+    └───────────────────────────────┘
 
 ## Phase 1 — Les bases
 
@@ -135,15 +119,11 @@ Objectif :
 - faire fonctionner un LLM entièrement en local ;
 - expérimenter les différents systèmes de mémoire et d'interaction.
 
----
-
 ## Phase 2 — L'incarnation
 
 Migration vers **SillyTavern**, puis **OpenLLMVTuber**, afin de donner une personnalité, une voix et une incarnation visuelle au modèle.
 
 Ces expérimentations ont permis de valider le concept mais ont également mis en évidence les limites des architectures existantes.
-
----
 
 ## Phase 3 — Modularité & Hub Central
 
@@ -151,25 +131,18 @@ Développement du **Maya Hub** afin de centraliser les outils et de créer une a
 
 Le Hub devient progressivement le point central d'intégration de Maya.
 
----
+## Phase 4 — Interface propriétaire & Refonte Vocale
 
-## Phase 4 — Interface propriétaire
-
-Développement d'une interface dédiée à Maya.
-
-Cette étape marque le passage d'un assemblage de composants existants vers une véritable application cohérente.
+Développement d'une interface dédiée à Maya et intégration des réglages à chaud.
 
 L'interface intègre désormais :
 
-- avatar VRM ;
-- changement de modèle VRM ;
-- changement de fond ;
-- TTS ;
-- chat ;
-- historique des conversations ;
-- reprise des anciennes discussions ;
-- suppression des conversations ;
-- état de connexion aux outils.
+- **Avatar VRM** avec clignement d'yeux automatique et animations ;
+- **Panneau de configuration complet (Options UI)** : sélection dynamique du moteur TTS, des voix, de la langue, du modèle `.gguf`, de la fenêtre de contexte et du nombre de messages injectés ;
+- **Moteur vocal hybride** : intégration de **Piper TTS** pour un rendu vocal local instantané, en complément de **Edge-TTS** (abandon de Kokoro TTS pour des raisons d'instabilité d'installation) ;
+- **Changement de modèle VRM et d'arrière-plan** ;
+- **Gestionnaire de conversations** (sauvegarde, chargement, suppression) ;
+- **Supervision temps réel** du Hub (indicateur d'état connecté/déconnecté).
 
 ---
 
@@ -177,83 +150,56 @@ L'interface intègre désormais :
 
 L'un des principaux défis d'un compagnon IA local est de conserver un historique sur le long terme sans saturer la fenêtre de contexte.
 
----
-
 ## V1 — Journal manuel
 
 Une commande `/save` permet au LLM de résumer la journée dans un fichier texte réinjecté au prompt système.
 
-### Limite
-
-Le prompt devenait rapidement énorme et les performances diminuaient fortement.
-
----
-
 ## V2 — Mémoire multicouche auto-évolutive
 
-La mémoire est désormais séparée en plusieurs couches.
+La mémoire est désormais séparée en plusieurs couches :
 
-### 📄 Journal récent
-
-Conserve les informations récentes de Maya.
-
----
-
-### 📚 Journal d'archives
-
-Les anciennes entrées sont automatiquement déplacées vers les archives.
-
----
-
-### 🧬 Core de personnalité
-
-L'identité profonde de Maya est isolée dans un fichier dédié et injectée en permanence.
-
----
-
-### 📈 Auto-évolution
-
-Les systèmes d'Auto-Learning peuvent enrichir les connaissances et compétences de Maya indépendamment du Core de personnalité.
+- 📄 **Journal récent** : conserve les interactions quotidiennes et récentes.
+- 📚 **Journal d'archives** : transfert automatique des anciennes entrées.
+- 🧬 **Core de personnalité** : identité profonde de Maya préservée dans un fichier permanent.
+- 📈 **Auto-évolution** : compétences et connaissances acquises via l'Auto-Learning.
 
 ---
 
 # 🏗️ Architecture globale
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│                 1. Mémoire Multicouche                  │
-│       Core • Journal récent • Archives • Compétences    │
-└────────────────────────────┬────────────────────────────┘
-                             │
-                      Context + Prompt
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│                  2. Moteur LLM Local                    │
-│              Génération de la réponse                   │
-└────────────────────────────┬────────────────────────────┘
-                             │
-                    Texte + Tool Calls
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│                  3. Hub Central (MCP)                    │
-│            Orchestration & Exécution des outils         │
-│                                                         │
-│  • DeepSearch                                            │
-│  • Plugin MEMORY                                         │
-│  • Auto-Learning                                         │
-│  • Filtre Sémantique                                     │
-└────────────────────────────┬────────────────────────────┘
-                             │
-                    Réponse enrichie + Actions
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│              4. Interface & Incarnation                 │
-│       Avatar VRM • TTS • Historique • Chat              │
-└─────────────────────────────────────────────────────────┘
-```
+    ┌─────────────────────────────────────────────────────────┐
+    │                  1. Mémoire Multicouche                 │
+    │        Core • Journal récent • Archives • Compétences   │
+    └────────────────────────────┬────────────────────────────┘
+                                 │
+                          Context + Prompt
+                                 │
+                                 ▼
+    ┌─────────────────────────────────────────────────────────┐
+    │                  2. Moteur LLM Local                    │
+    │            Génération de la réponse (llama.cpp)         │
+    └────────────────────────────┬────────────────────────────┘
+                                 │
+                        Texte + Tool Calls
+                                 │
+                                 ▼
+    ┌─────────────────────────────────────────────────────────┐
+    │                  3. Hub Central (MCP)                   │
+    │            Orchestration & Exécution des outils         │
+    │                                                         │
+    │  • DeepSearch                                           │
+    │  • Plugin MEMORY                                        │
+    │  • Auto-Learning                                        │
+    │  • Filtre Sémantique                                    │
+    └────────────────────────────┬────────────────────────────┘
+                                 │
+                        Réponse enrichie + Actions
+                                 │
+                                 ▼
+    ┌─────────────────────────────────────────────────────────┐
+    │               4. Interface & Incarnation                │
+    │   Avatar VRM (Blink) • Piper/Edge TTS • Options UI      │
+    └─────────────────────────────────────────────────────────┘
 
 ---
 
@@ -261,327 +207,98 @@ Les systèmes d'Auto-Learning peuvent enrichir les connaissances et compétences
 
 ## 🎭 Incarnation visuelle
 
-- Avatar VRM interactif ;
-- changement de modèle VRM ;
-- changement d'arrière-plan ;
-- interface propriétaire dédiée ;
-- architecture préparée pour des animations VRM avancées.
+- Avatar VRM interactif avec **clignement d'yeux naturel (Blink)** ;
+- changement dynamique de modèle VRM ;
+- personnalisation des fonds d'écran ;
+- interface propriétaire dédiée avec tiroirs d'options.
 
----
+## 🎙️ Moteur vocal hybride (TTS / STT)
 
-## 🎙️ Interaction vocale
+- **Edge-TTS** : voix cloud haute qualité.
+- **Piper TTS** : moteur TTS local ultrarapide, léger et réactif.
+- **Speech-to-Text** : intégration STT pour le contrôle vocal.
+- Pipeline audio modulaire débrayable à tout moment.
 
-- Speech-to-Text ;
-- Text-to-Speech ;
-- intégration directe du TTS dans l'interface ;
-- pipeline vocal indépendant du reste de l'architecture.
+> **Note :** Kokoro TTS a été abandonné suite à sa complexité d'installation et à son manque de stabilité.
 
----
+## ⚙️ Configuration centralisée (Options UI)
+
+- sélection dynamique du moteur vocal (Edge / Piper) et des voix disponibles ;
+- changement de modèle LLM `.gguf` à chaud ;
+- ajustement de la taille de contexte serveur (4k à 131k tokens) ;
+- contrôle du nombre de messages d'historique réinjectés dans le prompt ;
+- édition du System Prompt et des sujets d'Auto-Learning.
 
 ## 💬 Gestion des conversations
 
-L'historique des conversations est désormais stable.
+- enregistrement des sessions de chat ;
+- historique complet avec prévisualisation et suppression ;
+- possibilité de reprendre n'importe quelle ancienne discussion sans perte de contexte.
 
-Il permet :
+## 🔌 Hub Central & Auto-Learning
 
-- d'enregistrer les conversations ;
-- d'afficher les discussions précédentes ;
-- de reprendre une ancienne conversation ;
-- de supprimer une conversation ;
-- de conserver plusieurs sessions indépendantes.
-
----
-
-## 🔌 Hub Central & Dashboard
-
-- Architecture MCP ;
-- gestion centralisée des outils ;
-- Dashboard Web ;
-- visualisation des plugins ;
-- gestion des services ;
-- supervision de l'état du système ;
-- communication avec l'interface Maya.
-
----
-
-## 🔍 DeepSearch
-
-Module permettant à Maya d'effectuer des recherches Web approfondies.
-
-Il peut notamment :
-
-- effectuer plusieurs recherches ;
-- réaliser des recherches secondaires ;
-- croiser les informations ;
-- produire une synthèse finale ;
-- être utilisé par les systèmes autonomes.
-
----
-
-## 🧠 Plugin MEMORY
-
-Le Plugin MEMORY est dédié aux connaissances et compétences de Maya.
-
-Il est séparé de la mémoire de personnalité.
-
-Il peut notamment conserver :
-
-- des compétences ;
-- des procédures ;
-- des connaissances techniques ;
-- des informations validées ;
-- des résultats issus de recherches.
-
----
-
-## 🤖 Auto-Learning
-
-Le système d'Auto-Learning permet à Maya d'effectuer automatiquement des missions de veille.
-
-### Fonctionnement
-
-- Vérification toutes les **20 minutes** ;
-- maximum **1 exécution par jour et par sujet** ;
-- rotation automatique **Round Robin** ;
-- recherches via DeepSearch ;
-- comparaison sémantique avec les connaissances existantes ;
-- archivage uniquement des nouvelles informations.
-
-Le filtre sémantique utilise notamment le statut :
-
-```text
-NO_NEW_INFO
-```
-
-afin d'éviter de sauvegarder des informations déjà connues.
-
----
-
-# 🟢🔴 État des outils
-
-L'interface Maya dispose désormais d'un indicateur visuel permettant de connaître immédiatement l'état de connexion aux outils du Hub.
-
-### 🟢 Vert
-
-La connexion au Hub et aux outils est opérationnelle.
-
-### 🔴 Rouge
-
-La connexion au Hub ou aux outils est indisponible.
-
-Cette information permet de diagnostiquer rapidement un problème de connexion sans avoir à consulter les logs.
-
----
-
-# 🔒 100 % Local & Privé
-
-Maya est conçue autour d'une philosophie **Local First**.
-
-Les principaux composants du système peuvent fonctionner localement :
-
-- LLM ;
-- mémoire ;
-- historique ;
-- TTS ;
-- STT ;
-- Hub ;
-- outils ;
-- interface.
-
-L'objectif est de conserver les données et les traitements localement autant que possible.
-
-> **Maya est conçue pour que les données personnelles restent sous le contrôle de l'utilisateur.**
-
----
-
-# 🧩 Architecture modulaire
-
-L'un des objectifs principaux de Maya est de limiter les dépendances entre les différents composants.
-
-```text
-                 ┌─────────────────┐
-                 │    Maya UI      │
-                 └────────┬────────┘
-                          │
-                          ▼
-                 ┌─────────────────┐
-                 │    Maya Hub     │
-                 │       MCP       │
-                 └────────┬────────┘
-                          │
-             ┌────────────┼────────────┐
-             ▼            ▼            ▼
-        DeepSearch      MEMORY     Auto-Learning
-```
-
-Cette approche permet notamment de :
-
-- remplacer un moteur vocal sans refaire l'interface ;
-- ajouter un outil au Hub sans modifier le système VRM ;
-- modifier l'apparence de Maya sans modifier le LLM ;
-- faire évoluer l'historique indépendamment du Hub ;
-- faire évoluer les services autonomes indépendamment de l'interface.
+- architecture MCP et Dashboard Web centralisé ;
+- **DeepSearch** : moteur de recherche web autonome multicouche ;
+- **Plugin MEMORY** : base de connaissances techniques et compétences séparée du Core ;
+- **Auto-Learning** : tâche de fond programmée (Round Robin toutes les 20 min) avec filtre sémantique `NO_NEW_INFO` pour éviter les doublons.
 
 ---
 
 # 📊 État actuel du projet
 
-| Fonctionnalité | État |
+| **Fonctionnalité** | **État** |
 |---|---|
 | Interface propriétaire | ✅ Fonctionnelle |
-| Avatar VRM | ✅ Fonctionnel |
-| Changement de VRM | ✅ Fonctionnel |
-| Changement de fond | ✅ Fonctionnel |
-| Chat | ✅ Fonctionnel |
-| Historique des conversations | ✅ Stable |
-| Reprise des conversations | ✅ Fonctionnelle |
-| Suppression des conversations | ✅ Fonctionnelle |
-| TTS | ✅ Fonctionnel |
-| Maya Hub | ✅ Fonctionnel |
-| Dashboard Web | ✅ Fonctionnel |
-| DeepSearch | ✅ Fonctionnel |
-| Plugin MEMORY | ✅ Fonctionnel |
-| Auto-Learning | ✅ Fonctionnel |
-| Scheduler | ✅ Fonctionnel |
-| Filtre `NO_NEW_INFO` | ✅ Fonctionnel |
-| Indicateur de connexion | ✅ Fonctionnel |
+| Avatar VRM + Clignement d'yeux | ✅ Fonctionnel |
+| Changement de VRM & Fond | ✅ Fonctionnel |
+| Panneau d'options UI à chaud | ✅ Fonctionnel |
+| Chat & Historique des sessions | ✅ Stable |
+| Edge-TTS | ✅ Fonctionnel |
+| Piper TTS (Local) | ✅ Intégré & Fonctionnel |
+| Kokoro TTS | ❌ Abandonné |
+| Maya Hub & Dashboard | ✅ Fonctionnel |
+| DeepSearch & Plugin MEMORY | ✅ Fonctionnel |
+| Auto-Learning & Scheduler | ✅ Fonctionnel |
+| Indicateur de connexion Hub | ✅ Fonctionnel |
+
+
+<img width="1369" height="890" alt="Capture d&#39;écran 2026-08-09 195450" src="https://github.com/user-attachments/assets/9dbad52c-d914-4ac1-a221-5bd25756220d" />
 
 ---
 
 # 📚 Documentation
 
-La documentation technique détaillée est disponible dans le dossier [`docs`](./docs/).
+La documentation technique détaillée est accessible dans le dossier [`docs`](./docs/) :
 
----
-
-## 🛠️ Dev Journey
-
-[**`dev.journey.md`**](./docs/dev.journey.md)
-
-Contient :
-
-- l'historique du projet ;
-- les choix techniques ;
-- les expérimentations ;
-- les difficultés rencontrées ;
-- l'évolution de l'architecture ;
-- la roadmap vers la V1.0.
-
----
-
-## 🔌 Hub Central
-
-[**`hub.md`**](./docs/hub.md)
-
-Contient :
-
-- l'architecture du Hub ;
-- le système de plugins ;
-- le Dashboard ;
-- DeepSearch ;
-- MEMORY ;
-- Auto-Learning ;
-- Scheduler ;
-- Round-Robin ;
-- filtre sémantique.
-
----
-
-## 🧠 Mémoire
-
-[**`memory.md`**](./docs/memory.md)
-
-Contient :
-
-- le Core de personnalité ;
-- le journal récent ;
-- les archives ;
-- les compétences ;
-- l'évolution de la mémoire.
-
----
-
-## 🎭 Interface & Incarnation
-
-[**`plugin.md`**](./docs/plugin.md)
-
-Contient :
-
-- l'interface propriétaire ;
-- le moteur VRM ;
-- le TTS ;
-- le STT ;
-- l'historique ;
-- l'évolution depuis OpenLLMVTuber ;
-- l'architecture de l'incarnation.
+- [**`dev.journey.md`**](./docs/dev.journey.md) — Historique du projet, arbitrages techniques et roadmap.
+- [**`hub.md`**](./docs/hub.md) — Architecture du Hub MCP, DeepSearch et Auto-Learning.
+- [**`memory.md`**](./docs/memory.md) — Gestion de la mémoire multicouche et du Core.
+- [**`plugin.md`**](./docs/plugin.md) — Moteur VRM, Piper TTS, STT et interface utilisateur.
 
 ---
 
 # 🛠️ Stack Technique
 
-| Domaine | Technologies |
+| **Domaine** | **Technologies** |
 |---|---|
-| **Langage** | Python 3.11+ |
-| **Hub** | Flask + HTML5 + CSS3 |
-| **Dashboard** | Glassmorphism / Neon UI |
-| **Interface / Avatar** | Tauri + Three.js + VRM |
-| **LLM** | LM Studio · Ollama · llama.cpp |
-| **Modèles** | Gemma 4 12B · autres modèles locaux |
-| **Protocoles** | MCP (Model Context Protocol) |
-| **Speech-to-Text** | Fast-Whisper |
-| **Text-to-Speech** | Edge-TTS · Kokoro |
-| **Mémoire** | Fichiers texte `.txt` |
-| **Historique** | Stockage local des conversations |
+| **Langage** | Python 3.11+ · JavaScript (ES6 Modules) |
+| **Backend Hub** | Flask · MCP Protocol |
+| **Interface / Avatar** | Three.js · `@pixiv/three-vrm` · HTML5 / CSS3 (Dark Theme) |
+| **LLM Moteur** | llama.cpp · Ollama · LM Studio |
+| **Text-to-Speech (TTS)** | **Piper TTS** (Local) · **Edge-TTS** (Cloud) |
+| **Speech-to-Text (STT)** | Fast-Whisper |
+| **Mémoire & Config** | Fichiers JSON · `.txt` |
 
 ---
 
 # 🔮 Roadmap
 
-Le projet entre maintenant dans une phase de consolidation.
+Les prochaines étapes du projet :
 
-Les prochaines évolutions envisagées comprennent notamment :
-
-- 🪟 Mode **Overlay / Desktop Pet** ;
-- 🎭 animations VRM plus avancées ;
-- 👄 amélioration du Lip-Sync ;
-- 🎙️ évolution du système vocal ;
-- 📦 packaging de Maya en application autonome ;
-- 🚀 lancement simplifié des différents services ;
-- 🔌 extension du catalogue de plugins ;
-- 🧠 amélioration de la mémoire et de l'Auto-Learning ;
-- 💻 simplification de l'installation et du déploiement.
-
-La priorité reste cependant la **stabilité de l'architecture actuelle** avant l'ajout de nouvelles fonctionnalités majeures.
-
----
-
-# 🧠 Principe d'ingénierie
-
-Maya n'a pas pour objectif de réinventer chaque composant de l'écosystème IA.
-
-Le projet cherche plutôt à construire une architecture capable de réunir efficacement différentes briques spécialisées.
-
-```text
-        LLM
-         │
-         ├────────── Mémoire
-         │
-         ├────────── TTS / STT
-         │
-         ├────────── VRM
-         │
-         └────────── Maya Hub
-                         │
-              ┌──────────┼──────────┐
-              │          │          │
-         DeepSearch    MEMORY   Auto-Learning
-```
-
-Chaque composant peut évoluer sans nécessiter une refonte complète du système.
-
-> **L'objectif n'est pas de tout réinventer.**
->
-> **L'objectif est de faire fonctionner les différentes briques comme un seul système.**
+- 🪟 Mode **Overlay / Desktop Pet** (fenêtre transparente toujours au premier plan) ;
+- 🎭 synchronisation labiale avancée (Lip-Sync audio-driven) ;
+- 📦 packaging standalone (application exécutable clé en main) ;
+- 🔌 nouveaux plugins pour le Maya Hub.
 
 ---
 
@@ -589,12 +306,6 @@ Chaque composant peut évoluer sans nécessiter une refonte complète du systèm
 
 **M.A.Y.A. — Modular Avatar & Yoked Agent**
 
-Un assistant IA local, modulaire, incarné et conçu pour évoluer dans le temps.
+*Un assistant IA local, modulaire, incarné et conçu pour évoluer dans le temps.*
 
 > **M**ost **A**dvanced, **Y**et **A**cceptable.
-
----
-
-⭐ Le projet est actuellement documenté publiquement tandis que le code source reste privé.
-
-Les retours, idées et discussions autour de l'architecture sont les bienvenus.
