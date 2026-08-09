@@ -1,3 +1,5 @@
+Markdown
+
 # 🛠️ Journal de Bord & Vision (Dev Journey) — Maya
 
 ## 📜 Genèse & Leçons Apprises (Le Parallèle des Solutions Existantes)
@@ -26,11 +28,33 @@ Cependant, la personnalisation de cet outil a apporté son lot de difficultés :
 
 ---
 
+## 🎙️ La Saga Vocal TTS : De l'Enfer Kokoro à la Libération Piper TTS
+
+L'intégration d'une synthèse vocale locale haute qualité a été l'un des parcours les plus chaotiques du projet.
+
+### 🔴 Le Calvaire Kokoro TTS (L'Impasse Technique)
+Sur le papier, **Kokoro TTS** promettait une qualité vocale impressionnante pour un modèle local. En pratique, sa mise en œuvre s'est transformée en un véritable cauchemar d'ingénierie :
+- **Dépendances brisées & Fichiers corrompus :** Problèmes incessants de compatibilité d'environnements Python, conflits d'ABI avec PyTorch/ONNX, et poids de paquets démesuré.
+- **Liens morts & Modèles introuvables :** Lors de la configuration des voix et poids du modèle, confrontation à des dépôts incomplets, des URL mortes et des téléchargements corrompus.
+- **Instabilité au déploiement :** Même quand le service démarrait, les temps de génération subissaient des latences imprévisibles et des plantages aléatoires du processus audio.
+
+**Décision :** Abandon pur et simple de Kokoro. Une brique logicielle qui nécessite 3 heures d'installation fragile n'a pas sa place dans la philosophie *M.A.Y.A.*.
+
+### 🟢 La Révélation Piper TTS (Le Choix Gagnant)
+Après l'échec de Kokoro, le pivot s'est fait vers **Piper TTS**... et la différence a été radicale :
+- **Installation instantanée :** Exécutable ultra-léger, zéro dépendance lourde PyTorch.
+- **Génération ultra-rapide :** Synthèse vocale fluide en quelques millisecondes sur CPU/GPU local.
+- **Voix naturelles & Légèreté :** Les modèles ONNX légers de Piper offrent un compromis parfait entre intelligibilité, ton naturel et consommation de ressources.
+
+Aujourd'hui, Maya dispose d'un **système vocal hybride parfait** : **Edge-TTS** (cloud très fluide) et **Piper TTS** (100 % local, autonome et rapide).
+
+---
+
 ## 🏆 La Victoire Majeure : Le Hub Central MCP
 
 Pendant longtemps, chaque ajout d'outil était une petite bataille. **L'émergence du Hub Central MCP a été LA plus grande victoire technique du projet.**
 
-Dès l'instant où le Hub a été opérationnel :
+Dès l'instant où le Hub a été operational :
 
 - La gestion des fonctions est devenue "Plug & Play".
 - Ajouter, tester ou retirer un module ne risquait plus de casser l'interface ou la mémoire.
@@ -40,30 +64,37 @@ Le Hub est désormais une brique centrale fonctionnelle de Maya. Les outils qui 
 
 ---
 
-## 🚀 L'Évolution Majeure : L'Interface Propriétaire
+## 🚀 L'Évolution Majeure : L'Interface Propriétaire & Incarnation
 
 L'une des évolutions les plus importantes du projet a été l'abandon progressif de la dépendance à OpenLLMVTuber au profit d'une **interface propriétaire développée spécifiquement pour Maya**.
 
-Cette interface a maintenant dépassé le stade de prototype et constitue une base fonctionnelle du projet.
+Cette interface a dépassé le stade de prototype pour devenir une application complète, réactive et hautement personnalisable.
 
-### 🖥️ Interface actuelle
+### 👁️ Vivacité de l'Avatar : Le Clignement d'Yeux (Blink)
+Pour rendre l'avatar 3D VRM véritablement "vivant" sans surcharger le CPU, un système de **clignement d'yeux naturel et aléatoire** a été intégré au moteur Three.js / VRM. L'avatar ne reste plus figé entre deux phrases : il respire et cligne des yeux de manière organique.
 
-Les principales briques de l'interface sont désormais opérationnelles :
+### ⚙️ Le Tiroir d'Options Dynamiques (Options UI)
+Fini de modifier des fichiers de configuration `.env` ou `.json` à la main et de relancer les serveurs :
+- **Sélection du moteur TTS à chaud :** Bascule instantanée entre Edge-TTS et Piper TTS direct dans l'UI.
+- **Sélection de la voix & de la langue :** Menu déroulant dynamique alimenté par le backend.
+- **Paramétrage du LLM :** Changement du modèle `.gguf`, contrôle de la taille de contexte (4k à 131k tokens) et réglage du nombre de messages réinjectés dans la fenêtre glissante.
 
-- **Avatar 3D VRM fonctionnel**, avec possibilité de changer de modèle.
-- **Arrière-plan personnalisable**, permettant de modifier le décor de l'interface.
-- **Synthèse vocale (TTS)** intégrée et fonctionnelle.
-- **Historique des conversations** stable.
-- Reprise d'anciennes conversations directement depuis l'historique.
-- Suppression des conversations précédentes.
-- **Indicateur de connexion aux outils**, sous la forme d'une pastille verte/rouge permettant de visualiser rapidement leur état.
-- Communication avec les outils du Hub fonctionnelle.
+  <img width="1369" height="890" alt="Capture d&#39;écran 2026-08-09 195450" src="https://github.com/user-attachments/assets/3176631e-c38f-4c4d-979c-0405f4975493" />
 
-L'interface ne constitue donc plus uniquement une démonstration visuelle : elle forme désormais un véritable client utilisable pour Maya.
+
+### 🖥️ Synthèse des capacités de l'interface
+
+- **Avatar 3D VRM animé** avec gestion des expressions et clignement d'yeux naturel.
+- **Options UI intégrées** pour tout régler à chaud sans redémarrer.
+- **Arrière-plan personnalisable** (images/décors).
+- **Moteur vocal hybride** (Edge-TTS / Piper TTS local).
+- **Gestionnaire de conversations** (sauvegarde, reprise, suppression de sessions).
+- **Indicateur de connexion au Hub (pastille 🟢/🔴)** pour un suivi visuel direct des services.
 
 ### 📸 Aperçu de l'interface actuelle
 
-<img width="925" height="764" alt="image" src="https://github.com/user-attachments/assets/99ff4d7a-1198-4c3a-844e-752e9b255a1c" />
+<img width="819" height="899" alt="Capture d&#39;écran 2026-08-09 200059" src="https://github.com/user-attachments/assets/5b72a2db-67ee-46f4-b08c-4f82344e4770" />
+
 
 ---
 
@@ -86,58 +117,53 @@ Cette évolution apporte un élément important pour la fiabilité de l'applicat
 
 ---
 
-## 🎯 État actuel du projet
+## 🎉 Le "Point de Bascule" : La Réussite Absolue
 
-Le projet a maintenant franchi plusieurs étapes qui étaient initialement prévues comme des objectifs de la V1.
+Après les bugs de code, les dépendances corrompues, les liens mort-nés de Kokoro et les errances d'architecture, **nous y sommes**. 
+
+Toutes les briques (Avatar 3D, Clignement d'yeux, Piper TTS local, Options UI, Hub MCP, Mémoire multicouche et Auto-Learning) communiquent désormais en parfaite harmonie. Le système est fluide, réactif et 100 % sous contrôle.
+
+---
+
+## 🎯 État actuel du projet
 
 | Fonctionnalité | État |
 |---|---|
 | Interface propriétaire | ✅ Fonctionnelle |
-| Avatar 3D VRM | ✅ Fonctionnel |
-| Changement de VRM | ✅ Fonctionnel |
-| Changement de fond | ✅ Fonctionnel |
-| TTS | ✅ Fonctionnel |
+| Avatar 3D VRM + Clignement d'yeux | ✅ Fonctionnel |
+| Changement de VRM & Fond | ✅ Fonctionnel |
+| Options UI (Paramètres à chaud) | ✅ Fonctionnelles |
+| Synthèse Vocale Piper TTS (Local) | ✅ Intégré & Rapide |
+| Synthèse Vocale Edge-TTS (Cloud) | ✅ Fonctionnel |
+| Kokoro TTS | ❌ Abandonné (Instable/Complexité) |
 | Historique des conversations | ✅ Stable |
-| Reprise d'anciennes conversations | ✅ Fonctionnelle |
-| Suppression des conversations | ✅ Fonctionnelle |
-| Connexion au Hub | ✅ Fonctionnelle |
+| Reprise / Suppression des conversations | ✅ Fonctionnelle |
+| Connexion au Hub MCP | ✅ Fonctionnelle |
 | Indicateur de connexion des outils | ✅ Fonctionnel |
-| Outils du Hub | ✅ Fonctionnels |
-
-Maya n'est donc plus dans une phase de recherche de solution pour son interface principale.
-
-**La base fonctionnelle existe désormais.**
-
-La priorité évolue progressivement de la construction des briques fondamentales vers leur stabilisation, leur intégration et leur packaging.
+| DeepSearch / Memory / Auto-Learning | ✅ Fonctionnels |
 
 ---
 
-## 🧭 La difficulté actuelle : savoir s'arrêter
+## 🧭 La suite : Stabilisation & Packaging (Roadmap V1.0)
 
-Le plus grand défi du projet n'est désormais plus de prouver que les différentes briques peuvent fonctionner, mais de **savoir quand arrêter d'ajouter de nouvelles fonctionnalités afin de stabiliser une version cohérente**.
-
-L'objectif n'est pas de créer immédiatement une IA capable de tout faire.
-
-L'objectif est d'abord de disposer d'une **Maya V1 stable, utilisable et reproductible**.
+La base fonctionnelle est désormais **solide et éprouvée**. L'objectif n'est plus d'ajouter frénétiquement des fonctionnalités, mais de stabiliser et packager cette V1.0.
 
 ### 🗺️ Piliers de la V1.0
 
-```text
 ┌─────────────────────────────────────────────────────────┐
-│                 APPLICATION MAYA V1.0                   │
+│                  APPLICATION MAYA V1.0                  │
 ├─────────────────────────────────────────────────────────┤
-│  ✅ Interface propriétaire                              │
-│  ✅ Moteur 3D VRM                                      │
-│  ✅ Changement de VRM                                   │
-│  ✅ Arrière-plan personnalisable                       │
-│  ✅ TTS                                                 │
-│  ✅ Historique des conversations                        │
-│  ✅ Hub MCP fonctionnel                                 │
-│  ✅ Connexion aux outils visible                        │
+│  ✅ Interface propriétaire complète                      │
+│  ✅ Moteur 3D VRM (Blink + Expressions)                 │
+│  ✅ Options UI dynamique (Moteurs TTS, Contexte, LLM)    │
+│  ✅ Synthèse vocale Piper (Local) & Edge-TTS            │
+│  ✅ Historique des conversations & Sessions             │
+│  ✅ Hub MCP (DeepSearch, Memory, Auto-Learning)         │
+│  ✅ Indicateur d'état des services                      │
 │  ─────────────────────────────────────────────────────  │
-│  ⬜ Stabilisation / finalisation                        │
-│  ⬜ Packaging autonome (.exe)                           │
-│  ⬜ Lancement simplifié des différents services         │
+│  ⬜ Stabilisation globale & nettoyage du code           │
+│  ⬜ Packaging autonome (.exe / Tauri Standalone)        │
+│  ⬜ Script/Launcher unique de démarrage                 │
 │  ⬜ Mode Overlay / Desktop Pet                          │
 │  ⬜ Synchronisation Cross-Device (PC / Smartphone)      │
 └─────────────────────────────────────────────────────────┘
