@@ -212,6 +212,14 @@ La mémoire est désormais séparée en plusieurs couches :
 - personnalisation des fonds d'écran ;
 - interface propriétaire dédiée avec tiroirs d'options.
 
+### 🎭 Émotions & Expressions dynamiques
+Gestion des expressions faciales et blendshapes (ARKit / VRM) en fonction du contexte de la conversation :
+
+| Joyeuse 😊 | Triste 😢 | En colère 😡 |
+| :---: | :---: | :---: |
+
+<img width="609" height="438" alt="maya happy" src="https://github.com/user-attachments/assets/faa4f32b-bba1-418d-8b1d-f65e2da10e48" /> <img width="377" height="236" alt="maya sad" src="https://github.com/user-attachments/assets/8e9fda28-ae0c-4ae1-ba4c-b454537f414c" /> <img width="372" height="390" alt="maya angry" src="https://github.com/user-attachments/assets/118e0387-92bf-4a92-9dd6-9d6ea99832d5" />
+
 ## 🎙️ Moteur vocal hybride (TTS / STT)
 
 - **Edge-TTS** : voix cloud haute qualité.
