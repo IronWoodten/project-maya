@@ -231,14 +231,52 @@ Gestion des expressions faciales et blendshapes (ARKit / VRM) en fonction du con
 
 ## ⚙️ Configuration centralisée (Options UI)
 
-- sélection dynamique du moteur vocal (Edge / Piper) et des voix disponibles ;
-- changement de modèle LLM `.gguf` à chaud ;
-- ajustement de la taille de contexte serveur (4k à 131k tokens) ;
-- contrôle du nombre de messages d'historique réinjectés dans le prompt ;
-- édition du System Prompt et des sujets d'Auto-Learning.
+L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permettant de tout configurer à la volée sans recharger la page :
 
-- <img width="1369" height="890" alt="Capture d&#39;écran 2026-08-09 195450" src="https://github.com/user-attachments/assets/9dbad52c-d914-4ac1-a221-5bd25756220d" />
+<img width="1042" height="790" alt="options" src="https://github.com/user-attachments/assets/e33ae2c1-166e-43ab-ab0f-2c92192583fa" />
 
+---
+
+### 🏠 Hub Central
+* **Accès direct (Port 5005) :** Bouton de redirection rapide vers l'interface de gestion du Hub Maya dans un nouvel onglet.
+
+---
+
+### 🧠 LLM / Cerveau
+ <img width="1060" height="782" alt="optionllm" src="https://github.com/user-attachments/assets/6da14a00-1615-464d-b2f8-21f794b6c4e4" />
+
+
+* **Modèles `.gguf` à chaud :** Détection et sélection dynamique des modèles LLM présents dans le dossier `/model GGUF`.
+* **Taille du contexte serveur :** Ajustement de la mémoire de travail de Llama.cpp (de 4k à 131k tokens).
+* **Fenêtre de conversation :** Contrôle précis du nombre de messages réinjectés dans le prompt à chaque requête.
+
+---
+
+### 🎙️ Voix & Synthèse
+<img width="1049" height="796" alt="options voix" src="https://github.com/user-attachments/assets/92873116-c31c-4a7c-afd0-193c8936d8c0" />
+
+
+* **Moteur vocal (TTS) :** Choix dynamique entre Edge-TTS (en ligne) et Piper TTS (local).
+* **Langues & Voix :** Filtrage intelligent et sélection des voix disponibles selon le moteur choisi.
+
+---
+
+### 📝 System Prompt & Deepsearch
+ <img width="1052" height="789" alt="option prompt" src="https://github.com/user-attachments/assets/9ae7f029-ae50-4498-bcf4-8870bfc4bf1a" />
+
+
+* **Personnalité (System Prompt) :** Édition en direct des consignes de rôle de Maya.
+* **Recherche Web Autonome :** Gestion des objectifs de veille stratégique mis à jour directement dans `goals.json`.
+
+---
+
+### ⚡ Mode Actif / Passif
+ <img width="1041" height="771" alt="option proactif" src="https://github.com/user-attachments/assets/e76a4868-7145-4a20-b1b0-b4e25caa7d46" />
+
+
+* **Mode d'interaction :** Bascule entre le mode **Passif** (répond uniquement aux sollicitations) et le mode **Actif** (relance de conversation).
+* **Délai d'inactivité :** Réglage précis du temps d'attente (en secondes) avant déclenchement d'une relance autonome.
+  
 ## 💬 Gestion des conversations
 
 - enregistrement des sessions de chat ;
