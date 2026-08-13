@@ -73,6 +73,9 @@ Cette interface a dépassé le stade de prototype pour devenir une application c
 ### 👁️ Vivacité de l'Avatar : Le Clignement d'Yeux (Blink)
 Pour rendre l'avatar 3D VRM véritablement "vivant" sans surcharger le CPU, un système de **clignement d'yeux naturel et aléatoire** a été intégré au moteur Three.js / VRM. L'avatar ne reste plus figé entre deux phrases : il respire et cligne des yeux de manière organique.
 
+### 🎭 Expressivité & Émotions : Expressions Faciales et Blush
+L'incarnation ne s'arrête pas aux mouvements passifs : Maya est désormais dotée d'un système d'expressions faciales dynamiques (joie, surprise, réflexion...) couplé à la gestion du **blush** (rougissement). Ces réactions visuelles ajustent les *blendshapes* du modèle VRM en temps réel selon le contexte de la réponse, rendant les interactions visuellement vivantes et nettement plus incarnées.
+
 ### ⚙️ Refonte de l'Options UI : L'Architecture Modulaire par Catégories
 
 Face à l'accumulation des paramètres (choix du LLM, contexte, moteurs vocaux, prompts...), l'ancien panneau unique sous forme de long formulaire devenait trop dense et difficile à naviguer. L'interface des paramètres a donc subi une **refonte ergonomique complète** basée sur un système de tiroir modulaire à sous-panneaux :
@@ -166,6 +169,7 @@ La base fonctionnelle est désormais **solide et éprouvée**. L'objectif n'est 
 │  ✅ Hub MCP (DeepSearch, Memory, Auto-Learning)         │
 │  ✅ Indicateur d'état des services                      |
 |  ✅ Options UI (5 panneaux) Opérationnel                |
+|  ✅ Expressions faciales & Blush  Fonctionnels          |
 │  ─────────────────────────────────────────────────────  │
 │  ⬜ Stabilisation globale & nettoyage du code           │
 │  ⬜ Packaging autonome (.exe / Tauri Standalone)        │
