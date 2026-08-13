@@ -73,14 +73,18 @@ Cette interface a dépassé le stade de prototype pour devenir une application c
 ### 👁️ Vivacité de l'Avatar : Le Clignement d'Yeux (Blink)
 Pour rendre l'avatar 3D VRM véritablement "vivant" sans surcharger le CPU, un système de **clignement d'yeux naturel et aléatoire** a été intégré au moteur Three.js / VRM. L'avatar ne reste plus figé entre deux phrases : il respire et cligne des yeux de manière organique.
 
-### ⚙️ Le Tiroir d'Options Dynamiques (Options UI)
-Fini de modifier des fichiers de configuration `.env` ou `.json` à la main et de relancer les serveurs :
-- **Sélection du moteur TTS à chaud :** Bascule instantanée entre Edge-TTS et Piper TTS direct dans l'UI.
-- **Sélection de la voix & de la langue :** Menu déroulant dynamique alimenté par le backend.
-- **Paramétrage du LLM :** Changement du modèle `.gguf`, contrôle de la taille de contexte (4k à 131k tokens) et réglage du nombre de messages réinjectés dans la fenêtre glissante.
+### ⚙️ Refonte de l'Options UI : L'Architecture Modulaire par Catégories
 
-  <img width="1369" height="890" alt="Capture d&#39;écran 2026-08-09 195450" src="https://github.com/user-attachments/assets/3176631e-c38f-4c4d-979c-0405f4975493" />
+Face à l'accumulation des paramètres (choix du LLM, contexte, moteurs vocaux, prompts...), l'ancien panneau unique sous forme de long formulaire devenait trop dense et difficile à naviguer. L'interface des paramètres a donc subi une **refonte ergonomique complète** basée sur un système de tiroir modulaire à sous-panneaux :
 
+- **Menu Racine Simplifié :** Le tiroir s'ouvre désormais sur une vue épurée listant 5 grandes catégories distinctes, accompagnées d'animations de transition fluides en CSS.
+- **Lien Direct avec le Hub Central :** Intégration d'un bouton d'accès rapide ouvrant directement le serveur du Hub (Port 5005) dans un nouvel onglet.
+- **Panneaux Superposés Dédiés :**
+  - 🧠 **LLM / Cerveau :** Détection à chaud des modèles `.gguf` locaux, ajustement du contexte serveur (4k à 131k) et contrôle de la mémoire glissante.
+  - 🎙️ **Voix & Synthèse :** Filtrage intelligent des voix et langues selon le moteur choisi (Edge-TTS ou Piper TTS local).
+  - 📝 **System Prompt & DeepSearch :** Édition en direct de la personnalité de Maya et des objectifs de veille autonome (`goals.json`).
+  - ⚡ **Mode Actif / Passif :** Nouvelle gestion de l'interaction permettant de basculer entre le mode réactif classique et le mode proactif avec gestion du délai d'inactivité.
+- **Sauvegarde Unifiée par API Backend :** Remplacement total des Stockages Locaux navigateur (`localStorage`) au profit d'endpoints serveur dédiés (`/api/config` et `/api/goals`), garantissant une persistance réseau et cross-device parfaite.
 
 ### 🖥️ Synthèse des capacités de l'interface
 
@@ -154,13 +158,14 @@ La base fonctionnelle est désormais **solide et éprouvée**. L'objectif n'est 
 ┌─────────────────────────────────────────────────────────┐
 │                  APPLICATION MAYA V1.0                  │
 ├─────────────────────────────────────────────────────────┤
-│  ✅ Interface propriétaire complète                      │
+│  ✅ Interface propriétaire complète                     │
 │  ✅ Moteur 3D VRM (Blink + Expressions)                 │
-│  ✅ Options UI dynamique (Moteurs TTS, Contexte, LLM)    │
+│  ✅ Options UI dynamique (Moteurs TTS, Contexte, LLM)   │
 │  ✅ Synthèse vocale Piper (Local) & Edge-TTS            │
 │  ✅ Historique des conversations & Sessions             │
 │  ✅ Hub MCP (DeepSearch, Memory, Auto-Learning)         │
-│  ✅ Indicateur d'état des services                      │
+│  ✅ Indicateur d'état des services                      |
+|  ✅ Options UI (5 panneaux) Opérationnel                |
 │  ─────────────────────────────────────────────────────  │
 │  ⬜ Stabilisation globale & nettoyage du code           │
 │  ⬜ Packaging autonome (.exe / Tauri Standalone)        │
