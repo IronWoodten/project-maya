@@ -43,7 +43,8 @@ Elle regroupe notamment :
 
 Le **Maya Hub** constitue la couche centrale permettant à Maya d'utiliser ses différents outils (**DeepSearch, MEMORY, Auto-Learning**).
 
-<img width="794" height="754" alt="Capture d&#39;écran 2026-08-08 085321" src="https://github.com/user-attachments/assets/436ec5fc-cc89-4c1e-94e7-a48e02173fe7" />
+<img width="1041" height="815" alt="hub" src="https://github.com/user-attachments/assets/cb2769f7-59ba-4af7-ac5e-2e5d2b69560a" />
+
 
 # 📌 Pourquoi ce projet ?
 
@@ -283,7 +284,6 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 - possibilité de reprendre n'importe quelle ancienne discussion sans perte de contexte.
 
 ## 🔌 Hub Central & Auto-Learning
-<img width="1041" height="815" alt="hub" src="https://github.com/user-attachments/assets/9c509e70-00d0-460c-b7d4-228604854d63" />
 
 - architecture MCP et Dashboard Web centralisé ;
 - **DeepSearch** : moteur de recherche web autonome multicouche avec clé Tavily personnalisable ;
