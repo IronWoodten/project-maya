@@ -88,13 +88,13 @@ L'objectif était de construire un assistant :
 
 # 🚀 Évolution du projet
 
-    [LM Studio + AnythingLLM]
+    [LM Studio + Anything]
                 │
                 ▼
           [SillyTavern]
                 │
                 ▼
-         [OpenLLMVTuber]
+         [OpenVTuber]
                 │
                 ▼
     ┌───────────────────────────────┐
@@ -112,16 +112,16 @@ L'objectif était de construire un assistant :
 
 ## Phase 1 — Les bases
 
-Premières expérimentations avec **LM Studio** et **AnythingLLM**.
+Premières expérimentations avec **LM Studio** et **Anything**.
 
 Objectif :
 
-- faire fonctionner un LLM entièrement en local ;
+- faire fonctionner un  entièrement en local ;
 - expérimenter les différents systèmes de mémoire et d'interaction.
 
 ## Phase 2 — L'incarnation
 
-Migration vers **SillyTavern**, puis **OpenLLMVTuber**, afin de donner une personnalité, une voix et une incarnation visuelle au modèle.
+Migration vers **SillyTavern**, puis **OpenVTuber**, afin de donner une personnalité, une voix et une incarnation visuelle au modèle.
 
 Ces expérimentations ont permis de valider le concept mais ont également mis en évidence les limites des architectures existantes.
 
@@ -243,10 +243,10 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 ---
 
 ### 🧠 LLM / Cerveau
- <img width="1060" height="782" alt="optionllm" src="https://github.com/user-attachments/assets/6da14a00-1615-464d-b2f8-21f794b6c4e4" />
-
+ <img width="1053" height="765" alt="Capture d’écran 2026-08-14 121319" src="https://github.com/user-attachments/assets/5aca1aa2-7e81-4d1d-987a-35cafd582e03" />
 
 * **Modèles `.gguf` à chaud :** Détection et sélection dynamique des modèles LLM présents dans le dossier `/model GGUF`.
+* **Vision & Détection Auto `mmproj` :** Association automatique du fichier de projection visuelle correspondant au modèle loaded.
 * **Taille du contexte serveur :** Ajustement de la mémoire de travail de Llama.cpp (de 4k à 131k tokens).
 * **Fenêtre de conversation :** Contrôle précis du nombre de messages réinjectés dans le prompt à chaque requête.
 
@@ -255,18 +255,17 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 ### 🎙️ Voix & Synthèse
 <img width="1049" height="796" alt="options voix" src="https://github.com/user-attachments/assets/92873116-c31c-4a7c-afd0-193c8936d8c0" />
 
-
 * **Moteur vocal (TTS) :** Choix dynamique entre Edge-TTS (en ligne) et Piper TTS (local).
 * **Langues & Voix :** Filtrage intelligent et sélection des voix disponibles selon le moteur choisi.
 
 ---
 
 ### 📝 System Prompt & Deepsearch
- <img width="1052" height="789" alt="option prompt" src="https://github.com/user-attachments/assets/9ae7f029-ae50-4498-bcf4-8870bfc4bf1a" />
-
+ <img width="1019" height="781" alt="Capture d’écran 2026-08-14 121445" src="https://github.com/user-attachments/assets/d01facc6-b2e2-451d-a0d6-ebf24395bf42" />
 
 * **Personnalité (System Prompt) :** Édition en direct des consignes de rôle de Maya.
 * **Recherche Web Autonome :** Gestion des objectifs de veille stratégique mis à jour directement dans `goals.json`.
+* **Clé API Tavily Custom :** Champ dédié permettant à chaque utilisateur de configurer sa propre clé de recherche web.
 
 ---
 
@@ -284,11 +283,12 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 - possibilité de reprendre n'importe quelle ancienne discussion sans perte de contexte.
 
 ## 🔌 Hub Central & Auto-Learning
+<img width="1041" height="815" alt="hub" src="https://github.com/user-attachments/assets/9c509e70-00d0-460c-b7d4-228604854d63" />
 
 - architecture MCP et Dashboard Web centralisé ;
-- **DeepSearch** : moteur de recherche web autonome multicouche ;
+- **DeepSearch** : moteur de recherche web autonome multicouche avec clé Tavily personnalisable ;
 - **Plugin MEMORY** : base de connaissances techniques et compétences séparée du Core ;
-- **Auto-Learning** : tâche de fond programmée (Round Robin toutes les 20 min) avec filtre sémantique `NO_NEW_INFO` pour éviter les doublons.
+- **Auto-Learning Régulé** : cycle de 20 minutes qui vérifie si une interaction réelle avec l'IA a eu lieu avant exécution (avec affichage du **timer en temps réel** sur le Hub).
 
 ---
 
@@ -297,18 +297,18 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 | **Fonctionnalité** | **État** |
 |---|---|
 | Interface propriétaire | ✅ Fonctionnelle |
-| Avatar VRM + Clignement d'yeux | ✅ Fonctionnel |
+| Avatar VRM + Clignement & Animations (Clic Droit) | ✅ Fonctionnel |
+| Vision & Détection auto `mmproj` | ✅ Fonctionnel |
 | Changement de VRM & Fond | ✅ Fonctionnel |
-| Panneau d'options UI à chaud | ✅ Fonctionnel |
+| Panneau d'options UI (+ Clé Tavily custom) | ✅ Fonctionnel |
 | Chat & Historique des sessions | ✅ Stable |
 | Edge-TTS | ✅ Fonctionnel |
 | Piper TTS (Local) | ✅ Intégré & Fonctionnel |
 | Kokoro TTS | ❌ Abandonné |
-| Maya Hub & Dashboard | ✅ Fonctionnel |
+| Maya Hub & Dashboard Web | ✅ Fonctionnel |
 | DeepSearch & Plugin MEMORY | ✅ Fonctionnel |
-| Auto-Learning & Scheduler | ✅ Fonctionnel |
+| Auto-Learning (Check 20 min d'échange + Timer Hub) | ✅ Opérationnel |
 | Indicateur de connexion Hub | ✅ Fonctionnel |
-
 
 ---
 
