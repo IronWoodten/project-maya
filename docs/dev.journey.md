@@ -64,11 +64,23 @@ Le Hub est désormais une brique centrale fonctionnelle de Maya. Les outils qui 
 
 ---
 
-## 🚀 L'Évolution Majeure : L'Interface Propriétaire & Incarnation
+## 🚀 L'Évolution Majeure : L'Interface Propriétaire & Incarnation 
 
 L'une des évolutions les plus importantes du projet a été l'abandon progressif de la dépendance à OpenLLMVTuber au profit d'une **interface propriétaire développée spécifiquement pour Maya**.
 
 Cette interface a dépassé le stade de prototype pour devenir une application complète, réactive et hautement personnalisable.
+
+### 🎭 Menu Contextuel & Animations VRM Dynamiques
+L'incarnation passe aussi par le contrôle direct : un menu contextuel (clic droit) permet désormais de déclencher instantanément toute la palette d'animations VRM (`nod`, `think`, `deny`, `kiss`, `dance`, etc.). Le moteur d'animation intègre un résolveur d'alias pour garantir la compatibilité des commandes entre le chat, le menu et le script VRM.
+
+### 👁️ Correction Vision & Détection Automatique MMPROJ
+À la suite des travaux sur la brique de vision, le système intègre désormais un champ avec **détection automatique du modèle `mmproj`**. Cela résout les échecs d'association entre le modèle LLM GGUF et son projecteur visuel.
+
+### 🔑 Clé API Tavily Personnalisée (Options UI)
+Le panneau de configuration DeepSearch a été enrichi d'un champ dédié à la clé API Tavily. Chaque utilisateur peut ainsi renseigner sa propre clé directement depuis l'interface sans toucher aux fichiers de variable d'environnement backend.
+
+### ⏱️ Contrôle d'Activité & Timer Auto-Learning
+Le système d'Auto-Learning a été affiné : plutôt que de se lancer aveuglément toutes les 20 minutes, il vérifie désormais si une interaction réelle a eu lieu avec l'IA dans cette fenêtre de temps. De plus, un **compte à rebours en temps réel** est affiché directement sur le Hub.
 
 ### 👁️ Vivacité de l'Avatar : Le Clignement d'Yeux (Blink)
 Pour rendre l'avatar 3D VRM véritablement "vivant" sans surcharger le CPU, un système de **clignement d'yeux naturel et aléatoire** a été intégré au moteur Three.js / VRM. L'avatar ne reste plus figé entre deux phrases : il respire et cligne des yeux de manière organique.
@@ -137,17 +149,14 @@ Toutes les briques (Avatar 3D, Clignement d'yeux, Piper TTS local, Options UI, H
 | Fonctionnalité | État |
 |---|---|
 | Interface propriétaire | ✅ Fonctionnelle |
-| Avatar 3D VRM + Clignement d'yeux | ✅ Fonctionnel |
-| Changement de VRM & Fond | ✅ Fonctionnel |
-| Options UI (Paramètres à chaud) | ✅ Fonctionnelles |
-| Synthèse Vocale Piper TTS (Local) | ✅ Intégré & Rapide |
-| Synthèse Vocale Edge-TTS (Cloud) | ✅ Fonctionnel |
-| Kokoro TTS | ❌ Abandonné (Instable/Complexité) |
-| Historique des conversations | ✅ Stable |
-| Reprise / Suppression des conversations | ✅ Fonctionnelle |
-| Connexion au Hub MCP | ✅ Fonctionnelle |
-| Indicateur de connexion des outils | ✅ Fonctionnel |
-| DeepSearch / Memory / Auto-Learning | ✅ Fonctionnels |
+| Avatar 3D VRM + Clignement & Animations (Clic Droit) | ✅ Fonctionnel |
+| Vision multimodal + Détection auto `mmproj` | ✅ Fonctionnel |
+| Options UI (5 panneaux + Clé Tavily custom) | ✅ Fonctionnelles |
+| Synthèse Vocale Piper TTS (Local) & Edge-TTS | ✅ Intégré & Rapide |
+| Historique & Gestion des conversations | ✅ Fonctionnel |
+| Connexion au Hub MCP & Indicateur d'état (🟢/🔴) | ✅ Fonctionnel |
+| DeepSearch / Memory | ✅ Fonctionnels |
+| Auto-Learning (Check 20 min d'échange + Timer Hub) | ✅ Opérationnel |
 
 ---
 
