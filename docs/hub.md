@@ -281,73 +281,29 @@ Cette mémoire est distincte du système de journal/personnalité de Maya.
 
 ---
 
-# ⚙️ Auto-Learning
+# ⚙️ Auto-Learning & Contrôle d'Activité
 
-**Statut :** ✅ Fonctionnel
+**Statut :** ✅ Fonctionnel & Optimisé
 
-Le système d'Auto-Learning permet à Maya d'effectuer automatiquement certaines missions de recherche et de veille afin d'enrichir ses connaissances.
+Le système d'Auto-Learning permet à Maya d'effectuer automatiquement des missions de recherche et de veille afin d'enrichir le **Plugin MEMORY**.
 
-Il fonctionne indépendamment de l'activité de l'utilisateur et peut être activé ou désactivé depuis le Hub.
-
-Le système actuel repose sur une planification à cadence fixe.
+Pour éviter les exécutions inutiles et la surconsommation de ressources, le système est désormais régulé par **l'activité réelle de l'utilisateur** et supervisé en temps réel.
 
 ---
 
-# 🔄 Flux d'exécution
+# 🧠 Logique de Planification & Timer
 
-```text
-      [ Cycle toutes les 20 minutes ]
-                     │
-                     ▼
-        [ Scheduler Autonome du Hub ]
-                     │
-                     ▼
-       [ Service Auto-Learning actif ]
-                     │
-                     ▼
-          [ Vérification des objectifs ]
-                     │
-                     ▼
-          [ priority.py / Round Robin ]
-                     │
-                     ▼
-          [ Executor + DeepSearch ]
-                     │
-                     ▼
-          [ Filtre Sémantique IA ]
-                     │
-         ┌───────────┴───────────┐
-         ▼                       ▼
-   Doublon détecté         Nouvelle information
-         │                       │
-         ▼                       ▼
-   NO_NEW_INFO             Validation IA
-         │                       │
-         ▼                       ▼
- Pas de sauvegarde      Archivage Plugin MEMORY
-```
+## ⏱️ Vérification des 20 Minutes & Timer Visible
+
+- **Timer Temps Réel :** Un compte à rebours dynamique est visible directement sur le Dashboard Web du Hub.
+- **Condition de Déclenchement :** À l'échéance des 20 minutes, le Scheduler vérifie si un échange a eu lieu entre l'utilisateur et Maya durant cet intervalle.
+- **Sécurité :** Si aucun échange n'a été détecté dans les 20 dernières minutes, le cycle est reporté pour ne pas lancer de recherches à vide.
 
 ---
 
-# 🧠 Logique de Planification
+## 📅 Limite : Une exécution par jour et par sujet
 
-## ⏱️ Fréquence
-
-Le Scheduler se réveille automatiquement toutes les **20 minutes**.
-
-L'architecture actuelle ne repose plus sur :
-
-- un Idle Tracker ;
-- une détection d'inactivité utilisateur ;
-- une gestion du statut `busy`.
-
-L'exécution de l'Auto-Learning repose désormais sur une **cadence fixe**.
-
----
-
-## 📅 Limite : une exécution par jour et par sujet
-
-Chaque sujet présent dans `goals.json` peut être traité au maximum une fois par jour.
+Chaque sujet présent dans `goals.json` est traité au maximum **une fois par jour**. Si un sujet a déjà été exécuté pendant la journée, le Scheduler passe automatiquement au sujet suivant via une rotation **Round Robin**.
 
 Si un sujet a déjà été exécuté pendant la journée :
 
