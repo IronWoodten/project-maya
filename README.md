@@ -149,7 +149,7 @@ L'interface intègre désormais :
 - **Gestionnaire de conversations** (sauvegarde, chargement, suppression) ;
 - **Supervision temps réel** du Hub (indicateur d'état connecté/déconnecté).
 
-- ## Phase 5 — Native App & Desktop Pet (Août 2026)
+## Phase 5 — Native App & Desktop Pet (Août 2026)
 
 Migration vers **Tauri** et passage en application native.
 
