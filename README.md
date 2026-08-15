@@ -20,28 +20,32 @@ Le projet évolue aujourd'hui d'un prototype expérimental vers une **applicatio
 > La documentation technique, l'architecture et les choix d'ingénierie restent accessibles publiquement.
 
 ---
-
 # 🖥️ État actuel du projet
 
-L'interface propriétaire de Maya est désormais fonctionnelle et constitue le client principal du projet.
+Maya est passée d’un prototype web à une **application native** grâce à **Tauri**.
 
-Elle regroupe notamment :
+L’interface propriétaire regroupe désormais :
 
-- l'avatar VRM avec **clignement d'yeux naturel automatique** et gestion d'expressions ;
-- le système de conversation temps réel ;
-- le panneau de **paramètres intégré (Options UI)** pour contrôler à chaud le LLM, le contexte et la voix ;
-- le moteur vocal hybride (**Edge-TTS** en ligne / **Piper TTS** 100 % local) ;
-- l'historique des conversations avec reprise et suppression de sessions ;
-- la personnalisation de l'interface (modèles VRM, arrière-plans) ;
-- l'état de connexion en direct aux outils du Hub.
+- Avatar VRM avec clignement d’yeux naturel, expressions faciales dynamiques (joie, tristesse, colère + blush) et animations manuelles (clic droit)
+- Mode **Desktop Pet / Overlay** (fenêtre transparente, clics traversants, toujours au premier plan)
+- Mémoire multicouche 100 % opérationnelle
+- Modes **Actif / Passif** (relances autonomes vs attente de sollicitation)
+- Moteur vocal hybride (Piper TTS local + Edge-TTS)
+- Options UI dynamiques (LLM, contexte, voix, System Prompt, clé Tavily, etc.)
+- Historique des conversations (reprise / suppression)
+- Indicateur de connexion temps réel au Hub
 
-## Interface Maya
+## Interface Maya (mode classique)
 
- <img width="819" height="899" alt="Capture d&#39;écran 2026-08-09 200059" src="https://github.com/user-attachments/assets/5bd824de-93f1-40f6-ab21-b0479721a51a" />
+<img width="1247" height="845" alt="interface" src="https://github.com/user-attachments/assets/f4d62f36-2163-413c-ad61-afd6135b2853" />
+
+## Mode Desktop Pet (Overlay)
+
+<img width="610" height="963" alt="overlay" src="https://github.com/user-attachments/assets/75944093-786f-4c72-97d9-0e97775f20e4" />
 
 ## Maya Hub
 
-Le **Maya Hub** constitue la couche centrale permettant à Maya d'utiliser ses différents outils (**DeepSearch, MEMORY, Auto-Learning**).
+Le **Maya Hub** reste la couche centrale (DeepSearch, MEMORY, Auto-Learning, WiZ…).
 
 <img width="1041" height="815" alt="hub" src="https://github.com/user-attachments/assets/cb2769f7-59ba-4af7-ac5e-2e5d2b69560a" />
 
@@ -145,6 +149,20 @@ L'interface intègre désormais :
 - **Gestionnaire de conversations** (sauvegarde, chargement, suppression) ;
 - **Supervision temps réel** du Hub (indicateur d'état connecté/déconnecté).
 
+- ## Phase 5 — Native App & Desktop Pet (Août 2026)
+
+Migration vers **Tauri** et passage en application native.
+
+- Compilation et validation sous `tauri dev`
+- Mode **Desktop Pet / Overlay** : fenêtre transparente avec hit-test dynamique (clics traversants)
+- Gestion du Z-Index pour rester devant la barre des tâches Windows
+- État atomique côté Rust (`OverlayState`) pour un retour instantané au contrôle de la souris
+- Réparation des liens externes (bouton Hub port 5005)
+- Stabilisation du code Rust (élimination des conflits de macros)
+- Animation « Assis » + correction des timings de transition
+- Mémoire multicouche complètement finalisée et testée
+- Modes Actif / Passif validés
+
 ---
 
 # 🧠 Évolution du système de mémoire
@@ -199,7 +217,9 @@ La mémoire est désormais séparée en plusieurs couches :
                                  ▼
     ┌─────────────────────────────────────────────────────────┐
     │               4. Interface & Incarnation                │
-    │   Avatar VRM (Blink) • Piper/Edge TTS • Options UI      │
+    │  Avatar VRM (Blink + Expressions + Animations)         │
+    │  Mode Overlay / Desktop Pet (Tauri)                     │
+    │  Piper/Edge TTS • Options UI • Modes Actif/Passif       │
     └─────────────────────────────────────────────────────────┘
 
 ---
@@ -294,22 +314,21 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 
 # 📊 État actuel du projet
 
-| **Fonctionnalité** | **État** |
-|---|---|
-| Interface propriétaire | ✅ Fonctionnelle |
-| Avatar VRM + Clignement & Animations (Clic Droit) | ✅ Fonctionnel |
-| Vision & Détection auto `mmproj` | ✅ Fonctionnel |
-| Changement de VRM & Fond | ✅ Fonctionnel |
-| Panneau d'options UI (+ Clé Tavily custom) | ✅ Fonctionnel |
-| Chat & Historique des sessions | ✅ Stable |
-| Edge-TTS | ✅ Fonctionnel |
-| Piper TTS (Local) | ✅ Intégré & Fonctionnel |
-| Kokoro TTS | ❌ Abandonné |
-| Maya Hub & Dashboard Web | ✅ Fonctionnel |
-| DeepSearch & Plugin MEMORY | ✅ Fonctionnel |
-| Auto-Learning (Check 20 min d'échange + Timer Hub) | ✅ Opérationnel |
-| Indicateur de connexion Hub | ✅ Fonctionnel |
-
+| Fonctionnalité                              | État                  |
+|---------------------------------------------|-----------------------|
+| Interface propriétaire                      | ✅ Fonctionnelle      |
+| Avatar VRM + Blink + Expressions + Blush    | ✅ Fonctionnel        |
+| Animations manuelles (clic droit) + Assis   | ✅ Fonctionnel        |
+| Mode Desktop Pet / Overlay (Tauri)          | ✅ Fonctionnel        |
+| Mémoire multicouche                         | ✅ 100 % opérationnelle |
+| Modes Actif / Passif                        | ✅ Validés            |
+| Vision multimodal + détection auto mmproj   | ✅ Fonctionnel        |
+| Options UI (5 panneaux + clé Tavily)        | ✅ Fonctionnelles     |
+| TTS hybride (Piper local + Edge-TTS)        | ✅ Intégré & rapide   |
+| Historique & sessions                       | ✅ Stable             |
+| Hub MCP + Indicateur 🟢/🔴                  | ✅ Fonctionnel        |
+| Auto-Learning (check interaction + timer)   | ✅ Opérationnel       |
+| Packaging .exe standalone                   | ⬜ En cours           |
 ---
 
 # 📚 Documentation
