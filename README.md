@@ -360,11 +360,9 @@ La documentation technique détaillée est accessible dans le dossier [`docs`](.
 
 Les prochaines étapes du projet :
 
-- 🪟 Mode **Overlay / Desktop Pet** (fenêtre transparente toujours au premier plan) ;
-- 🎭 synchronisation labiale avancée (Lip-Sync audio-driven) ;
 - 📦 packaging standalone (application exécutable clé en main) ;
 - 🔌 nouveaux plugins pour le Maya Hub.
-
+  
 ---
 
 # 📌 Projet
