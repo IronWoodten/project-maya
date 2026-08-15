@@ -158,6 +158,15 @@ Toutes les briques (Avatar 3D, Clignement d'yeux, Piper TTS local, Options UI, H
 | DeepSearch / Memory | ✅ Fonctionnels |
 | Auto-Learning (Check 20 min d'échange + Timer Hub) | ✅ Opérationnel |
 
+### 🆕 Août 2026 — Native & Overlay
+
+- Migration Tauri validée (`tauri dev`)
+- Mode Desktop Pet / Overlay opérationnel (hit-test dynamique + Z-Index + état atomique Rust)
+- Animation « Assis » + timings corrigés
+- Mémoire multicouche 100 % finalisée
+- Modes Actif / Passif validés
+- Correctifs post-migration (bouton Hub + macros Rust)
+
 ---
 
 ## 🧭 La suite : Stabilisation & Packaging (Roadmap V1.0)
