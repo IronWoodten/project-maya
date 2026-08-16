@@ -240,7 +240,10 @@ Gestion des expressions faciales et blendshapes (ARKit / VRM) en fonction du con
 | Joyeuse 😊 | Triste 😢 | En colère 😡 |
 | :---: | :---: | :---: |
 
-<img width="609" height="438" alt="maya happy" src="https://github.com/user-attachments/assets/faa4f32b-bba1-418d-8b1d-f65e2da10e48" /> <img width="377" height="236" alt="maya sad" src="https://github.com/user-attachments/assets/8e9fda28-ae0c-4ae1-ba4c-b454537f414c" /> <img width="372" height="390" alt="maya angry" src="https://github.com/user-attachments/assets/118e0387-92bf-4a92-9dd6-9d6ea99832d5" />
+
+<img width="402" height="442" alt="Capture d&#39;écran 2026-08-16 200636" src="https://github.com/user-attachments/assets/5e4bddba-04ba-4065-ba02-482aeeca1c14" /> <img width="463" height="360" alt="Capture d&#39;écran 2026-08-16 200845" src="https://github.com/user-attachments/assets/01e60b2d-cf94-49f0-a832-bfae6e4b862f" /> <img width="451" height="419" alt="Capture d&#39;écran 2026-08-16 200921" src="https://github.com/user-attachments/assets/858ea24b-1b1b-4593-8c33-22342e35cf6a" />
+
+
 
 ## 🎙️ Moteur vocal hybride (TTS / STT)
 
