@@ -45,7 +45,7 @@ L’interface propriétaire regroupe désormais :
 
 ## Maya Hub
 
-Le **Maya Hub** reste la couche centrale (DeepSearch, MEMORY, Auto-Learning, WiZ…).
+Le **Maya Hub** reste la couche centrale (DeepSearch, FileSystem, MEMORY, Auto-Learning).
 
 <img width="1041" height="815" alt="hub" src="https://github.com/user-attachments/assets/cb2769f7-59ba-4af7-ac5e-2e5d2b69560a" />
 
@@ -207,6 +207,7 @@ La mémoire est désormais séparée en plusieurs couches :
     │            Orchestration & Exécution des outils         │
     │                                                         │
     │  • DeepSearch                                           │
+    │  • FileSystemPlugin                                     │
     │  • Plugin MEMORY                                        │
     │  • Auto-Learning                                        │
     │  • Filtre Sémantique                                    │
@@ -309,13 +310,14 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 - **DeepSearch** : moteur de recherche web autonome multicouche avec clé Tavily personnalisable ;
 - **Plugin MEMORY** : base de connaissances techniques et compétences séparée du Core ;
 - **Auto-Learning Régulé** : cycle de 20 minutes qui vérifie si une interaction réelle avec l'IA a eu lieu avant exécution (avec affichage du **timer en temps réel** sur le Hub).
+- **FileSystemPlugin** : création, lecture, déplacement, renommage et suppression de fichiers (avec résolution intelligente vers le Bureau utilisateur)
 
 ---
 
 # 📊 État actuel du projet
 
-| Fonctionnalité                              | État                  |
-|---------------------------------------------|-----------------------|
+| Fonctionnalité                              | État                   |
+|---------------------------------------------|----------------------- |
 | Interface propriétaire                      | ✅ Fonctionnelle      |
 | Avatar VRM + Blink + Expressions + Blush    | ✅ Fonctionnel        |
 | Animations manuelles (clic droit) + Assis   | ✅ Fonctionnel        |
@@ -326,8 +328,11 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 | Options UI (5 panneaux + clé Tavily)        | ✅ Fonctionnelles     |
 | TTS hybride (Piper local + Edge-TTS)        | ✅ Intégré & rapide   |
 | Historique & sessions                       | ✅ Stable             |
-| Hub MCP + Indicateur 🟢/🔴                  | ✅ Fonctionnel        |
+| Hub MCP + Indicateur 🟢/🔴                 | ✅ Fonctionnel        |
 | Auto-Learning (check interaction + timer)   | ✅ Opérationnel       |
+| FileSystemPlugin                            | ✅ Validé             |
+| Hub Async (HTTPX) + Parsing universel       | ✅ Opérationnel       |
+| Postures d’Idle (assise / debout)           | ✅ Fonctionnel        |
 | Packaging .exe standalone                   | ⬜ En cours           |
 ---
 
@@ -353,6 +358,7 @@ La documentation technique détaillée est accessible dans le dossier [`docs`](.
 | **Text-to-Speech (TTS)** | **Piper TTS** (Local) · **Edge-TTS** (Cloud) |
 | **Speech-to-Text (STT)** | Fast-Whisper |
 | **Mémoire & Config** | Fichiers JSON · `.txt` |
+| **Framework Desktop** | Tauri (Rust) |
 
 ---
 
