@@ -112,6 +112,9 @@ Le Hub constitue ainsi la couche centrale entre le moteur de Maya et les fonctio
 
 # 🎛️ Dashboard Web
 
+<img width="1032" height="689" alt="Capture d&#39;écran 2026-08-14 102206" src="https://github.com/user-attachments/assets/0dd4482d-45aa-4ade-9628-99dc973f4da1" />
+
+
 Le Hub intègre un serveur Flask permettant de visualiser et contrôler le système.
 
 ## Fonctionnalités
