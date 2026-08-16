@@ -58,7 +58,7 @@ Dès l'instant où le Hub a été operational :
 
 - La gestion des fonctions est devenue "Plug & Play".
 - Ajouter, tester ou retirer un module ne risquait plus de casser l'interface ou la mémoire.
-- La charge mentale liée au code s'est effondrée, laissant la place à la création d'outils métier (lumières WiZ, DeepSearch, apprentissage autonome).
+- La charge mentale liée au code s'est effondrée, laissant la place à la création d'outils métier (DeepSearch, FileSystem, Memory, Auto-Learning).
 
 Le Hub est désormais une brique centrale fonctionnelle de Maya. Les outils qui y sont intégrés peuvent être utilisés par l'interface sans dépendre directement de leur implémentation interne.
 
@@ -146,17 +146,22 @@ Toutes les briques (Avatar 3D, Clignement d'yeux, Piper TTS local, Options UI, H
 
 ## 🎯 État actuel du projet
 
-| Fonctionnalité | État |
-|---|---|
-| Interface propriétaire | ✅ Fonctionnelle |
-| Avatar 3D VRM + Clignement & Animations (Clic Droit) | ✅ Fonctionnel |
-| Vision multimodal + Détection auto `mmproj` | ✅ Fonctionnel |
-| Options UI (5 panneaux + Clé Tavily custom) | ✅ Fonctionnelles |
-| Synthèse Vocale Piper TTS (Local) & Edge-TTS | ✅ Intégré & Rapide |
-| Historique & Gestion des conversations | ✅ Fonctionnel |
-| Connexion au Hub MCP & Indicateur d'état (🟢/🔴) | ✅ Fonctionnel |
-| DeepSearch / Memory | ✅ Fonctionnels |
-| Auto-Learning (Check 20 min d'échange + Timer Hub) | ✅ Opérationnel |
+| Fonctionnalité                                      | État                  |
+|-----------------------------------------------------|-----------------------|
+| Interface propriétaire                              | ✅ Fonctionnelle      |
+| Avatar 3D VRM + Clignement & Animations (Clic Droit)| ✅ Fonctionnel        |
+| Postures d’Idle (assise / debout)                   | ✅ Fonctionnel        |
+| Vision multimodal + Détection auto `mmproj`         | ✅ Fonctionnel        |
+| Options UI (5 panneaux + Clé Tavily custom)         | ✅ Fonctionnelles     |
+| Synthèse Vocale Piper TTS (Local) & Edge-TTS        | ✅ Intégré & Rapide   |
+| Historique & Gestion des conversations              | ✅ Fonctionnel        |
+| Mode Desktop Pet / Overlay (Tauri)                  | ✅ Fonctionnel        |
+| Connexion au Hub MCP & Indicateur d'état (🟢/🔴)    | ✅ Fonctionnel        |
+| Hub Async (HTTPX) + Parsing universel               | ✅ Opérationnel       |
+| DeepSearch / ResearchPlugin                         | ✅ Fonctionnel        |
+| FileSystemPlugin                                    | ✅ Validé             |
+| Plugin MEMORY                                       | ✅ Fonctionnel        |
+| Auto-Learning (Check 20 min + Timer)                | ✅ Opérationnel       |
 
 ### 🆕 Août 2026 — Native & Overlay
 
@@ -167,14 +172,14 @@ Toutes les briques (Avatar 3D, Clignement d'yeux, Piper TTS local, Options UI, H
 - Modes Actif / Passif validés
 - Correctifs post-migration (bouton Hub + macros Rust)
 
-- ### 🆕 16 août 2026 — Stabilisation profonde du Hub & Plugins
+### 🆕 16 août 2026 — Stabilisation profonde du Hub & Plugins
 
 Session intensive de 2h15 dédiée à la solidité et à la réactivité du Hub MCP.
 
 **Core Hub & Infrastructure**
 - Passage complet en **Async / HTTPX** → éradication des deadlocks HTTP sur le port 5005
 - Temps de réponse des outils passé d’un timeout de 60s à ~1 ms
-- Parsing universel des paramètres (chaînes texte, kwargs, JSON) + tolérance aux alias de clés (`src_path`/`dst`/`old_path`, `path`/`file`…)
+- Parsing universel des paramètres (chaînes texte, kwargs, JSON) + tolérance aux alias de clés
 
 **Plugins validés**
 - **FileSystemPlugin** : cycle de vie complet des fichiers (write, read, move, list, delete) avec résolution intelligente vers le vrai Bureau utilisateur
@@ -184,7 +189,7 @@ Session intensive de 2h15 dédiée à la solidité et à la réactivité du Hub 
 - Correction du bug de duplication des messages au basculement Overlay ↔ Normal
 - Rétablissement de l’indicateur d’attente (« en réflexion ») dans le mode Overlay
 - Ajout des postures d’idle (assise + debout) pour un comportement plus naturel
-
+- 
 ---
 
 ## 🧭 La suite : Stabilisation & Packaging (Roadmap V1.0)
@@ -198,19 +203,16 @@ La base fonctionnelle est désormais **solide et éprouvée**. L'objectif n'est 
 │                  APPLICATION MAYA V1.0                  │
 ├─────────────────────────────────────────────────────────┤
 │  ✅ Interface propriétaire complète                     │
-│  ✅ Moteur 3D VRM (Blink + Expressions)                 │
+│  ✅ Moteur 3D VRM (Blink + Expressions + Idle)          │
 │  ✅ Options UI dynamique (Moteurs TTS, Contexte, LLM)   │
 │  ✅ Synthèse vocale Piper (Local) & Edge-TTS            │
 │  ✅ Historique des conversations & Sessions             │
-│  ✅ Hub MCP (DeepSearch, Memory, Auto-Learning)         │
-│  ✅ Indicateur d'état des services                      |
-|  ✅ Options UI (5 panneaux) Opérationnel                |
-|  ✅ Expressions faciales & Blush  Fonctionnels          |
+│  ✅ Hub MCP (DeepSearch, FileSystem, Memory, Auto-Learn)│
+│  ✅ Indicateur d'état des services                      │
+│  ✅ Mode Overlay / Desktop Pet                          │
 │  ✅ Stabilisation globale & nettoyage du code           │
 │  ─────────────────────────────────────────────────────  │
-│  ⬜ Stabilisation globale & nettoyage du code           │
 │  ⬜ Packaging autonome (.exe / Tauri Standalone)        │
 │  ⬜ Script/Launcher unique de démarrage                 │
-│  ⬜ Mode Overlay / Desktop Pet                          │
 │  ⬜ Synchronisation Cross-Device (PC / Smartphone)      │
 └─────────────────────────────────────────────────────────┘
