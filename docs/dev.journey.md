@@ -167,6 +167,24 @@ Toutes les briques (Avatar 3D, Clignement d'yeux, Piper TTS local, Options UI, H
 - Modes Actif / Passif validés
 - Correctifs post-migration (bouton Hub + macros Rust)
 
+- ### 🆕 16 août 2026 — Stabilisation profonde du Hub & Plugins
+
+Session intensive de 2h15 dédiée à la solidité et à la réactivité du Hub MCP.
+
+**Core Hub & Infrastructure**
+- Passage complet en **Async / HTTPX** → éradication des deadlocks HTTP sur le port 5005
+- Temps de réponse des outils passé d’un timeout de 60s à ~1 ms
+- Parsing universel des paramètres (chaînes texte, kwargs, JSON) + tolérance aux alias de clés (`src_path`/`dst`/`old_path`, `path`/`file`…)
+
+**Plugins validés**
+- **FileSystemPlugin** : cycle de vie complet des fichiers (write, read, move, list, delete) avec résolution intelligente vers le vrai Bureau utilisateur
+- **ResearchPlugin** & **MemoryPlugin** : recherche web ultra-rapide + synchronisation mémoire en arrière-plan
+
+**Interface & Avatar**
+- Correction du bug de duplication des messages au basculement Overlay ↔ Normal
+- Rétablissement de l’indicateur d’attente (« en réflexion ») dans le mode Overlay
+- Ajout des postures d’idle (assise + debout) pour un comportement plus naturel
+
 ---
 
 ## 🧭 La suite : Stabilisation & Packaging (Roadmap V1.0)
@@ -188,6 +206,7 @@ La base fonctionnelle est désormais **solide et éprouvée**. L'objectif n'est 
 │  ✅ Indicateur d'état des services                      |
 |  ✅ Options UI (5 panneaux) Opérationnel                |
 |  ✅ Expressions faciales & Blush  Fonctionnels          |
+│  ✅ Stabilisation globale & nettoyage du code           │
 │  ─────────────────────────────────────────────────────  │
 │  ⬜ Stabilisation globale & nettoyage du code           │
 │  ⬜ Packaging autonome (.exe / Tauri Standalone)        │
