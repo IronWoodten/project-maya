@@ -126,7 +126,7 @@ Objectif :
 
 ## Phase 2 — L'incarnation
 
-Migration vers **SillyTavern**, puis **OpenVTuber**, afin de donner une personnalité, une voix et une incarnation visuelle au modèle.
+Migration vers **SillyTavern**, puis **OpenLLMVTuber**, afin de donner une personnalité, une voix et une incarnation visuelle au modèle.
 
 Ces expérimentations ont permis de valider le concept mais ont également mis en évidence les limites des architectures existantes.
 
