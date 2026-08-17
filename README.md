@@ -99,7 +99,7 @@ L'objectif était de construire un assistant :
           [SillyTavern]
                 │
                 ▼
-         [OpenVTuber]
+         [OpenLLMVTuber]
                 │
                 ▼
     ┌───────────────────────────────┐
