@@ -189,7 +189,21 @@ Session intensive de 2h15 dédiée à la solidité et à la réactivité du Hub 
 - Correction du bug de duplication des messages au basculement Overlay ↔ Normal
 - Rétablissement de l’indicateur d’attente (« en réflexion ») dans le mode Overlay
 - Ajout des postures d’idle (assise + debout) pour un comportement plus naturel
-- 
+  
+---
+
+## 📝 Fun Facts
+
+- Première ligne de code écrite le : **XX/XX/2026**
+- Connaissance préalable en programmation : **proche de zéro**
+- IDE utilisé : **Bloc-notes Windows** (le vrai)
+- Méthode d’indentation : **comptage manuel des espaces**
+- Débogage principal : **Ctrl + F**
+- Nombre de fois où j’ai voulu jeter le PC par la fenêtre : **non communiqué**
+- Pourcentage du projet codé dans le Bloc-notes : **100 %**
+
+> Ce projet prouve qu’on n’a pas besoin d’un IDE ultra-sophistiqué pour construire quelque chose de sérieux… juste de la détermination (et beaucoup de Ctrl+S).
+> 
 ---
 
 ## 🧭 La suite : Stabilisation & Packaging (Roadmap V1.0)
