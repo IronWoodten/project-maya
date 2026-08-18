@@ -339,6 +339,9 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 | Packaging .exe standalone                   | ⬜ En cours           |
 ---
 
+> **PS :** Jusqu’à cette version, **100 % du projet** a été développé dans le **Bloc-notes Windows**.  
+> Oui, le vrai. Non, ce n’est pas une blague. 📝🔥
+
 # 📚 Documentation
 
 La documentation technique détaillée est accessible dans le dossier [`docs`](./docs/) :
