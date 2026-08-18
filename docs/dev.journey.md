@@ -194,7 +194,7 @@ Session intensive de 2h15 dédiée à la solidité et à la réactivité du Hub 
 
 ## 📝 Fun Facts
 
-- Première ligne de code écrite le : **XX/XX/2026**
+- Première ligne de code écrite le : **25/07/2026**
 - Connaissance préalable en programmation : **proche de zéro**
 - IDE utilisé : **Bloc-notes Windows** (le vrai)
 - Méthode d’indentation : **comptage manuel des espaces**
