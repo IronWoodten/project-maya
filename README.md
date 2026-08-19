@@ -121,7 +121,7 @@ Premières expérimentations avec **LM Studio** et **Anything**.
 
 Objectif :
 
-- faire fonctionner un  entièrement en local ;
+- faire fonctionner un LLM entièrement en local ;
 - expérimenter les différents systèmes de mémoire et d'interaction.
 
 ## Phase 2 — L'incarnation
