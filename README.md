@@ -360,7 +360,7 @@ La documentation technique détaillée est accessible dans le dossier [`docs`](.
 | **Langage** | Python 3.11+ · JavaScript (ES6 Modules) |
 | **Backend Hub** | Flask · MCP Protocol |
 | **Interface / Avatar** | Three.js · `@pixiv/three-vrm` · HTML5 / CSS3 (Dark Theme) |
-| **LLM Moteur** | llama.cpp · Ollama · LM Studio |
+| **LLM Moteur** | llama.cpp |
 | **Text-to-Speech (TTS)** | **Piper TTS** (Local) · **Edge-TTS** (Cloud) |
 | **Speech-to-Text (STT)** | Fast-Whisper |
 | **Mémoire & Config** | Fichiers JSON · `.txt` |
