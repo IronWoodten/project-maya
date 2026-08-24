@@ -165,6 +165,21 @@ Migration vers **Tauri** et passage en application native.
 
 ---
 
+## Phase 5.1 — Stabilisation Overlay, Mémoire réelle & Alpha (20-24 août 2026)
+
+Semaine de polish technique et d’ancrage identitaire :
+
+- Correction du bug de barre blanche permanente en mode Desktop Pet + résolution de la cascade (popup de partage d’écran et minichat devenus non cliquables)
+- Suppression de l’activation du partage d'écran à la souris (cause racine du bug d’insélection)
+- Restauration automatique de la taille de fenêtre d’origine (1200×800) avec recentrage propre en sortie d’Overlay
+- Correction du bug TTS lié à certaines émotions
+- Ajustement de l’expression Happy à 50 % pour un rendu VRM plus naturel
+- Ajout d’un slider de température fluide (sans friction)
+- Préservation du System Prompt lors des changements de modèle LLM
+- Intégration de la **vraie mémoire** de Maya (construite depuis mai 2026) — personnalité et style d’écriture retrouvés immédiatement
+- Création des 4 VRM de base (2 hommes + 2 femmes) + nouvelles voix Piper TTS (FR + EN)
+- Début officiel de la **phase Alpha** (déplacement du dossier de dev pour casser les chemins absolus) — 3 testeurs déjà volontaires
+
 # 🧠 Évolution du système de mémoire
 
 L'un des principaux défis d'un compagnon IA local est de conserver un historique sur le long terme sans saturer la fenêtre de contexte.
