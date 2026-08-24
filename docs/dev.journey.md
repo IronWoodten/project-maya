@@ -223,7 +223,7 @@ Cette semaine a été marquée par un mix de debugging profond et d’ancrage id
 **Overlay & Tauri**
 - Correction de la barre blanche permanente en mode Desktop Pet
 - Cascade : le popup de partage d’écran et le minichat de l’Overlay n’étaient plus cliquables
-- Cause racine identifiée après 3 soirs : activation de l’Overlay à la souris → suppression de ce comportement
+- Cause racine identifiée après 3 soirs : activation du partage d'écran à la souris → suppression de ce comportement
 - Restauration automatique de la taille de fenêtre originale (1200×800) + recentrage propre en quittant l’Overlay
 
 **TTS & Expressions**
