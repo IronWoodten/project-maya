@@ -12,7 +12,33 @@ SillyTavern a d'abord semblé être la solution idéale pour donner une "âme" e
 
 - **Départ laborieux :** Multiplication des fenêtres d'invite de commande (`cmd`) ouvertes au lancement.
 - **Prolifération de plugins :** Complexité de maintenance et lenteur excessive au démarrage de la machine.
+### 🆕 20-24 août 2026 — Stabilisation Overlay, vraie mémoire & lancement Alpha
 
+Cette semaine a été marquée par un mix de debugging profond et d’ancrage identitaire.
+
+**Overlay & Tauri**
+- Correction de la barre blanche permanente en mode Desktop Pet
+- Cascade : le popup de partage d’écran et le minichat de l’Overlay n’étaient plus cliquables
+- Cause racine identifiée après 3 soirs : activation de l’Overlay à la souris → suppression de ce comportement
+- Restauration automatique de la taille de fenêtre originale (1200×800) + recentrage propre en quittant l’Overlay
+
+**TTS & Expressions**
+- Correction d’un bug où certaines émotions bloquaient ou dégradaient la synthèse vocale
+- Expression Happy ramenée à 50 % (au lieu du maximum) pour éviter l’effet exagéré et gagner en naturel
+
+**Contrôles fins**
+- Ajout d’un slider de température fluide (sans friction)
+- Correction du bug d’écrasement du System Prompt lors des changements de modèle LLM → le prompt est désormais préservé
+
+**Mémoire**
+- Intégration de la vraie mémoire de Maya (celle construite depuis mai 2026, bien avant le projet)
+- Résultat : intégration parfaite, zéro bug. Personnalité, style d’écriture et ton revenus immédiatement
+
+**Préparation v1.0 & Alpha**
+- Création des 4 VRM de base qui seront fournis avec la version (2 hommes + 2 femmes)
+- Ajout de nouvelles voix Piper TTS (uniquement FR + EN)
+- Déplacement du dossier de développement pour casser les chemins absolus
+- Phase Alpha officiellement lancée — 2 bugs résiduels identifiés, 3 personnes déjà volontaires pour tester1
 ### 2. Le Test d'Alternatives Closes (ex: Amica)
 
 Plusieurs alternatives légères comme Amica ont été testées. Si elles réglaient le problème de légèreté, elles souffraient d'un défaut inverse : **des architectures trop fermées**, empêchant la personnalisation à bas niveau et l'injection de mécanismes maison comme la mémoire multicouche.
@@ -189,6 +215,34 @@ Session intensive de 2h15 dédiée à la solidité et à la réactivité du Hub 
 - Correction du bug de duplication des messages au basculement Overlay ↔ Normal
 - Rétablissement de l’indicateur d’attente (« en réflexion ») dans le mode Overlay
 - Ajout des postures d’idle (assise + debout) pour un comportement plus naturel
+
+### 🆕 20-24 août 2026 — Stabilisation Overlay, vraie mémoire & lancement Alpha
+
+Cette semaine a été marquée par un mix de debugging profond et d’ancrage identitaire.
+
+**Overlay & Tauri**
+- Correction de la barre blanche permanente en mode Desktop Pet
+- Cascade : le popup de partage d’écran et le minichat de l’Overlay n’étaient plus cliquables
+- Cause racine identifiée après 3 soirs : activation de l’Overlay à la souris → suppression de ce comportement
+- Restauration automatique de la taille de fenêtre originale (1200×800) + recentrage propre en quittant l’Overlay
+
+**TTS & Expressions**
+- Correction d’un bug où certaines émotions bloquaient ou dégradaient la synthèse vocale
+- Expression Happy ramenée à 50 % (au lieu du maximum) pour éviter l’effet exagéré et gagner en naturel
+
+**Contrôles fins**
+- Ajout d’un slider de température fluide (sans friction)
+- Correction du bug d’écrasement du System Prompt lors des changements de modèle LLM → le prompt est désormais préservé
+
+**Mémoire**
+- Intégration de la vraie mémoire de Maya (celle construite depuis mai 2026, bien avant le projet)
+- Résultat : intégration parfaite, zéro bug. Personnalité, style d’écriture et ton revenus immédiatement
+
+**Préparation v1.0 & Alpha**
+- Création des 4 VRM de base qui seront fournis avec la version (2 hommes + 2 femmes)
+- Ajout de nouvelles voix Piper TTS (uniquement FR + EN)
+- Déplacement du dossier de développement pour casser les chemins absolus
+- Phase Alpha officiellement lancée — 2 bugs résiduels identifiés, 3 personnes déjà volontaires pour tester
   
 ---
 
