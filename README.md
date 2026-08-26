@@ -18,6 +18,15 @@ Le projet évolue aujourd'hui d'un prototype expérimental vers une **applicatio
 > ⚠️ **Le code source est maintenu dans un dépôt privé.**
 >
 > La documentation technique, l'architecture et les choix d'ingénierie restent accessibles publiquement.
+---
+
+## 🎬 Présentation du projet
+
+Découvrez M.A.Y.A. en vidéo — un compagnon IA local incarné, avec mémoire multicouche et outils modulaires.
+
+https://github.com/user-attachments/assets/75ca609c-deb7-442f-a1a3-b11f8a962104
+
+---
 
 ---
 # 🖥️ État actuel du projet
