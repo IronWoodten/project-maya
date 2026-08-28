@@ -28,7 +28,6 @@ https://github.com/user-attachments/assets/75ca609c-deb7-442f-a1a3-b11f8a962104
 
 ---
 
----
 # 🖥️ État actuel du projet
 
 Maya est passée d’un prototype web à une **application native** grâce à **Tauri**.
