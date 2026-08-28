@@ -5,9 +5,10 @@
 Le système de mémoire de Maya repose sur un principe fondamental : la **simplicité**, la **légèreté** et la **souveraineté des données**.
 
 ### Pourquoi le format Plain-Text (.txt) ?
-* **Portabilité & Mobilité (PC & Mobile) :** fichiers `.txt` bruts → synchronisation simple (Syncthing, etc.).
-* **Transparence & Lisibilité :** éditables à tout moment par l’utilisateur.
-* **Sobriété Applicative :** aucune base de données lourde.
+
+- **Portabilité & Mobilité (PC & Mobile) :** fichiers `.txt` bruts → synchronisation simple (Syncthing, etc.).
+- **Transparence & Lisibilité :** éditables à tout moment par l’utilisateur.
+- **Sobriété Applicative :** aucune base de données lourde.
 
 ---
 
@@ -43,8 +44,7 @@ Le système de mémoire de Maya repose sur un principe fondamental : la **simpli
 │ 5. MÉMOIRE DES COMPÉTENCES & DEEPSEARCH (Hub MCP)       │
 │    • Module séparé (workflows, savoir-faire, recherche) │
 └─────────────────────────────────────────────────────────┘
-
----
+```
 
 > ⚠️ La mémoire d’identité/histoire (`Core` + journaux) est strictement séparée du plugin `Memory` du Hub Central.
 
@@ -62,6 +62,7 @@ La sauvegarde se fait via une **icône dédiée** dans l’interface :
 4. Ce résumé est ajouté à `journal_recent.txt`.
 
 **Pourquoi ce choix ?**
+
 - Plus fiable que de laisser le LLM décider seul de ce qu’il doit retenir.
 - Plus adapté à un usage desktop (pas de tâche planifiée fragile).
 - L’utilisateur garde le contrôle du moment de la consolidation.
@@ -82,8 +83,7 @@ Le cycle n’est plus déclenché bêtement à chaque démarrage. Il tourne de f
    Le chevauchement évite de rater les faits à cheval sur deux cycles.
 
 3. **Canonisation**  
-   Chaque fait récurrent est reformulé en une phrase déclarative courte et normalisée  
-   (sujet → fait → date éventuelle).
+   Chaque fait récurrent est reformulé en une phrase déclarative courte et normalisée (sujet → fait → date éventuelle).
 
 4. **Anti-doublon sémantique**  
    La forme canonique est comparée sémantiquement à `core_history.txt`.  
@@ -92,8 +92,8 @@ Le cycle n’est plus déclenché bêtement à chaque démarrage. Il tourne de f
 5. **Écriture sécurisée**  
    Si le fait est nouveau :
    - ajout dans `Maya_core.txt` (mémoire active)
-   - ajout dans `core_history.txt` (registre permanent)  
-   
+   - ajout dans `core_history.txt` (registre permanent)
+
    via un wrapper qui garantit des sauts de ligne propres.
 
 ---
@@ -103,6 +103,7 @@ Le cycle n’est plus déclenché bêtement à chaque démarrage. Il tourne de f
 Script maître : `startup_memory.py`
 
 Séquencement :
+
 1. Archivage mécanique synchrone (> 30 jours)
 2. Lancement asynchrone (non bloquant) du cycle de réflexion si nécessaire
 3. Démarrage du serveur MCP
@@ -119,3 +120,5 @@ maya/
     ├── journal_recent.txt   # ~30 derniers jours (injecté)
     ├── journal_ancien.txt   # Archives (consulté à la demande)
     └── memory_state.json    # Suivi du cycle de réflexion
+```
+```
