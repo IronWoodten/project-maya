@@ -29,7 +29,7 @@ Le système de mémoire de Maya repose sur un principe fondamental : la **simpli
 
 ┌─────────────────────────────────────────────────────────┐
 │ 3. JOURNAL ANCIEN (journal_ancien.txt)                  │
-│    • Archives (> 30 jours)                               │
+│    • Archives (> 30 jours)                              │
 │    • Consulté à la demande                              │
 └─────────────────────────────────────────────────────────┘
 
