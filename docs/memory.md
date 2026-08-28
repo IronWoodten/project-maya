@@ -14,7 +14,7 @@ Le système de mémoire de Maya repose sur un principe fondamental : la **simpli
 
 ## 🏛️ Les Piliers de la Mémoire
 
-```text
+\`\`\`text
 ┌─────────────────────────────────────────────────────────┐
 │ 1. CORE (Maya_core.txt / core.txt)                      │
 │    • Identité, traits, faits canoniques                 │
@@ -46,6 +46,7 @@ Le système de mémoire de Maya repose sur un principe fondamental : la **simpli
 └─────────────────────────────────────────────────────────┘
 
 > ⚠️ La mémoire d’identité/histoire (Core + journaux) est strictement séparée du plugin Memory du Hub Central.
+\`\`\`
 
 ---
 
@@ -74,23 +75,29 @@ Le cycle n’est plus déclenché bêtement à chaque démarrage. Il tourne de f
 
 ### Étapes du cycle
 
-1. **Transfert mécanique**  
+1. **Transfert mécanique**
+
    Les entrées de `journal_recent.txt` vieilles de plus de 30 jours sont déplacées vers `journal_ancien.txt`.
 
-2. **Scan d’occurrence (fenêtre glissante 35 jours)**  
-   Analyse des 35 derniers jours de `journal_ancien.txt`.  
+2. **Scan d’occurrence (fenêtre glissante 35 jours)**
+
+   Analyse des 35 derniers jours de `journal_ancien.txt`.
    Le chevauchement évite de rater les faits à cheval sur deux cycles.
 
-3. **Canonisation**  
-   Chaque fait récurrent est reformulé en une phrase déclarative courte et normalisée  
+3. **Canonisation**
+
+   Chaque fait récurrent est reformulé en une phrase déclarative courte et normalisée
    (sujet → fait → date éventuelle).
 
-4. **Anti-doublon sémantique**  
-   La forme canonique est comparée sémantiquement à `core_history.txt`.  
+4. **Anti-doublon sémantique**
+
+   La forme canonique est comparée sémantiquement à `core_history.txt`.
    Si le fait est déjà présent → rien n’est écrit.
 
-5. **Écriture sécurisée**  
+5. **Écriture sécurisée**
+
    Si le fait est nouveau :
+
    - ajout dans `Maya_core.txt` (mémoire active)
    - ajout dans `core_history.txt` (registre permanent)
    - via un wrapper qui garantit des sauts de ligne propres.
@@ -111,7 +118,7 @@ Script maître : `startup_memory.py`
 
 ## 📂 Structure des Fichiers
 
-```text
+\`\`\`text
 maya/
 └── memory/
     ├── Maya_core.txt        # Mémoire active / identité (injecté)
@@ -119,3 +126,4 @@ maya/
     ├── journal_recent.txt   # ~30 derniers jours (injecté)
     ├── journal_ancien.txt   # Archives (consulté à la demande)
     └── memory_state.json    # Suivi du cycle de réflexion
+\`\`\`
