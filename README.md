@@ -37,8 +37,7 @@ L’interface propriétaire regroupe désormais :
 
 - Avatar VRM avec clignement d’yeux naturel, expressions faciales dynamiques (joie, tristesse, colère + blush) et animations manuelles (clic droit)
 - Mode **Desktop Pet / Overlay** (fenêtre transparente, clics traversants, toujours au premier plan)
-- Mémoire multicouche 100 % opérationnelle
-- Modes **Actif / Passif** (relances autonomes vs attente de sollicitation)
+* Mémoire multicouche V3 (cycle de réflexion autonome 7j + canonisation + anti-doublon sémantique)- Modes **Actif / Passif** (relances autonomes vs attente de sollicitation)
 - Moteur vocal hybride (Piper TTS local + Edge-TTS)
 - Options UI dynamiques (LLM, contexte, voix, System Prompt, clé Tavily, etc.)
 - Historique des conversations (reprise / suppression)
@@ -189,6 +188,15 @@ Semaine de polish technique et d’ancrage identitaire :
 - Création des 4 VRM de base (2 hommes + 2 femmes) + nouvelles voix Piper TTS (FR + EN)
 - Début officiel de la **phase Alpha** (déplacement du dossier de dev pour casser les chemins absolus) — 3 testeurs déjà volontaires
 
+## Phase 5.2 — Solidification des fondations (25-28 août 2026)
+
+Semaine consacrée à la robustesse plutôt qu’aux nouvelles features :
+
+* Correctifs critiques : plus d’écrasement de l’historique au redémarrage, arrêt des boucles infinies du LLM (stop tokens complets), stabilisation du lancement de llama.cpp
+* Animations VRM : l’avatar maintient son expression/lip-sync jusqu’à la fin de la dernière phrase (plus de retour intempestif en idle)
+* Mémoire V3 : cycle de réflexion autonome tous les 7 jours, scan des 35 derniers jours, canonisation des faits, anti-doublon sémantique et écriture sécurisée
+* Architecture LLM / Vision : organisation par dossiers (1 modèle = 1 dossier + son mmproj), association automatique et couplage strict dans l’interface (impossible de sélectionner une vision incompatible)
+
 # 🧠 Évolution du système de mémoire
 
 L'un des principaux défis d'un compagnon IA local est de conserver un historique sur le long terme sans saturer la fenêtre de contexte.
@@ -294,10 +302,10 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 ### 🧠 LLM / Cerveau
  <img width="1053" height="765" alt="Capture d’écran 2026-08-14 121319" src="https://github.com/user-attachments/assets/5aca1aa2-7e81-4d1d-987a-35cafd582e03" />
 
-* **Modèles `.gguf` à chaud :** Détection et sélection dynamique des modèles LLM présents dans le dossier `/model GGUF`.
-* **Vision & Détection Auto `mmproj` :** Association automatique du fichier de projection visuelle correspondant au modèle loaded.
-* **Taille du contexte serveur :** Ajustement de la mémoire de travail de Llama.cpp (de 4k à 131k tokens).
-* **Fenêtre de conversation :** Contrôle précis du nombre de messages réinjectés dans le prompt à chaque requête.
+* **Organisation par dossiers :** chaque modèle LLM vit dans son propre sous-dossier avec son fichier vision (`mmproj`) associé
+* **Association automatique :** le backend scanne les dossiers et relie automatiquement chaque `.gguf` à la vision correspondante
+* **Couplage strict dans l’UI :** le menu Vision ne propose que la projection compatible avec le LLM sélectionné (ou « Désactiver »)
+* **Affichage multi-quantisation :** support clair des différentes quantisations dans un même dossier (`NomDossier (NomFichier)`)
 
 ---
 
