@@ -243,6 +243,14 @@ Cette semaine a été marquée par un mix de debugging profond et d’ancrage id
 - Ajout de nouvelles voix Piper TTS (uniquement FR + EN)
 - Déplacement du dossier de développement pour casser les chemins absolus
 - Phase Alpha officiellement lancée — 2 bugs résiduels identifiés, 3 personnes déjà volontaires pour tester
+
+### 🆕 25-28 août 2026 — Solidification des fondations
+
+- Correctifs critiques (historique qui s’écrasait, boucles LLM, port llama.cpp)
+- Stabilisation du cycle de vie des animations VRM / émotions
+- Refonte mémoire V3 : cycle 7 jours, scan 35 jours, canonisation, anti-doublon sémantique, écriture sécurisée
+- Nouvelle architecture dossiers LLM + Vision avec couplage strict dans l’interface
+- Orchestration de démarrage clarifiée (`startup_memory.py`)
   
 ---
 
