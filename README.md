@@ -24,7 +24,7 @@ Le projet évolue aujourd'hui d'un prototype expérimental vers une **applicatio
 
 Découvrez M.A.Y.A. en vidéo — un compagnon IA local incarné, avec mémoire multicouche et outils modulaires.
 
-https://github.com/user-attachments/assets/75ca609c-deb7-442f-a1a3-b11f8a962104
+https://github.com/user-attachments/assets/36590647-a003-4d3f-9846-f93b737c2d7c
 
 ---
 
