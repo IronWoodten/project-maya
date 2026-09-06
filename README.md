@@ -1,4 +1,4 @@
-# 🤖 Project M.A.Y.A.
+# <img width="1254" height="1254" alt="Maya" src="https://github.com/user-attachments/assets/b973e16e-bd6d-42d5-850e-f608ced19eb9" /> Project M.A.Y.A.
 
 > **M**odular **A**vatar & **Y**oked **A**gent  
 > Built on the **M.A.Y.A.** principle:
