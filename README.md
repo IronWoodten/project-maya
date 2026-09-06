@@ -196,6 +196,22 @@ Semaine consacrée à la robustesse plutôt qu’aux nouvelles features :
 * Mémoire V3 : cycle de réflexion autonome tous les 7 jours, scan des 35 derniers jours, canonisation des faits, anti-doublon sémantique et écriture sécurisée
 * Architecture LLM / Vision : organisation par dossiers (1 modèle = 1 dossier + son mmproj), association automatique et couplage strict dans l’interface (impossible de sélectionner une vision incompatible)
 
+## Phase 5.3 — Fluidité, sécurité & préparation packaging (29 août – 4 septembre 2026)
+
+Semaine consacrée à l’expérience utilisateur, à la solidité des données et à la préparation du packaging :
+
+- Slider de vitesse de la voix
+- Animations fluides pendant les phrases (Maya beaucoup plus vivante)
+- Blocage des animations en position assise (plus de VRM qui se lève pendant une discussion)
+- Interruption naturelle : parler ou écrire pendant que Maya répond coupe immédiatement son tour
+- Correction complète du switch Autolearning (désactivation réelle + persistance dans la config)
+- Protection renforcée du FileSystemPlugin (liste noire sur les dossiers/fichiers système critiques)
+- Fiabilisation des enchaînements de plusieurs tool calls
+- Pop-up d’information pendant la consolidation de mémoire
+- Correction majeure de l’intégrité du journal (écriture atomique, sauvegardes .bak, verrou inter-processus Node/Python, format standardisé généré par le code)
+- Nettoyage intensif du codebase en vue de la compilation standalone
+- Packaging `.exe` + installateur (`setup`) en finalisation
+
 # 🧠 Évolution du système de mémoire
 
 L'un des principaux défis d'un compagnon IA local est de conserver un historique sur le long terme sans saturer la fenêtre de contexte.
@@ -367,7 +383,11 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 | FileSystemPlugin                            | ✅ Validé             |
 | Hub Async (HTTPX) + Parsing universel       | ✅ Opérationnel       |
 | Postures d’Idle (assise / debout)           | ✅ Fonctionnel        |
-| Packaging .exe standalone                   | ⬜ En cours           |
+| Packaging .exe + Setup installateur         | 🟡 En finalisation   |
+| Interruption naturelle (parler/écrire)      | ✅ Fonctionnel       |
+| Slider vitesse de voix + animations fluides | ✅ Fonctionnel       |
+| Protection FileSystem (liste noire système) | ✅ Validé            |
+| Intégrité journal (écriture atomique + lock)| ✅ Corrigé & renforcé|
 ---
 
 > **PS :** Jusqu’à cette version, **100 % du projet** a été développé dans le **Bloc-notes Windows**.  
@@ -403,8 +423,9 @@ La documentation technique détaillée est accessible dans le dossier [`docs`](.
 
 Les prochaines étapes du projet :
 
-- 📦 packaging standalone (application exécutable clé en main) ;
-- 🔌 nouveaux plugins pour le Maya Hub.
+- 📦 Packaging standalone (`.exe` + setup installateur) — **en finalisation**
+- 🔌 Nouveaux plugins pour le Maya Hub
+- 🧪 Phase de tests alpha élargie
   
 ---
 
