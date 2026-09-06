@@ -251,6 +251,20 @@ Cette semaine a été marquée par un mix de debugging profond et d’ancrage id
 - Refonte mémoire V3 : cycle 7 jours, scan 35 jours, canonisation, anti-doublon sémantique, écriture sécurisée
 - Nouvelle architecture dossiers LLM + Vision avec couplage strict dans l’interface
 - Orchestration de démarrage clarifiée (`startup_memory.py`)
+
+# 🆕 29 août – 4 septembre 2026 - Derniers détails avant la compilation
+
+- Slider de vitesse de la voix
+- Animations fluides pendant les phrases (Maya beaucoup plus vivante)
+- Blocage des animations en position assise (plus de VRM qui se lève pendant une discussion)
+- Interruption naturelle : parler ou écrire pendant que Maya répond coupe immédiatement son tour
+- Correction complète du switch Autolearning (désactivation réelle + persistance dans la config)
+- Protection renforcée du FileSystemPlugin (liste noire sur les dossiers/fichiers système critiques)
+- Fiabilisation des enchaînements de plusieurs tool calls
+- Pop-up d’information pendant la consolidation de mémoire
+- Correction majeure de l’intégrité du journal (écriture atomique, sauvegardes .bak, verrou inter-processus Node/Python, format standardisé généré par le code)
+- Nettoyage intensif du codebase en vue de la compilation standalone
+- Packaging `.exe` + installateur (`setup`) en finalisation
   
 ---
 
