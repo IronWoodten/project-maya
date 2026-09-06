@@ -1,4 +1,4 @@
-# <img width="1254" height="1254" alt="Maya" src="https://github.com/user-attachments/assets/b973e16e-bd6d-42d5-850e-f608ced19eb9" /> Project M.A.Y.A.
+# <img width="32" height="32" alt="32x32" src="https://github.com/user-attachments/assets/6297bf12-38b7-4725-ba7f-412690b7a5d8" />  Project M.A.Y.A.
 
 > **M**odular **A**vatar & **Y**oked **A**gent  
 > Built on the **M.A.Y.A.** principle:
