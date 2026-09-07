@@ -265,6 +265,51 @@ Cette semaine a été marquée par un mix de debugging profond et d’ancrage id
 - Correction majeure de l’intégrité du journal (écriture atomique, sauvegardes .bak, verrou inter-processus Node/Python, format standardisé généré par le code)
 - Nettoyage intensif du codebase en vue de la compilation standalone
 - Packaging `.exe` + installateur (`setup`) en finalisation
+
+# 🆕 5–6 septembre 2026 — Le vrai boss final : le packaging
+
+Après avoir vaincu la mémoire, le Hub, l’auto-learning, la vision et l’overlay…  
+il restait le boss le plus ridicule et le plus dangereux : **faire un vrai setup.exe**.
+
+Deux jours.
+
+### Le nettoyage des dépendances
+
+Le premier ennemi a été le `pip freeze`.  
+Il avait tout capturé. Absolument tout. Des dizaines de packages inutiles qui grossissaient le dossier de façon absurde.
+
+Il a fallu tout repasser à la main, garder uniquement ce qui était vraiment nécessaire, et virer le reste.  
+Chaque mégaoctet comptait.
+
+### La contrainte des 2 Go
+
+Tauri a une limite de taille assez stricte pour générer un installateur propre.  
+Le dossier devait absolument rester **sous les 2 Go**.
+
+Ça a forcé des choix durs :
+- Suppression de modèles et de ressources non indispensables
+- Nettoyage agressif des caches et des fichiers temporaires
+- Optimisation de la structure pour ne garder que l’essentiel
+
+C’était un vrai exercice de minimalisme forcé.
+
+### Les oublis classiques (mais douloureux)
+
+Bien sûr, il y a eu les classiques de fin de projet :
+
+- Le bouton de fermeture de la fenêtre qui ne tuait pas correctement les processus Node.js et Python → Maya restait en fond même après avoir « fermé » l’application.
+- Des chemins qui marchaient parfaitement en développement… et qui cassaient une fois packagés.
+- Des petits détails de liaison entre le frontend Tauri et les backends locaux qui n’avaient jamais été testés en mode « tout est compilé ».
+
+Rien de technique insurmontable. Juste le genre de trucs qu’on découvre uniquement quand on passe vraiment en standalone.
+
+### Le résultat
+
+Après deux jours de nettoyage, de compromises et de corrections de dernière minute :  
+**le setup.exe est sorti.**
+
+Maya n’est plus un projet.  
+C’est une application installable.
   
 ---
 
