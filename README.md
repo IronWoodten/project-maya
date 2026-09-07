@@ -210,7 +210,7 @@ Semaine consacrée à l’expérience utilisateur, à la solidité des données 
 - Pop-up d’information pendant la consolidation de mémoire
 - Correction majeure de l’intégrité du journal (écriture atomique, sauvegardes .bak, verrou inter-processus Node/Python, format standardisé généré par le code)
 - Nettoyage intensif du codebase en vue de la compilation standalone
-- Packaging `.exe` + installateur (`setup`) en finalisation
+- Packaging `.exe` + installateur (`setup.exe`) **terminé et publié** (v1.0.0)
 
 # 🧠 Évolution du système de mémoire
 
@@ -364,7 +364,25 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 
 ---
 
-# 📊 État actuel du projet
+
+# 🖥️ État actuel du projet
+
+**Maya v1.0.0 est disponible !**
+
+Maya est maintenant une **application native Windows** (Tauri) avec installateur clé en main.
+
+Tu peux la télécharger ici :  
+**[→ Télécharger Maya v1.0.0 (setup.exe)](https://github.com/IronWoodten/project-maya/releases/latest)**
+
+L’interface propriétaire regroupe désormais :
+- Avatar VRM avec clignement d’yeux naturel, expressions faciales dynamiques et animations manuelles
+- Mode **Desktop Pet / Overlay**
+- Mémoire multicouche V3
+- Modes Actif / Passif
+- Moteur vocal hybride (Piper TTS local + Edge-TTS)
+- Options UI dynamiques
+- Historique des conversations
+- Indicateur de connexion temps réel au Hub
 
 | Fonctionnalité                              | État                   |
 |---------------------------------------------|----------------------- |
@@ -383,11 +401,19 @@ L'interface dispose d'un tiroir de paramètres modulaire et catégorisé, permet
 | FileSystemPlugin                            | ✅ Validé             |
 | Hub Async (HTTPX) + Parsing universel       | ✅ Opérationnel       |
 | Postures d’Idle (assise / debout)           | ✅ Fonctionnel        |
-| Packaging .exe + Setup installateur         | 🟡 En finalisation   |
-| Interruption naturelle (parler/écrire)      | ✅ Fonctionnel       |
-| Slider vitesse de voix + animations fluides | ✅ Fonctionnel       |
-| Protection FileSystem (liste noire système) | ✅ Validé            |
-| Intégrité journal (écriture atomique + lock)| ✅ Corrigé & renforcé|
+| Packaging .exe + Setup installateur         | ✅ Fonctionnel        |
+| Interruption naturelle (parler/écrire)      | ✅ Fonctionnel        |
+| Slider vitesse de voix + animations fluides | ✅ Fonctionnel        |
+| Protection FileSystem (liste noire système) | ✅ Validé             |
+| Intégrité journal (écriture atomique + lock)| ✅ Corrigé & renforcé |
+
+## 📦 Installation
+
+1. Télécharge le dernier `setup.exe` dans les [Releases](https://github.com/IronWoodten/project-maya/releases/latest)
+2. Clique droit → **Exécuter en tant qu’administrateur**
+3. Installe de préférence dans ton dossier utilisateur (ex: `AppData`) plutôt que dans `Program Files`
+4. Place tes modèles `.gguf` dans le dossier prévu, puis sélectionne-les dans les options (Cerveau)
+5. 
 ---
 
 > **PS :** Jusqu’à cette version, **100 % du projet** a été développé dans le **Bloc-notes Windows**.  
@@ -421,11 +447,11 @@ La documentation technique détaillée est accessible dans le dossier [`docs`](.
 
 # 🔮 Roadmap
 
-Les prochaines étapes du projet :
+**Fait :**
+- ✅ Packaging standalone (`.exe` + setup installateur) — **v1.0.0 disponible**
 
-- 📦 Packaging standalone (`.exe` + setup installateur) — **en finalisation**
+**Prochaines étapes :**
 - 🔌 Nouveaux plugins pour le Maya Hub
-- 🧪 Phase de tests alpha élargie
   
 ---
 
