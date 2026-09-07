@@ -455,6 +455,18 @@ La documentation technique détaillée est accessible dans le dossier [`docs`](.
   
 ---
 
+# 📜 License
+
+Ce projet est distribué sous la licence **[PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)**.
+
+- Vous pouvez utiliser, modifier et redistribuer Maya librement  
+- **Usage commercial interdit** (vente, rebranding, monétisation, etc.)
+- Le code source reste accessible
+
+Voir le fichier [`LICENSE`](./LICENSE) pour le texte complet.
+
+---
+
 # 📌 Projet
 
 **M.A.Y.A. — Modular Avatar & Yoked Agent**
