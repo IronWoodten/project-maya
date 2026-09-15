@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.A.Y.A.</title>
+
+    <!-- CDN Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- MASQUAGE DE LA BARRE EN OVERLAY -->
+    <style>
+        body.mode-overlay .global-titlebar {
+            display: none !important;
+        }
+    </style>
+
+    <link rel="icon" type="image/x-icon" href="icone.ico">
+
+    <!-- Import Map pour Three.js & VRM -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "./node_modules/three/build/three.module.js",
+        "three/addons/": "./node_modules/three/examples/jsm/",
+        "@pixiv/three-vrm": "./node_modules/@pixiv/three-vrm/lib/three-vrm.module.js"
+      }
+    }
+    </script>
+</head>
+<body>
+
+    <!-- BARRE DE TITRE GLOBALE & CONTROLES FENETRE -->
+    <div class="global-titlebar">
+        <div class="titlebar-drag-area" data-tauri-drag-region></div>
+        <div class="titlebar-controls">
+            <button class="win-btn" id="btn-win-minimize" title="Réduire"><i class="fa-solid fa-minus"></i></button>
+            <button class="win-btn" id="btn-win-maximize" title="Plein écran / Restaurer"><i class="fa-solid fa-expand"></i></button>
+            <button class="win-btn close-btn-win" id="btn-win-close" title="Fermer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <div class="app-layout">
+        <!-- Chat Side -->
+        <div class="chat-sidebar">
+            <div class="chat-header" data-tauri-drag-region>
+                <div class="chat-title" data-tauri-drag-region>
+                    <i class="fa-solid fa-comments"></i> 
+                    <span>M.A.Y.A</span>
+                    <span id="hub-status" class="hub-status-badge" title="Hub Maya (Port 5005): Déconnecté"></span>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="btn-history" title="Historique"><i class="fa-solid fa-clock"></i></button>
+                    <button class="icon-btn" id="btn-vrm" title="Modèle VRM"><i class="fa-solid fa-user"></i></button>
+                    <button class="icon-btn" id="btn-bg" title="Arrière-plan"><i class="fa-solid fa-image"></i></button>
+                    <button class="icon-btn" id="btn-settings" title="Paramètres"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </div>
+            <div class="chat-body" id="chat-body"></div>
+
+            <!-- BARRE D'ICÔNES RAPIDES -->
+            <div class="quick-toolbar">
+                <button id="btn-mic" class="tool-btn" title="Activer / Désactiver le microphone (STT)">
+                    <i class="fa-solid fa-microphone-slash" style="color: #ff4d4d;"></i>
+                </button>
+                <button id="btn-continue" class="tool-btn" title="Demander à Maya de continuer sa phrase">
+                    <i class="fa-solid fa-forward"></i>
+                </button>
+                <button id="btn-stop" class="tool-btn stop-btn" title="Interrompre Maya (Voix / Réponse)">
+                    <i class="fa-solid fa-square"></i>
+                </button>
+                <button id="btn-screenshot" class="tool-btn" title="Capture d'écran">
+                    <i class="fa-solid fa-camera"></i>
+                </button>
+                <button id="btn-save-chat" class="tool-btn" title="Sauvegarder la conversation & le journal">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                </button>
+                <button id="btn-toggle-overlay" class="tool-btn" title="Passer en mode Desktop Pet (Overlay)">
+                    <i class="fa-solid fa-window-restore"></i>
+                </button>
+            </div>
+
+            <!-- Zone d'aperçu d'image capturée -->
+            <div id="screen-preview-container" class="screenshot-preview-container">
+                <img id="screen-preview-img" src="" alt="Aperçu">
+                <span style="font-size: 0.8rem; color: #a6adc8; flex: 1;">Capture d'écran prête</span>
+                <button id="btn-close-preview" class="btn-close-preview" title="Retirer l'image">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Message..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <!-- 3D Area -->
+        <div class="vrm-character-area"></div>
+    </div>
+
+    <!-- MINI-WIDGET FLOTTANT POUR MODE OVERLAY -->
+    <div id="mini-chat-widget" class="mini-chat-widget">
+        <div class="mini-widget-header" id="mini-widget-header" title="Maintiens le clic ici pour déplacer">
+            <span class="mini-widget-title"><i class="fa-solid fa-robot"></i> M.A.Y.A.</span>
+            <button id="mini-btn-exit" class="icon-btn" style="width:24px; height:24px; font-size:11px;" title="Quitter Overlay">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="mini-last-message" class="mini-last-message">
+            <em>En attente d'un message...</em>
+        </div>
+        <div class="mini-widget-controls">
+            <button id="mini-btn-mic" class="tool-btn" title="Activer/Désactiver Micro">
+                <i class="fa-solid fa-microphone-slash" style="color: #ff4d4d;"></i>
+            </button>
+            <input type="text" id="mini-user-input" placeholder="Écrire à Maya..." autocomplete="off">
+            <button id="mini-send-btn" class="tool-btn" style="background:#007acc; color:#fff; border:none;" title="Envoyer">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Drawers -->
+    <div id="history-overlay" class="history-overlay"></div>
+    <aside id="history-drawer" class="history-drawer">
+        <div class="history-header">
+            <h3>Historique</h3>
+            <button id="btn-close-history" class="close-btn">&times;</button>
+        </div>
+        <button id="new-chat-btn" class="new-chat-btn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> Nouvelle discussion
+        </button>
+        <div id="history-list" class="history-list" style="margin-top: 10px;"></div>
+    </aside>
+
+    <div id="vrm-overlay" class="drawer-overlay"></div>
+    <aside id="vrm-drawer" class="drawer">
+        <div class="drawer-header">
+            <h3>Modèle VRM</h3>
+            <button id="btn-close-vrm" class="close-btn">&times;</button>
+        </div>
+        <div class="drawer-body" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <select id="vrm-select" style="flex: 1; padding: 10px; background: #11111b; color: #cdd6f4; border: 1px solid #45475a; border-radius: 6px; outline: none; cursor: pointer;">
+                    <option value="">Chargement des modèles...</option>
+                </select>
+
+                <button id="btn-refresh-vrm" class="icon-btn" title="Rafraîchir la liste" style="width: 40px; height: 40px; flex-shrink: 0; background: #313244; border: 1px solid #45475a;">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+            <label for="vrm-file-input" class="bg-upload-btn">
+                <i class="fa-solid fa-file-import"></i> Importer .vrm
+            </label>
+            <input type="file" id="vrm-file-input" accept=".vrm" style="display: none;">
+        </div>
+    </aside>
+
+    <div id="bg-overlay" class="drawer-overlay"></div>
+    <aside id="bg-drawer" class="drawer">
+        <div class="drawer-header">
+            <h3>Arrière-plans</h3>
+            <button id="btn-close-bg" class="close-btn">&times;</button>
+        </div>
+        <div class="drawer-body" style="margin-top: 10px;">
+            <label for="bg-file-input" class="bg-upload-btn">Importer image</label>
+            <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
+            <div id="bg-grid" style="margin-top: 15px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+        </div>
+    </aside>
+
+    <!-- Settings / Options Drawer -->
+    <div id="options-overlay" class="drawer-overlay"></div>
+    <aside id="options-drawer" class="drawer">
+        <div class="drawer-header">
+            <h3>Paramètres</h3>
+            <button id="btn-close-options" class="close-btn">&times;</button>
+        </div>
+
+        <div class="options-drawer-body">
+            <!-- RACINE : MENU CATEGORIES -->
+            <div id="options-categories-view" class="options-view active">
+                <div class="category-menu-list">
+                    <button type="button" id="btn-open-hub" class="category-item-btn hub-btn">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Hub central (Port 5005)</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square external-icon"></i>
+                    </button>
+
+                    <button class="category-item-btn" data-target="panel-llm">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>LLM / Cerveau & Vision</span>
+                        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                    </button>
+
+                    <button class="category-item-btn" data-target="panel-voice">
+                        <i class="fa-solid fa-microphone"></i>
+                        <span>Voix</span>
+                        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                    </button>
+
+                    <button class="category-item-btn" data-target="panel-prompt">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Prompt & Deepsearch / Mémoire</span>
+                        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                    </button>
+
+                    <button class="category-item-btn" data-target="panel-mode">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Mode (Actif / Passif)</span>
+                        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                    </button>
+
+                    <button class="category-item-btn" data-target="panel-vrm-pose">
+                        <i class="fa-solid fa-person-walking"></i>
+                        <span>VRM / Posture</span>
+                        <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PANNEAU LLM -->
+            <div id="panel-llm" class="options-panel">
+                <div class="panel-header">
+                    <button class="btn-back-category"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+                    <h4>🧠 LLM / Cerveau & Vision</h4>
+                </div>
+                <div class="panel-content">
+                    <div class="option-group">
+                        <label for="select-gguf-model">🤖 Modèle LLM (GGUF) :</label>
+                        <select id="select-gguf-model" class="option-select">
+                            <option value="">Chargement des modèles .gguf...</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="select-mmproj-model">👁️ Projecteur Vision (.mmproj) :</label>
+                        <select id="select-mmproj-model" class="option-select">
+                            <option value="">Aucun / Vision désactivée</option>
+                            <option value="">Chargement des fichiers .mmproj...</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="select-context-size">Taille du contexte serveur (Llama.cpp) :</label>
+                        <select id="select-context-size" class="option-select">
+                            <option value="4096">4 096 tokens</option>
+                            <option value="8192">8 192 tokens</option>
+                            <option value="16384">16 384 tokens</option>
+                            <option value="32768" selected>32 768 tokens</option>
+                            <option value="65536">65 536 tokens</option>
+                            <option value="131072">131 072 tokens</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="select-max-messages">💬 Messages réinjectés dans le prompt :</label>
+                        <select id="select-max-messages" class="option-select">
+                            <option value="10">10 derniers messages</option>
+                            <option value="15">15 derniers messages</option>
+                            <option value="25" selected>25 derniers messages (Défaut)</option>
+                            <option value="50">50 derniers messages</option>
+                            <option value="100">100 derniers messages</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="temp-slider">🌡️ Température : <span id="temp-value">0.70</span></label>
+                        <input type="range" id="temp-slider" min="0" max="1" step="0.05" value="0.7" style="width: 100%;">
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button class="save-btn btn-save-options">Enregistrer</button>
+                    <div class="status-msg"></div>
+                </div>
+            </div>
+
+            <!-- PANNEAU VOIX -->
+            <div id="panel-voice" class="options-panel">
+                <div class="panel-header">
+                    <button class="btn-back-category"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+                    <h4>🎙️ Voix & Synthèse</h4>
+                </div>
+                <div class="panel-content">
+                    <div class="option-group">
+                        <label for="select-tts-engine">🎙️ Moteur Vocale / TTS :</label>
+                        <select id="select-tts-engine" class="option-select">
+                            <option value="edge-tts" selected>Edge-TTS (Par défaut)</option>
+                            <option value="piper">Piper TTS (Local)</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="select-tts-lang">🌐 Langue du TTS :</label>
+                        <select id="select-tts-lang" class="option-select"></select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="select-tts-voice">🗣️ Voix de synthèse :</label>
+                        <select id="select-tts-voice" class="option-select"></select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="tts-speed-slider">⚡ Vitesse de la voix : <span id="tts-speed-display">1.0x</span></label>
+                        <div class="slider-container">
+                            <input type="range" id="tts-speed-slider" min="0.5" max="2.0" step="0.1" value="1.0" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button class="save-btn btn-save-options">Enregistrer</button>
+                    <div class="status-msg"></div>
+                </div>
+            </div>
+
+            <!-- PANNEAU PROMPT & DEEPSEARCH / MÉMOIRE -->
+            <div id="panel-prompt" class="options-panel">
+                <div class="panel-header">
+                    <button class="btn-back-category"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+                    <h4>📝 System Prompt & Deepsearch / Mémoire</h4>
+                </div>
+                <div class="panel-content">
+                    <div class="option-group">
+                        <label for="system-prompt-input">Personnalité & Mémoire Long Terme :</label>
+                        <textarea id="system-prompt-input" class="prompt-textarea" placeholder="Tu es une assistante chaleureuse..."></textarea>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="input-tavily-key">🔑 Clé API Tavily (Recherche Web) :</label>
+                        <div class="input-with-eye">
+                            <input type="text" id="input-tavily-key" class="option-input" placeholder="tvly-dev-..." value="">
+                            <button type="button" id="toggle-tavily-visibility" class="btn-toggle-eye" title="Afficher/Masquer la clé">
+                                <i class="fa-solid fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="autolearning-goals-input">🌐 Recherche Web Autonome (Deepsearch) :</label>
+                        <p style="font-size: 0.8rem; color: #a6adc8; margin-bottom: 6px; line-height: 1.3;">
+                            Sujets recherchés toutes les 20 min (mis à jour dans <code>goals.json</code>) :
+                        </p>
+                        <textarea id="autolearning-goals-input" class="prompt-textarea" placeholder="- Veille sur l'intelligence artificielle..."></textarea>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button id="btn-save-prompt-panel" class="save-btn btn-save-options">Enregistrer</button>
+                    <div class="status-msg"></div>
+                </div>
+            </div>
+
+            <!-- PANNEAU MODE -->
+            <div id="panel-mode" class="options-panel">
+                <div class="panel-header">
+                    <button class="btn-back-category"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+                    <h4>⚡ Mode Actif / Passif</h4>
+                </div>
+                <div class="panel-content">
+                    <div class="option-group">
+                        <label for="select-interaction-mode">Mode d'interaction :</label>
+                        <select id="select-interaction-mode" class="option-select">
+                            <option value="passif" selected>Passif (Répond si sollicitée)</option>
+                            <option value="actif">Actif (Relance automatique)</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="input-inactivity-delay">⏱️ Délai d'inactivité (secondes) :</label>
+                        <input type="number" id="input-inactivity-delay" class="option-input" min="5" max="3600" value="30" placeholder="Ex: 30">
+                        <p style="font-size: 0.8rem; color: #a6adc8; margin-top: 6px; line-height: 1.3;">
+                            💡 Si personne ne parle pendant X secondes, Maya relance la conversation.
+                        </p>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button class="save-btn btn-save-options">Enregistrer</button>
+                    <div class="status-msg"></div>
+                </div>
+            </div>
+
+            <!-- PANNEAU VRM / POSTURE -->
+            <div id="panel-vrm-pose" class="options-panel">
+                <div class="panel-header">
+                    <button class="btn-back-category"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+                    <h4>🧍 VRM / Posture</h4>
+                </div>
+                <div class="panel-content">
+                    <p style="font-size: 0.8rem; color: #a6adc8; margin-bottom: 6px; line-height: 1.3;">
+                        Corrige les bras/jambes trop rentrés dans le corps selon le modèle VRM chargé.
+                        Réglage appliqué immédiatement et sauvegardé pour ce modèle précis.
+                    </p>
+
+                    <div class="option-group">
+                        <label for="vrm-arm-spread-slider">💪 Écart des bras : <span id="vrm-arm-spread-display">3.2°</span></label>
+                        <div class="pose-slider-row">
+                            <input type="range" id="vrm-arm-spread-slider" min="-0.3" max="0.3" step="0.005" value="0.05625">
+                            <button type="button" id="btn-reset-arm-spread" class="btn-reset-pose" title="Réinitialiser">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="vrm-leg-spread-slider">🦵 Écart des jambes : <span id="vrm-leg-spread-display">0.0°</span></label>
+                        <div class="pose-slider-row">
+                            <input type="range" id="vrm-leg-spread-slider" min="-0.3" max="0.3" step="0.005" value="0">
+                            <button type="button" id="btn-reset-leg-spread" class="btn-reset-pose" title="Réinitialiser">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MENU CONTEXTUEL CLIC DROIT -->
+    <div id="vrm-context-menu" class="context-menu">
+        <div class="menu-header">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Menu M.A.Y.A.</span>
+        </div>
+        <div class="menu-list">
+            <div class="menu-item highlight-btn" id="ctx-save-chat">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>Sauvegarder la conversation</span>
+            </div>
+          
+            <div class="menu-item highlight-btn" id="ctx-overlay">
+                <i class="fa-solid fa-window-restore"></i>
+                <span id="ctx-overlay-text">Mode Desktop Pet (Overlay)</span>
+            </div>
+
+            <!-- BASCULEMENT DE POSTURE (DEBOUT / ASSIS) -->
+            <div class="menu-item highlight-btn" id="ctx-posture">
+                <i class="fa-solid fa-chair"></i>
+                <span id="ctx-posture-text">Posture : Debout (Changer pour Assis)</span>
+            </div>
+
+            <!-- RETOURNER LE MODÈLE (certains vieux VRM se chargent de dos) -->
+            <div class="menu-item highlight-btn" id="ctx-flip-vrm">
+                <i class="fa-solid fa-rotate"></i>
+                <span>Retourner le modèle (180°)</span>
+            </div>
+
+            <div class="menu-item highlight-btn" id="ctx-memory">
+                <i class="fa-solid fa-brain"></i>
+                <span>Gérer la Mémoire & Prompt</span>
+            </div>
+
+            <div class="menu-divider"></div>
+
+            <div class="menu-item has-submenu" id="ctx-anim-trigger">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-person-running"></i>
+                    <span>Animations VRM</span>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+
+                <div class="submenu" id="vrm-anim-submenu">
+                    <div class="menu-header">
+                        <i class="fa-solid fa-person-running"></i>
+                        <span>Choisir une animation</span>
+                    </div>
+                    <div id="vrm-anim-list" class="submenu-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+    <script type="module">
+        import { getCurrentChatMessages, getCurrentChatId } from './js/chatHistory.js';
+        import * as THREE from 'three';
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // OUVERTURE DU HUB
+            const btnOpenHub = document.getElementById('btn-open-hub');
+            if (btnOpenHub) {
+                btnOpenHub.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const url = 'http://127.0.0.1:5005/';
+                    
+                    if (window.__TAURI__?.opener?.openUrl) {
+                        try { await window.__TAURI__.opener.openUrl(url); return; } catch (e) {}
+                    }
+                    if (window.__TAURI__?.core?.invoke) {
+                        try { await window.__TAURI__.core.invoke('plugin:shell|open', { path: url }); return; } catch (e) {}
+                    }
+                    if (window.__TAURI__?.shell?.open) {
+                        try { await window.__TAURI__.shell.open(url); return; } catch (e) {}
+                    }
+
+                    const tempAnchor = document.createElement('a');
+                    tempAnchor.href = url;
+                    tempAnchor.target = '_blank';
+                    tempAnchor.rel = 'noopener noreferrer';
+                    document.body.appendChild(tempAnchor);
+                    tempAnchor.click();
+                    document.body.removeChild(tempAnchor);
+                });
+            }
+
+            // CHARGEMENT CONFIG
+            async function loadConfigFromHub() {
+                try {
+                    const tavilyRes = await fetch('/api/tavily-key');
+                    if (tavilyRes.ok) {
+                        const tavilyData = await tavilyRes.json();
+                        const tavilyInput = document.getElementById('input-tavily-key');
+                        if (tavilyInput) {
+                            tavilyInput.value = tavilyData.tavily_api_key || "";
+                            tavilyInput.type = "text";
+                        }
+                    }
+
+                    const configRes = await fetch('/api/config');
+                    if (configRes.ok) {
+                        const configData = await configRes.json();
+                        if (configData.system_prompt) {
+                            const promptInput = document.getElementById('system-prompt-input');
+                            if (promptInput) promptInput.value = configData.system_prompt;
+                        }
+                        if (configData.temperature !== undefined) {
+                            const tempSlider = document.getElementById('temp-slider');
+                            const tempValue = document.getElementById('temp-value');
+                            if (tempSlider && tempValue) {
+                                tempSlider.value = configData.temperature;
+                                tempValue.textContent = parseFloat(configData.temperature).toFixed(2);
+                            }
+                        }
+                    }
+
+                    const goalsRes = await fetch('/api/goals');
+                    if (goalsRes.ok) {
+                        const goalsData = await goalsRes.json();
+                        const goalsInput = document.getElementById('autolearning-goals-input');
+                        if (goalsInput) {
+                            const list = goalsData.goals || (Array.isArray(goalsData) ? goalsData : []);
+                            goalsInput.value = Array.isArray(list) ? list.join('\n') : (list || '');
+                        }
+                    }
+                } catch (err) {
+                    console.warn("⚠️ Erreur lors du chargement des configurations :", err);
+                }
+            }
+
+            loadConfigFromHub();
+
+            // SAUVEGARDE NATIVE TAURI POUR PANNEAU PROMPT & MÉMOIRE
+            const btnSavePromptPanel = document.getElementById('btn-save-prompt-panel');
+            if (btnSavePromptPanel) {
+                btnSavePromptPanel.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const statusMsg = btnSavePromptPanel.nextElementSibling;
+                    if (statusMsg) statusMsg.textContent = "Sauvegarde en cours...";
+
+                    try {
+                        const promptVal = document.getElementById('system-prompt-input')?.value || "";
+                        const tavilyVal = document.getElementById('input-tavily-key')?.value || "";
+                        const goalsVal = document.getElementById('autolearning-goals-input')?.value || "";
+                        const tempVal = parseFloat(document.getElementById('temp-slider')?.value || "0.7");
+
+                        // 1. On récupère la config existante pour ne pas perdre les paramètres TTS/GGUF
+                        let existingConfig = {};
+                        try {
+                            const configRes = await fetch('/api/config');
+                            if (configRes.ok) existingConfig = await configRes.json();
+                        } catch (e) {}
+
+                        // 2. Fusion des données
+                        const updatedConfig = {
+                            ...existingConfig,
+                            systemPrompt: promptVal,
+                            system_prompt: promptVal,
+                            tavily_api_key: tavilyVal || existingConfig.tavily_api_key || "",
+                            temperature: tempVal
+                        };
+
+                        // 3. Sauvegarde simultanée vers l'API Node et Tauri
+                        await fetch('/api/config', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(updatedConfig)
+                        });
+
+                        if (window.__TAURI__?.core?.invoke) {
+                            await window.__TAURI__.core.invoke('save_config', {
+                                relativePath: "data/config.json",
+                                jsonData: {
+                                    systemPrompt: promptVal,
+                                    system_prompt: promptVal,
+                                    tavily_api_key: tavilyVal,
+                                    temperature: tempVal
+                                }
+                            });
+
+                            const goalsArray = goalsVal.split('\n').map(g => g.trim()).filter(g => g.length > 0);
+                            await window.__TAURI__.core.invoke('save_config', {
+                                relativePath: "data/goals.json",
+                                jsonData: { goals: goalsArray }
+                            });
+
+                            if (statusMsg) statusMsg.textContent = "✅ Enregistré avec succès !";
+                            setTimeout(() => { if (statusMsg) statusMsg.textContent = ""; }, 3000);
+                        } else {
+                            await fetch('/api/config', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ systemPrompt: promptVal, tavily_api_key: tavilyVal, temperature: tempVal })
+                            });
+                            if (statusMsg) statusMsg.textContent = "✅ Enregistré (Web) !";
+                            setTimeout(() => { if (statusMsg) statusMsg.textContent = ""; }, 3000);
+                        }
+                    } catch (err) {
+                        console.error("❌ Erreur lors de la sauvegarde :", err);
+                        if (statusMsg) statusMsg.textContent = "❌ Erreur de sauvegarde";
+                    }
+                });
+            }
+
+            // GESTIONNAIRE DES TIROIRS
+            function setupDrawer(btnId, drawerId, overlayId, closeBtnId) {
+                const btn = document.getElementById(btnId);
+                const drawer = document.getElementById(drawerId);
+                const overlay = document.getElementById(overlayId);
+                const closeBtn = document.getElementById(closeBtnId);
+                if (!btn || !drawer || !overlay) return;
+                
+                const open = () => { 
+                    drawer.classList.add('open'); 
+                    overlay.classList.add('active'); 
+                    if (drawerId === 'options-drawer') {
+                        loadConfigFromHub();
+                    }
+                };
+                const close = () => { drawer.classList.remove('open'); overlay.classList.remove('active'); };
+                
+                btn.addEventListener('click', open);
+                if (closeBtn) closeBtn.addEventListener('click', close);
+                overlay.addEventListener('click', close);
+            }
+            
+            setupDrawer('btn-history', 'history-drawer', 'history-overlay', 'btn-close-history');
+            setupDrawer('btn-vrm', 'vrm-drawer', 'vrm-overlay', 'btn-close-vrm');
+            setupDrawer('btn-bg', 'bg-drawer', 'bg-overlay', 'btn-close-bg');
+            setupDrawer('btn-settings', 'options-drawer', 'options-overlay', 'btn-close-options');
+
+            // Navigation sous-panneaux
+            const categoryBtns = document.querySelectorAll('.category-item-btn[data-target]');
+            const backBtns = document.querySelectorAll('.btn-back-category');
+            const categoriesView = document.getElementById('options-categories-view');
+            const panels = document.querySelectorAll('.options-panel');
+
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    if (categoriesView) categoriesView.classList.remove('active');
+                    panels.forEach(p => p.classList.remove('active'));
+                    const targetPanel = document.getElementById(targetId);
+                    if (targetPanel) targetPanel.classList.add('active');
+                });
+            });
+
+            backBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    panels.forEach(p => p.classList.remove('active'));
+                    if (categoriesView) categoriesView.classList.add('active');
+                });
+            });
+
+            // Bouton Œil : Afficher / Masquer Clé Tavily
+            const toggleTavilyBtn = document.getElementById('toggle-tavily-visibility');
+            const tavilyInput = document.getElementById('input-tavily-key');
+            if (toggleTavilyBtn && tavilyInput) {
+                toggleTavilyBtn.addEventListener('click', () => {
+                    const isPassword = tavilyInput.type === 'password';
+                    tavilyInput.type = isPassword ? 'text' : 'password';
+                    const icon = toggleTavilyBtn.querySelector('i');
+                    if (icon) {
+                        icon.className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+                    }
+                });
+            }
+
+            // PARTAGE D'ÉCRAN
+            async function captureScreenNative() {
+                try {
+                    if (isOverlayMode && window.__TAURI__?.core?.invoke) {
+                        try {
+                            await window.__TAURI__.core.invoke('set_ignore_cursor_events', { ignore: false });
+                        } catch (e) {}
+                    }
+
+                    const stream = await navigator.mediaDevices.getDisplayMedia({
+                        video: { cursor: "always" },
+                        audio: false
+                    });
+
+                    const videoTrack = stream.getVideoTracks()[0];
+                    const imageCapture = new ImageCapture(videoTrack);
+                    const bitmap = await imageCapture.grabFrame();
+
+                    stream.getTracks().forEach(track => track.stop());
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = bitmap.width;
+                    canvas.height = bitmap.height;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
+
+                    const base64Image = canvas.toDataURL('image/png');
+
+                    const previewContainer = document.getElementById('screen-preview-container');
+                    const previewImg = document.getElementById('screen-preview-img');
+                    if (previewContainer && previewImg) {
+                        previewImg.src = base64Image;
+                        previewContainer.classList.add('active');
+                    }
+                } catch (err) {
+                    console.warn("Partage d'écran annulé :", err);
+                } finally {
+                    if (isOverlayMode) {
+                        const rects = getInteractiveRects();
+                        if (window.__TAURI__?.core?.invoke) {
+                            try {
+                                await window.__TAURI__.core.invoke('update_hit_test', { rects });
+                            } catch (e) {}
+                        }
+                    }
+                }
+            }
+
+            const btnClosePreview = document.getElementById('btn-close-preview');
+            if (btnClosePreview) {
+                btnClosePreview.addEventListener('click', () => {
+                    const previewContainer = document.getElementById('screen-preview-container');
+                    if (previewContainer) previewContainer.classList.remove('active');
+                });
+            }
+
+            // SAUVEGARDE DU JOURNAL
+            async function triggerSaveJournal() {
+                const saveChatBtn = document.getElementById('btn-save-chat');
+                const icon = saveChatBtn ? saveChatBtn.querySelector('i') : null;
+
+                let messages = typeof getCurrentChatMessages === 'function' ? getCurrentChatMessages() : null;
+                let chatId = typeof getCurrentChatId === 'function' ? getCurrentChatId() : null;
+
+                try {
+                    if (icon) icon.className = 'fa-solid fa-spinner fa-spin';
+
+                    const res = await fetch('/api/save-journal', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chatId, messages })
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok && data.success) {
+                        const confirmationText = data.reply || "Discussion sauvegardée ! 📖✨";
+                        if (icon) icon.className = 'fa-solid fa-check';
+
+                        const chatBody = document.getElementById('chat-body');
+                        if (chatBody) {
+                            const msgDiv = document.createElement('div');
+                            msgDiv.className = 'assistant';
+                            msgDiv.textContent = confirmationText;
+                            chatBody.appendChild(msgDiv);
+                            chatBody.scrollTop = chatBody.scrollHeight;
+                        }
+
+                        setTimeout(() => { if (icon) icon.className = 'fa-solid fa-floppy-disk'; }, 2500);
+                    } else {
+                        throw new Error(data.error || "Erreur serveur");
+                    }
+                } catch (err) {
+                    console.error("❌ Erreur de sauvegarde :", err);
+                    if (icon) icon.className = 'fa-solid fa-triangle-exclamation';
+                    setTimeout(() => { if (icon) icon.className = 'fa-solid fa-floppy-disk'; }, 2500);
+                }
+            }
+
+            const saveChatBtn = document.getElementById('btn-save-chat');
+            if (saveChatBtn) saveChatBtn.addEventListener('click', triggerSaveJournal);
+
+            // MODE OVERLAY & DÉPLACEMENT
+            let isOverlayMode = false;
+            let hitTestInterval = null;
+
+            const btnToggleOverlay = document.getElementById('btn-toggle-overlay');
+            const miniBtnExit = document.getElementById('mini-btn-exit');
+
+            const interactiveOverlaySelectors = [
+                '.global-titlebar',
+                '#mini-chat-widget',
+                '#vrm-context-menu',
+                '.chat-sidebar',
+                '.drawer',
+                '.history-drawer',
+                '.history-overlay',
+                '.drawer-overlay'
+            ];
+
+            function getVRMBoundingRect() {
+                if (window.vrmCamera && (window.vrmModel || window.vrmScene)) {
+                    try {
+                        const sceneObj = window.vrmModel ? (window.vrmModel.scene || window.vrmModel) : window.vrmScene;
+                        const camera = window.vrmCamera;
+
+                        sceneObj.updateMatrixWorld(true);
+                        const box = new THREE.Box3().setFromObject(sceneObj);
+
+                        if (!box.isEmpty()) {
+                            const corners = [
+                                new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+                                new THREE.Vector3(box.min.x, box.min.y, box.max.z),
+                                new THREE.Vector3(box.min.x, box.max.y, box.min.z),
+                                new THREE.Vector3(box.min.x, box.max.y, box.max.z),
+                                new THREE.Vector3(box.max.x, box.min.y, box.min.z),
+                                new THREE.Vector3(box.max.x, box.min.y, box.max.z),
+                                new THREE.Vector3(box.max.x, box.max.y, box.min.z),
+                                new THREE.Vector3(box.max.x, box.max.y, box.max.z),
+                            ];
+
+                            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
+                            corners.forEach(corner => {
+                                corner.project(camera);
+                                const x = (corner.x * 0.5 + 0.5) * window.innerWidth;
+                                const y = (-corner.y * 0.5 + 0.5) * window.innerHeight;
+                                if (x < minX) minX = x;
+                                if (x > maxX) maxX = x;
+                                if (y < minY) minY = y;
+                                if (y > maxY) maxY = y;
+                            });
+
+                            return {
+                                x: Math.round(Math.max(0, minX)),
+                                y: Math.round(Math.max(0, minY)),
+                                width: Math.round(Math.min(window.innerWidth, maxX - minX)),
+                                height: Math.round(Math.min(window.innerHeight, maxY - minY))
+                            };
+                        }
+                    } catch (e) {
+                        console.warn("Erreur de calcul de la hitbox VRM :", e);
+                    }
+                }
+
+                const vrmArea = document.querySelector('.vrm-character-area');
+                if (vrmArea) {
+                    const r = vrmArea.getBoundingClientRect();
+                    if (r.width > 0 && r.height > 0 && getComputedStyle(vrmArea).display !== 'none') {
+                        return {
+                            x: Math.round(r.left),
+                            y: Math.round(r.top),
+                            width: Math.round(r.width),
+                            height: Math.round(r.height)
+                        };
+                    }
+                }
+                return null;
+            }
+
+            function getInteractiveRects() {
+                const rects = [];
+                interactiveOverlaySelectors.forEach(selector => {
+                    const els = document.querySelectorAll(selector);
+                    els.forEach(el => {
+                        const r = el.getBoundingClientRect();
+                        const style = getComputedStyle(el);
+                        if (r.width > 0 && r.height > 0 && 
+                            style.display !== 'none' && 
+                            style.visibility !== 'hidden' && 
+                            style.opacity !== '0' &&
+                            r.left < window.innerWidth && r.right > 0 &&
+                            r.top < window.innerHeight && r.bottom > 0) {
+                            rects.push({
+                                x: Math.round(r.left),
+                                y: Math.round(r.top),
+                                width: Math.round(r.width),
+                                height: Math.round(r.height)
+                            });
+                        }
+                    });
+                });
+
+                if (document.activeElement && document.activeElement !== document.body) {
+                    const activeRect = document.activeElement.getBoundingClientRect();
+                    if (activeRect.width > 0 && activeRect.height > 0) {
+                        rects.push({
+                            x: Math.round(activeRect.left),
+                            y: Math.round(activeRect.top),
+                            width: Math.round(activeRect.width),
+                            height: Math.round(activeRect.height)
+                        });
+                    }
+                }
+
+                const vrmRect = getVRMBoundingRect();
+                if (vrmRect && 
+                    vrmRect.x < window.innerWidth && (vrmRect.x + vrmRect.width) > 0 &&
+                    vrmRect.y < window.innerHeight && (vrmRect.y + vrmRect.height) > 0) {
+                    rects.push(vrmRect);
+                }
+
+                return rects;
+            }
+
+            async function startOverlayHitTesting() {
+                stopOverlayHitTesting();
+                hitTestInterval = setInterval(async () => {
+                    if (!isOverlayMode) return;
+                    const rects = getInteractiveRects();
+                    if (window.__TAURI__?.core?.invoke) {
+                        try {
+                            await window.__TAURI__.core.invoke('update_hit_test', { rects });
+                        } catch (err) {}
+                    }
+                }, 40);
+            }
+
+            function stopOverlayHitTesting() {
+                if (hitTestInterval) {
+                    clearInterval(hitTestInterval);
+                    hitTestInterval = null;
+                }
+            }
+
+            async function toggleOverlayMode() {
+                isOverlayMode = !isOverlayMode;
+                
+                document.body.classList.toggle('mode-overlay', isOverlayMode);
+                document.documentElement.classList.toggle('mode-overlay', isOverlayMode);
+
+                if (btnToggleOverlay) btnToggleOverlay.classList.toggle('active', isOverlayMode);
+
+                const ctxOverlayText = document.getElementById('ctx-overlay-text');
+                if (ctxOverlayText) {
+                    ctxOverlayText.textContent = isOverlayMode ? "Quitter le mode Overlay" : "Mode Desktop Pet (Overlay)";
+                }
+
+                try {
+                    if (window.__TAURI__?.core?.invoke) {
+                        await window.__TAURI__.core.invoke('set_overlay_mode', { enable: isOverlayMode });
+                    }
+
+                    if (isOverlayMode) {
+                        startOverlayHitTesting();
+                    } else {
+                        stopOverlayHitTesting();
+
+                        if (window.__TAURI__?.core?.invoke) {
+                            await window.__TAURI__.core.invoke('update_hit_test', { rects: [] });
+                            try {
+                                await window.__TAURI__.core.invoke('set_ignore_cursor_events', { ignore: false });
+                            } catch (e) {}
+                        }
+                    }
+                } catch (err) {
+                    console.warn("Erreur basculement overlay Tauri :", err);
+                }
+
+                updateMiniOverlayLastMessage();
+                window.dispatchEvent(new CustomEvent('maya:overlayToggle', { detail: { active: isOverlayMode } }));
+            }
+
+            if (btnToggleOverlay) btnToggleOverlay.addEventListener('click', toggleOverlayMode);
+            if (miniBtnExit) miniBtnExit.addEventListener('click', toggleOverlayMode);
+
+            document.addEventListener('keydown', (e) => {
+                if ((e.altKey && e.key.toLowerCase() === 'o') || (isOverlayMode && e.key === 'Escape')) {
+                    toggleOverlayMode();
+                }
+            });
+
+            // WIDGET DRAGGABLE & FOCUS LOGIC
+            async function forceTauriFocus() {
+                try {
+                    if (window.__TAURI__?.window?.getCurrentWindow) {
+                        await window.__TAURI__.window.getCurrentWindow().setFocus();
+                    } else if (window.__TAURI__?.window?.appWindow) {
+                        await window.__TAURI__.window.appWindow.setFocus();
+                    }
+                } catch (e) {}
+            }
+
+            const miniWidget = document.getElementById('mini-chat-widget');
+            const miniHeader = document.getElementById('mini-widget-header');
+            const miniInput = document.getElementById('mini-user-input');
+
+            if (miniWidget) {
+                miniWidget.addEventListener('mousedown', () => {
+                    forceTauriFocus();
+                });
+            }
+
+            if (miniInput) {
+                miniInput.addEventListener('mousedown', (e) => {
+                    e.stopPropagation();
+                    forceTauriFocus();
+                });
+                miniInput.addEventListener('focus', () => {
+                    forceTauriFocus();
+                });
+                miniInput.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            if (miniWidget && miniHeader) {
+                let isDragging = false;
+                let startX, startY, initialLeft, initialTop;
+
+                miniHeader.addEventListener('mousedown', (e) => {
+                    if (e.target.closest('#mini-btn-exit')) return;
+                    e.stopPropagation();
+
+                    isDragging = true;
+                    startX = e.clientX;
+                    startY = e.clientY;
+
+                    const rect = miniWidget.getBoundingClientRect();
+                    initialLeft = rect.left;
+                    initialTop = rect.top;
+
+                    miniWidget.style.right = 'auto';
+                    miniWidget.style.bottom = 'auto';
+                    miniWidget.style.left = `${initialLeft}px`;
+                    miniWidget.style.top = `${initialTop}px`;
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
+
+                function onMouseMove(e) {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+
+                    let newLeft = initialLeft + dx;
+                    let newTop = initialTop + dy;
+
+                    newLeft = Math.max(0, Math.min(window.innerWidth - miniWidget.offsetWidth, newLeft));
+                    newTop = Math.max(0, Math.min(window.innerHeight - miniWidget.offsetHeight, newTop));
+
+                    miniWidget.style.left = `${newLeft}px`;
+                    miniWidget.style.top = `${newTop}px`;
+                }
+
+                function onMouseUp() {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                }
+            }
+
+            // SYNCHRONISATION CHAT
+            const mainUserInput = document.getElementById('user-input');
+            const mainSendBtn = document.getElementById('send-btn');
+            const mainMicBtn = document.getElementById('btn-mic');
+
+            const miniUserInput = document.getElementById('mini-user-input');
+            const miniSendBtn = document.getElementById('mini-send-btn');
+            const miniMicBtn = document.getElementById('mini-btn-mic');
+            const miniLastMsg = document.getElementById('mini-last-message');
+
+            function sendFromMiniOverlay(e) {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                if (window.isSending) return;
+                if (!miniUserInput || !mainUserInput) return;
+                const text = miniUserInput.value.trim();
+                if (!text) return;
+
+                mainUserInput.value = text;
+
+                if (mainSendBtn) mainSendBtn.click();
+            }
+
+            if (miniSendBtn) miniSendBtn.addEventListener('click', sendFromMiniOverlay);
+            if (miniUserInput) {
+                miniUserInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        sendFromMiniOverlay(e);
+                    }
+                });
+            }
+
+            if (miniMicBtn && mainMicBtn) {
+                miniMicBtn.addEventListener('click', () => { mainMicBtn.click(); });
+                const micObserver = new MutationObserver(() => {
+                    miniMicBtn.innerHTML = mainMicBtn.innerHTML;
+                    miniMicBtn.className = mainMicBtn.className;
+                });
+                micObserver.observe(mainMicBtn, { childList: true, attributes: true });
+            }
+
+            function updateMiniOverlayLastMessage() {
+                if (!miniLastMsg) return;
+                const chatBody = document.getElementById('chat-body');
+                if (!chatBody) return;
+
+                const assistantMessages = Array.from(chatBody.children).filter(el => {
+                    const isUser = el.classList.contains('user') || 
+                                   el.classList.contains('user-message') || 
+                                   el.getAttribute('data-role') === 'user' ||
+                                   (el.textContent && el.textContent.trim().startsWith('U:'));
+                    return !isUser;
+                });
+
+                if (assistantMessages.length > 0) {
+                    const lastMsg = assistantMessages[assistantMessages.length - 1];
+                    let fullText = lastMsg.textContent || lastMsg.innerText || "";
+                    fullText = fullText.replace(/^(M:|Maya:)\s*/i, '').trim();
+
+                    if (fullText) {
+                        miniLastMsg.textContent = fullText;
+                        miniLastMsg.scrollTop = miniLastMsg.scrollHeight;
+                    }
+                } else {
+                    miniLastMsg.innerHTML = "<em>En attente d'un message...</em>";
+                }
+            }
+
+            const chatBody = document.getElementById('chat-body');
+            if (chatBody) {
+                const chatObserver = new MutationObserver(() => {
+                    updateMiniOverlayLastMessage();
+                });
+                chatObserver.observe(chatBody, { childList: true, subtree: true, characterData: true });
+            }
+
+            // CLIC DROIT CONTEXTUEL
+            const contextMenu = document.getElementById('vrm-context-menu');
+            const ctxSaveBtn = document.getElementById('ctx-save-chat');
+            const ctxOverlayBtn = document.getElementById('ctx-overlay');
+            const ctxPostureBtn = document.getElementById('ctx-posture');
+            const ctxPostureText = document.getElementById('ctx-posture-text');
+            const ctxFlipVrmBtn = document.getElementById('ctx-flip-vrm');
+            const ctxMemoryBtn = document.getElementById('ctx-memory');
+
+            function updatePostureUI() {
+                const currentMode = typeof window.getIdleMode === 'function' ? window.getIdleMode() : 'standing';
+                if (ctxPostureText) {
+                    ctxPostureText.textContent = currentMode === 'standing' 
+                        ? "Posture : Debout (Passer en Assis)" 
+                        : "Posture : Assis (Passer en Debout)";
+                }
+            }
+
+            if (ctxSaveBtn) ctxSaveBtn.addEventListener('click', () => { contextMenu.classList.remove('active'); triggerSaveJournal(); });
+            if (ctxOverlayBtn) ctxOverlayBtn.addEventListener('click', () => { contextMenu.classList.remove('active'); toggleOverlayMode(); });
+            if (ctxPostureBtn) {
+                ctxPostureBtn.addEventListener('click', () => {
+                    contextMenu.classList.remove('active');
+                    const currentMode = typeof window.getIdleMode === 'function' ? window.getIdleMode() : 'standing';
+                    const newMode = currentMode === 'standing' ? 'sitting' : 'standing';
+                    if (typeof window.setIdleMode === 'function') {
+                        window.setIdleMode(newMode);
+                    }
+                    updatePostureUI();
+                });
+            }
+            if (ctxFlipVrmBtn) {
+                ctxFlipVrmBtn.addEventListener('click', () => {
+                    contextMenu.classList.remove('active');
+                    if (typeof window.flipCurrentVrm180 === 'function') {
+                        window.flipCurrentVrm180();
+                    }
+                });
+            }
+            if (ctxMemoryBtn) {
+                ctxMemoryBtn.addEventListener('click', () => {
+                    contextMenu.classList.remove('active');
+                    const optionsDrawer = document.getElementById('options-drawer');
+                    const optionsOverlay = document.getElementById('options-overlay');
+                    if (optionsDrawer && optionsOverlay) {
+                        optionsDrawer.classList.add('open');
+                        optionsOverlay.classList.add('active');
+                        if (categoriesView) categoriesView.classList.remove('active');
+                        panels.forEach(p => p.classList.remove('active'));
+                        const memoryPanel = document.getElementById('panel-prompt');
+                        if (memoryPanel) memoryPanel.classList.add('active');
+                        loadConfigFromHub();
+                    }
+                });
+            }
+
+            // Animations VRM
+            const animList = document.getElementById('vrm-anim-list');
+            const animations = [
+                { id: 'dance', label: '💃 Danse Aléatoire', icon: 'fa-music', highlight: true },
+                { id: 'idle_random', label: '🧘 Repos Aléatoire', icon: 'fa-clock-rotate-left', highlight: true },
+                { id: 'divider' },
+                { id: 'idle', label: '🧘 Repos Calme', icon: 'fa-spa' },
+                { id: 'sitting', label: '🪑 S\'asseoir', icon: 'fa-chair' },
+                { id: 'wave', label: '👋 Coucou', icon: 'fa-hand' },
+                { id: 'nod', label: '👍 Hocher la tête', icon: 'fa-circle-check' },
+                { id: 'deny', label: '👎 Signe Non', icon: 'fa-circle-xmark' },
+                { id: 'think', label: '🤔 Réfléchir', icon: 'fa-brain' },
+                { id: 'kiss', label: '😘 Bisou', icon: 'fa-heart' }
+            ];
+
+            if (animList) {
+                animList.innerHTML = animations.map(anim => {
+                    if (anim.id === 'divider') return `<div class="menu-divider"></div>`;
+                    return `
+                        <div class="menu-item ${anim.highlight ? 'highlight-btn' : ''}" data-anim="${anim.id}">
+                            <i class="fa-solid ${anim.icon}"></i>
+                            <span>${anim.label}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                animList.addEventListener('click', (e) => {
+                    const item = e.target.closest('.menu-item');
+                    if (item) {
+                        const animId = item.getAttribute('data-anim');
+                        window.dispatchEvent(new CustomEvent('vrm:playAnimation', { detail: { animation: animId } }));
+                        if (typeof window.playVRMAnimation === 'function') window.playVRMAnimation(animId);
+                        contextMenu.classList.remove('active');
+                    }
+                });
+            }
+
+            const vrmArea = document.querySelector('.vrm-character-area');
+            if (vrmArea && contextMenu) {
+                vrmArea.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    let x = e.clientX, y = e.clientY;
+
+                    if (y + 260 > window.innerHeight) y = window.innerHeight - 270;
+                    if (x + 260 > window.innerWidth) x = window.innerWidth - 270;
+
+                    if (x + 500 > window.innerWidth) contextMenu.classList.add('align-left');
+                    else contextMenu.classList.remove('align-left');
+
+                    contextMenu.style.left = `${x}px`;
+                    contextMenu.style.top = `${y}px`;
+                    updatePostureUI();
+                    contextMenu.classList.add('active');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!contextMenu.contains(e.target)) contextMenu.classList.remove('active');
+                });
+            }
+        });
+    </script>
+
+    <script type="module">
+        // Contrôles de la barre de titre
+        document.addEventListener('DOMContentLoaded', () => {
+            async function getTauriWin() {
+                if (window.__TAURI__ && window.__TAURI__.window) {
+                    if (typeof window.__TAURI__.window.getCurrentWindow === 'function') {
+                        return window.__TAURI__.window.getCurrentWindow();
+                    }
+                    return window.__TAURI__.window.appWindow;
+                }
+                return null;
+            }
+
+            const btnMin = document.getElementById('btn-win-minimize');
+            const btnMax = document.getElementById('btn-win-maximize');
+            const btnClose = document.getElementById('btn-win-close');
+
+            if (btnMin) {
+                btnMin.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const win = await getTauriWin();
+                    if (win) await win.minimize();
+                });
+            }
+
+            if (btnMax) {
+                btnMax.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const win = await getTauriWin();
+                    if (win) {
+                        const isMaximized = await win.isMaximized();
+                        if (isMaximized) await win.unmaximize();
+                        else await win.maximize();
+                    }
+                });
+            }
+
+            if (btnClose) {
+                btnClose.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const win = await getTauriWin();
+                    if (win) await win.close();
+                });
+            }
+
+            // Écouteur pour le slider de température
+            const tempSlider = document.getElementById('temp-slider');
+            const tempValue = document.getElementById('temp-value');
+
+            if (tempSlider && tempValue) {
+                tempSlider.addEventListener('input', (e) => {
+                    tempValue.textContent = parseFloat(e.target.value).toFixed(2);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
