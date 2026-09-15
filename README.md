@@ -15,6 +15,8 @@ L'objectif est de construire un compagnon capable de conserver son contexte dans
 
 Le projet évolue aujourd'hui d'un prototype expérimental vers une **application complète avec interface propriétaire, avatar VRM, système vocal hybride, historique des conversations et Hub centralisé pour les outils**.
 
+---
+
 ⚠️ **Le code source est désormais disponible publiquement.**
 
 Le code source de base de M.A.Y.A. est disponible dans le dossier **[Code source](https://github.com/IronWoodten/project-maya/tree/main/code%20source)** de ce dépôt.
