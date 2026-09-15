@@ -1,0 +1,6 @@
+{
+    "name": "memory",
+    "version": "1.0.0",
+    "description": "Mémoire à long terme de Maya",
+    "entry_point": "plugin.py"
+}

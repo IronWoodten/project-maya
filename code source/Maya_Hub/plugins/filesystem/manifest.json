@@ -1,0 +1,6 @@
+{
+    "name": "filesystem",
+    "version": "1.0.0",
+    "description": "Accès au système de fichiers du PC (lecture, écriture, déplacement). ⚠️ ATTENTION : Nécessaire au fonctionnement de la mémoire et du journal de Maya.",
+    "entry_point": "plugin.py"
+}

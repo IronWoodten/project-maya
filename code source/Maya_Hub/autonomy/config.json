@@ -1,0 +1,6 @@
+{
+    "enabled": true,
+    "check_interval": 1200, 
+    "idle_time_required": 1200,
+    "max_tasks_per_day": 3
+}

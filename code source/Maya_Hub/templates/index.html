@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAYA HUB - Panneau de Contrôle</title>
+    <style>
+        :root {
+            --bg-dark: #0f0f17;
+            --accent-blue: #7aa2f7;
+            --accent-pink: #f7768e;
+            --accent-green: #9ece6a;
+            --accent-yellow: #e0af68;
+            --accent-purple: #bb9af7;
+            --card-bg: rgba(26, 27, 38, 0.75);
+            --card-border: rgba(122, 162, 247, 0.15);
+            --card-border-hover: rgba(122, 162, 247, 0.4);
+            --text-main: #c0caf5;
+            --text-sub: #a9b1d6;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(122, 162, 247, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(247, 118, 142, 0.08) 0%, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+            color: var(--text-main);
+            text-align: center;
+            padding: 40px 20px;
+            margin: 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(122, 162, 247, 0.4);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--text-sub);
+            font-size: 0.95em;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .section-title {
+            color: var(--accent-pink);
+            text-align: left;
+            max-width: 900px;
+            margin: 35px auto 18px auto;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(247, 118, 142, 0.2);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .module-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 22px;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            width: 270px;
+            text-align: left;
+            position: relative;
+            box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .module-card:hover {
+            border-color: var(--card-border-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px 0 rgba(122, 162, 247, 0.15);
+        }
+
+        .module-card.disabled {
+            opacity: 0.45;
+            filter: grayscale(0.5);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .dot-active { 
+            background-color: var(--accent-green); 
+            box-shadow: 0 0 10px var(--accent-green); 
+        }
+        
+        .dot-executing { 
+            background-color: var(--accent-yellow); 
+            box-shadow: 0 0 12px var(--accent-yellow); 
+            animation: pulse 1.2s infinite alternate;
+        }
+
+        .dot-inactive { 
+            background-color: var(--accent-pink); 
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #24283b;
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #a9b1d6;
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: rgba(122, 162, 247, 0.2);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 12px rgba(122, 162, 247, 0.4);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+            background-color: var(--accent-blue);
+            box-shadow: 0 0 8px var(--accent-blue);
+        }
+
+        .plugin-desc {
+            font-size: 0.82em;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+            line-height: 1.35;
+            opacity: 0.9;
+        }
+
+        .cap-list {
+            font-size: 0.85em;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        /* STYLES DU COMPTE À REBOURS AUTONOMIE */
+        .autonomy-info-box {
+            margin-top: 14px;
+            padding: 10px;
+            background: rgba(15, 15, 23, 0.6);
+            border: 1px solid rgba(122, 162, 247, 0.2);
+            border-radius: 8px;
+            font-size: 0.82em;
+        }
+
+        .autonomy-timer-title {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+
+        .autonomy-timer-value {
+            font-weight: bold;
+            font-size: 1.15em;
+            color: var(--accent-blue);
+            font-family: 'Consolas', 'Fira Code', monospace;
+        }
+
+        .autonomy-status-sub {
+            font-size: 0.85em;
+            color: var(--accent-green);
+            margin-top: 4px;
+        }
+
+        .logs-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(15, 15, 23, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            padding: 15px 20px;
+            text-align: left;
+            font-family: 'Consolas', 'Fira Code', 'Monaco', monospace;
+            font-size: 0.88em;
+            max-height: 280px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .log-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .log-badge {
+            font-size: 0.75em;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .badge-mcp { background: rgba(122, 162, 247, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+        .badge-learning { background: rgba(187, 154, 247, 0.2); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+        .badge-search { background: rgba(224, 175, 104, 0.2); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
+        .badge-system { background: rgba(158, 206, 106, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-error { background: rgba(247, 118, 142, 0.2); color: var(--accent-pink); border: 1px solid var(--accent-pink); }
+
+        .log-source {
+            color: #ffffff;
+            font-weight: 600;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .log-msg {
+            color: var(--text-sub);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>✨ MAYA HUB</h1>
+    <p class="subtitle">Système Nerveux Central & Plugins</p>
+
+    <h2 class="section-title">⚙️ Services Système</h2>
+    <div class="status-container">
+        <div class="module-card" id="card-autolearning">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="status-dot dot-active" id="autonomy-dot"></span> Autolearning
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="service-autolearning" onchange="toggleService('autolearning', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="cap-list">
+                Apprentissage autonome en arrière-plan pendant les périodes d'inactivité.
+            </div>
+
+            <!-- BOÎTE DE STATUT COMPTE À REBOURS -->
+            <div class="autonomy-info-box">
+                <div class="autonomy-timer-title">Prochain cycle dans</div>
+                <div class="autonomy-timer-value" id="autonomy-timer">--m --s</div>
+                <div class="autonomy-status-sub" id="autonomy-status-text">Connexion au Hub...</div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">🔌 Plugins</h2>
+    <div class="status-container" id="plugins-list">
+        {% for name, plugin_obj in plugins.items() %}
+        {% set pid = plugin_obj.id if plugin_obj.id is defined else name %}
+        <div class="module-card" id="card-{{ pid }}">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="status-dot dot-active"></span> {{ plugin_obj.name if plugin_obj.name is defined else name }}
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked onchange="togglePlugin('{{ pid }}', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            {% if plugin_obj.description is defined and plugin_obj.description %}
+            <div class="plugin-desc">
+                {{ plugin_obj.description }}
+            </div>
+            {% endif %}
+
+            <div class="cap-list">
+                <strong>Capacités :</strong><br>
+                {% for cap in caps.get(name, []) %}
+                    - {{ cap }}<br>
+                {% endfor %}
+                {% if caps.get(name, [])|length == 0 %}
+                    Aucune capacité déclarée
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2 class="section-title">📡 Journal d'Activités Hub</h2>
+    <div class="logs-container" id="logs-box">
+        <div class="log-item">
+            <span class="log-badge badge-system">SYSTEM</span>
+            <span class="log-source">Hub Maya:</span>
+            <span class="log-msg">Initialisation de la console de logs...</span>
+        </div>
+    </div>
+
+    <script>
+        let isUserInteracting = false;
+
+        // Formate les secondes en "MMm SSs"
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}m ${s < 10 ? '0' : ''}${s}s`;
+        }
+
+        // PING EN TEMPS RÉEL SUR L'AUTONOMIE
+        async function updateAutonomyPing() {
+            try {
+                const res = await fetch('/api/autonomy/status');
+                if (!res.ok) throw new Error("Erreur statut");
+                const data = await res.json();
+
+                const dot = document.getElementById('autonomy-dot');
+                const timerEl = document.getElementById('autonomy-timer');
+                const statusEl = document.getElementById('autonomy-status-text');
+                const switchEl = document.getElementById('service-autolearning');
+                const cardEl = document.getElementById('card-autolearning');
+
+                // Synchroniser le switch visuel avec l'état réel du serveur
+                if (switchEl && !isUserInteracting) {
+                    switchEl.checked = !!data.enabled;
+                }
+
+                if (cardEl) {
+                    if (data.enabled) cardEl.classList.remove('disabled');
+                    else cardEl.classList.add('disabled');
+                }
+
+                if (!data.enabled) {
+                    if (dot) dot.className = 'status-dot dot-inactive';
+                    if (timerEl) {
+                        timerEl.innerText = '--m --s';
+                        timerEl.style.color = '#a9b1d6';
+                    }
+                    if (statusEl) {
+                        statusEl.innerText = 'Service désactivé';
+                        statusEl.style.color = 'var(--accent-pink)';
+                    }
+                    return;
+                }
+
+                if (data.is_executing) {
+                    if (dot) dot.className = 'status-dot dot-executing';
+                    if (timerEl) {
+                        timerEl.innerText = '🧠 EN COURS';
+                        timerEl.style.color = 'var(--accent-yellow)';
+                    }
+                    if (statusEl) {
+                        statusEl.innerText = 'Maya effectue une recherche...';
+                        statusEl.style.color = 'var(--accent-yellow)';
+                    }
+                } else {
+                    if (dot) dot.className = 'status-dot dot-active';
+                    if (timerEl) {
+                        timerEl.innerText = formatTime(data.time_until_next_run || 0);
+                        timerEl.style.color = 'var(--accent-blue)';
+                    }
+                    if (statusEl) {
+                        statusEl.innerText = data.status_text || 'En attente';
+                        statusEl.style.color = 'var(--accent-green)';
+                    }
+                }
+            } catch (err) {
+                const dot = document.getElementById('autonomy-dot');
+                const statusEl = document.getElementById('autonomy-status-text');
+                if (dot) dot.className = 'status-dot dot-inactive';
+                if (statusEl) {
+                    statusEl.innerText = 'Hub déconnecté';
+                    statusEl.style.color = 'var(--accent-pink)';
+                }
+            }
+        }
+
+        async function togglePlugin(pluginId, isEnabled) {
+            try {
+                const res = await fetch('/api/toggle_plugin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plugin_id: pluginId, enabled: isEnabled })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    const card = document.getElementById(`card-${pluginId}`);
+                    if (card) {
+                        if (isEnabled) card.classList.remove('disabled');
+                        else card.classList.add('disabled');
+                    }
+                }
+                fetchLogs();
+            } catch (err) {
+                console.error("Erreur lors de la mise à jour du plugin :", err);
+            }
+        }
+
+        async function toggleService(serviceId, isEnabled) {
+            isUserInteracting = true;
+            try {
+                const res = await fetch('/api/toggle_service', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ service_id: serviceId, enabled: isEnabled })
+                });
+                const data = await res.json();
+                console.log("Service toggle result:", data);
+
+                // Forcer un rafraîchissement immédiat de l'IHM et des logs
+                await updateAutonomyPing();
+                await fetchLogs();
+            } catch (err) {
+                console.error("Erreur lors de la mise à jour du service :", err);
+            } finally {
+                isUserInteracting = false;
+            }
+        }
+
+        async function fetchLogs() {
+            try {
+                const res = await fetch('/api/logs');
+                if (!res.ok) return;
+                const logs = await res.json();
+
+                const box = document.getElementById('logs-box');
+                if (!logs || logs.length === 0) return;
+
+                box.innerHTML = logs.map(log => {
+                    const badgeClass = `badge-${log.type || 'system'}`;
+                    return `
+                        <div class="log-item">
+                            <span class="log-badge ${badgeClass}">${log.type || 'SYS'}</span>
+                            <span class="log-source">${log.source || 'Hub'}:</span>
+                            <span class="log-msg">${log.message}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                box.scrollTop = box.scrollHeight;
+            } catch (err) {
+                console.error("Erreur lors de la récupération des logs:", err);
+            }
+        }
+
+        // Lancement des boucles de rafraîchissement
+        setInterval(updateAutonomyPing, 1000);
+        updateAutonomyPing();
+
+        setInterval(fetchLogs, 2000);
+        fetchLogs();
+    </script>
+</body>
+</html>

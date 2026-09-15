@@ -1,0 +1,22 @@
+{
+    "plugin_dir": "plugins",
+    "log_level": "DEBUG",
+    "plugins_enabled": {
+        "filesystem": true,
+        "memory": true,
+        "research": true
+    },
+    "services": {
+        "autolearning": false
+    },
+    "tavily_api_key": "tvly-*******************************************************
+    "llama_cpp_endpoint": "http://127.0.0.1:8080/v1/chat/completions",
+    "llama_bin": "../llama/llama-server.exe",
+    "llama_model_path": "../model GGUF",
+    "llama_port": 8080,
+    "llama_extra_args": [
+        "-ngl",
+        "99"
+    ],
+    "maya_context_size": 4096
+}
