@@ -29,8 +29,8 @@ La documentation technique, l'architecture et les choix d'ingénierie restent é
 
 Découvrez M.A.Y.A. en vidéo — un compagnon IA local incarné, avec mémoire multicouche et outils modulaires.
 
-https://github.com/user-attachments/assets/36590647-a003-4d3f-9846-f93b737c2d7c
-
+https://github.com/user-attachments/assets/e5225b2f-67a3-4a25-b4a1-f3c50d88b0cf
+ 
 ---
 
 # 🖥️ État actuel du projet
