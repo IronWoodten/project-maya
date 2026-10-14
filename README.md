@@ -472,10 +472,12 @@ Ce projet est distribué sous la licence **[PolyForm Noncommercial 1.0.0](https:
 - **Usage commercial interdit** (vente, rebranding, monétisation, etc.)
 - Le code source reste accessible
 
+---
+
 Voir le fichier [`LICENSE`](./LICENSE) pour le texte complet.
 
-> ⚠️ **Avertissement sécurité**
->
+# ⚠️ **Avertissement sécurité**
+
 > Maya dispose d’outils (notamment le **FileSystemPlugin**) qui peuvent **lire, écrire, déplacer, renommer et supprimer** des fichiers sur votre machine.
 >
 > Même avec une liste noire sur certains dossiers système critiques, l’utilisation comporte des risques réels (suppression accidentelle, modification de fichiers importants, etc.).
