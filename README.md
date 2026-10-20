@@ -1,34 +1,20 @@
-# <img width="64" height="64" alt="64x64" src="https://github.com/user-attachments/assets/b7d6eea8-9342-4ac9-9b7b-4e0a314fcb01" /> Project M.A.Y.A.
+§# <img width="64" height="64" alt="64x64" src="https://github.com/user-attachments/assets/b7d6eea8-9342-4ac9-9b7b-4e0a314fcb01" /> Project M.A.Y.A.
 
 > **M**odular **A**vatar & **Y**oked **A**gent  
-> Built on the **M.A.Y.A.** principle:
->
-> **M**ost **A**dvanced, **Y**et **A**cceptable
+> Built on the **M.A.Y.A.** principle : **M**ost **A**dvanced, **Y**et **A**cceptable
+
+**Maya** est un compagnon IA **100 % local**, incarné (avatar VRM + voix), avec une mémoire multicouche qui évolue vraiment avec le temps.
 
 ---
 
-# 📖 Architecture & System Design Documentation
+### ⚠️ Point crucial — Mémoire
 
-**M.A.Y.A.** est un projet d'assistant IA local, incarné et modulaire.
+Pour que Maya se souvienne de vous sur le long terme, **cliquez sur l’icône disquette** à la fin de chaque session.  
+C’est cette accumulation de souvenirs qui alimente le cycle de réflexion (tous les 7 jours) et enrichit progressivement le **Core** de Maya.
 
-L'objectif est de construire un compagnon capable de conserver son contexte dans le temps, d'utiliser différents outils de manière autonome et d'interagir avec l'utilisateur à travers une véritable incarnation visuelle et vocale.
-
-Le projet évolue aujourd'hui d'un prototype expérimental vers une **application complète avec interface propriétaire, avatar VRM, système vocal hybride, historique des conversations et Hub centralisé pour les outils**.
-
----
-
-⚠️ **Le code source est désormais disponible publiquement.**
-
-Le code source de base de M.A.Y.A. est disponible dans le dossier **[Code source](https://github.com/IronWoodten/project-maya/tree/main/code%20source)** de ce dépôt.
-
-La documentation technique, l'architecture et les choix d'ingénierie restent également accessibles publiquement.
+→ [Comment fonctionne la mémoire](docs/memory.md) · [FAQ Utilisateur](Maya_FAQ_Utilisateur.pdf)
 
 ---
-
-> ⚠️ **Point crucial — Mémoire**  
-> Pour que Maya se souvienne de vous sur le long terme, **cliquez sur l’icône disquette** à la fin de chaque session.  
-> C’est cette accumulation de souvenirs qui alimente le cycle de réflexion (tous les 7 jours) et enrichit progressivement le Core de Maya.  
-> Détails → [docs/memory.md](docs/memory.md) · [FAQ Utilisateur](Maya_FAQ_Utilisateur.pdf)
 
 ## 🎬 Présentation du projet
 
