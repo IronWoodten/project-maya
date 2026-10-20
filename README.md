@@ -25,6 +25,11 @@ La documentation technique, l'architecture et les choix d'ingénierie restent é
 
 ---
 
+> ⚠️ **Point crucial — Mémoire**  
+> Pour que Maya se souvienne de vous sur le long terme, **cliquez sur l’icône disquette** à la fin de chaque session.  
+> C’est cette accumulation de souvenirs qui alimente le cycle de réflexion (tous les 7 jours) et enrichit progressivement le Core de Maya.  
+> Détails → [docs/memory.md](docs/memory.md) · [FAQ Utilisateur](Maya_FAQ_Utilisateur.pdf)
+
 ## 🎬 Présentation du projet
 
 Découvrez M.A.Y.A. en vidéo — un compagnon IA local incarné, avec mémoire multicouche et outils modulaires.
