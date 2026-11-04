@@ -60,6 +60,28 @@ Le **Maya Hub** reste la couche centrale (DeepSearch, FileSystem, MEMORY, Auto-L
 
 ---
 
+#### ⚡ Prise en main rapide — Utiliser les nouveautés de la v1.4
+
+##### 1. 🧠 Le nouveau journal de mémoire
+
+* **Utilisation au quotidien** : Vos moments forts et événements marquants s'enregistrent proprement au fil de la journée.
+* **Mise à jour des émotions** : Les états émotionnels se réécrivent dynamiquement pour éviter toute accumulation de doublons.
+* **Bonne pratique** : Cliquez sur l'icône **Disquette** en fin de session (au minimum une fois par jour d'utilisation). Le journal épuré optimise la fenêtre de contexte sans saturer la mémoire.
+
+##### 2. 🎓 Le système de compétences (`skills.json`)
+
+* **Connaissances structurées** : Maya conserve ses savoirs permanents dans un fichier dédié, avec niveau de confiance et déclencheurs (*triggers*) ciblés.
+* **Injection discrète** : Lorsqu'un sujet connu est abordé, la compétence s'active en arrière-plan sans polluer ni alourdir l'historique du chat.
+* **Personnalisation** : Vous pouvez consulter ou ajuster les compétences directement dans le fichier de configuration.
+
+##### 3. 📄 Ingestion directe de documents (PDF & DOCX)
+
+* **Mode d'emploi** : Cliquez sur l'icône **trombone**, puis sélectionnez un fichier `.pdf` ou `.docx`.
+* **Apprentissage & réponse** : Maya lit le document, le transforme automatiquement en compétence permanente et peut répondre immédiatement à vos questions.
+* **Propreté du système** : Le document brut ne reste ni dans l'historique de discussion ni dans le journal.
+
+---
+
 ## 📦 Installation
 
 1. Télécharge le dernier `setup.exe` dans les **[Releases](https://github.com/IronWoodten/project-maya/releases/latest)**
