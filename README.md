@@ -188,7 +188,7 @@ L’interface dispose d’un tiroir de paramètres modulaire et catégorisé, pe
 
 ### 📝 System Prompt & Deepsearch
 
- <img width="1281" height="808" alt="prompt" src="https://github.com/user-attachments/assets/df1d7f2c-d84e-4882-9419-64feb511017f" />
+ <img width="1260" height="775" alt="prompt" src="https://github.com/user-attachments/assets/04290c86-093e-4403-91df-54da99513e99" />
 
 * Édition en direct du System Prompt
 * Recherche web autonome (clé Tavily personnalisable)
