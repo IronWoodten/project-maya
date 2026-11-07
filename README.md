@@ -46,17 +46,17 @@ Maya est une **application native Windows** (Tauri) avec installateur clé en ma
 
 ### Interface Maya (mode classique)
 
-<img width="1247" height="845" alt="interface" src="https://github.com/user-attachments/assets/f4d62f36-2163-413c-ad61-afd6135b2853" />
-
+<img width="1193" height="804" alt="interface" src="https://github.com/user-attachments/assets/0b91a41d-9f4b-4f6e-8315-7f28ac1d53f4" />
+ 
 ### Mode Desktop Pet (Overlay)
 
-<img width="610" height="963" alt="overlay" src="https://github.com/user-attachments/assets/75944093-786f-4c72-97d9-0e97775f20e4" />
+<img width="786" height="1026" alt="overlay" src="https://github.com/user-attachments/assets/f49b1fe7-3652-4d8d-8a64-2f2088984cdf" />
 
 ### Maya Hub
 
 Le **Maya Hub** reste la couche centrale (DeepSearch, FileSystem, MEMORY, Auto-Learning, **Timer**).
 
-<img width="1041" height="815" alt="hub" src="https://github.com/user-attachments/assets/cb2769f7-59ba-4af7-ac5e-2e5d2b69560a" />
+ <img width="798" height="902" alt="mayahub" src="https://github.com/user-attachments/assets/89223b1d-e698-49c8-9abe-3612bb0cd189" />
 
 ---
 
@@ -160,30 +160,35 @@ L’objectif était de construire un assistant entièrement local, totalement pe
 
 L’interface dispose d’un tiroir de paramètres modulaire et catégorisé, permettant de tout configurer à la volée :
 
-<img width="1042" height="790" alt="options" src="https://github.com/user-attachments/assets/e33ae2c1-166e-43ab-ab0f-2c92192583fa" />
+<img width="1268" height="791" alt="paramètres" src="https://github.com/user-attachments/assets/5672682e-f532-4615-93fc-6548379f46bc" />
 
 ### 🏠 Hub Central
+
+<img width="798" height="902" alt="mayahub" src="https://github.com/user-attachments/assets/5a952efa-334d-41c7-9ddd-457a3a3909b3" />
+
 * **Accès direct (Port 5005)** : bouton de redirection rapide vers l’interface de gestion du Hub Maya.
 
 ### 🧠 LLM / Cerveau
 
-<img width="1053" height="765" alt="Capture d’écran 2026-08-14 121319" src="https://github.com/user-attachments/assets/5aca1aa2-7e81-4d1d-987a-35cafd582e03" />
+ <img width="1271" height="789" alt="llm" src="https://github.com/user-attachments/assets/b02b2f48-2f12-4f73-88b1-fcce278cbcb9" />
 
 * Organisation par dossiers : chaque modèle LLM vit dans son propre sous-dossier avec son fichier vision (`mmproj`) associé
 * Association automatique LLM ↔ Vision
 * Couplage strict dans l’UI
 * Affichage multi-quantisation
+* Réglage de la **température** du modèle
 
 ### 🎙️ Voix & Synthèse
 
-<img width="1049" height="796" alt="options voix" src="https://github.com/user-attachments/assets/92873116-c31c-4a7c-afd0-193c8936d8c0" />
+ <img width="1281" height="800" alt="voix" src="https://github.com/user-attachments/assets/bacf1cc7-0399-4691-9477-2da21a765c5e" />
 
 * Choix dynamique entre Edge-TTS et Piper TTS
 * Filtrage intelligent des voix selon le moteur
+* Réglage de la **vitesse de la voix**
 
 ### 📝 System Prompt & Deepsearch
 
-<img width="1019" height="781" alt="Capture d’écran 2026-08-14 121445" src="https://github.com/user-attachments/assets/d01facc6-b2e2-451d-a0d6-ebf24395bf42" />
+ <img width="1281" height="808" alt="prompt" src="https://github.com/user-attachments/assets/df1d7f2c-d84e-4882-9419-64feb511017f" />
 
 * Édition en direct du System Prompt
 * Recherche web autonome (clé Tavily personnalisable)
@@ -194,6 +199,14 @@ L’interface dispose d’un tiroir de paramètres modulaire et catégorisé, pe
 
 * Mode **Passif** (répond uniquement aux sollicitations) ou **Actif** (relances autonomes)
 * Délai d’inactivité réglable
+
+### 🧍 Position & Pose VRM
+
+<img width="1260" height="793" alt="posture" src="https://github.com/user-attachments/assets/472b29f3-729d-44d7-84e4-98cfa716af5b" />
+
+* Tiroir dédié pour ajuster la **position** de l’avatar
+* Réglage de l’**écartement des bras** et des **jambes**
+* Permet de corriger le placement de certains modèles VRM mal calibrés  
 
 ## 💬 Gestion des conversations
 
