@@ -1,0 +1,19 @@
+{
+  "_aide": "Chaque compétence : name (libre), triggers (mots-clés), content (texte injecté, 2 à 4 phrases), enabled (true/false). Optionnel : strong = mots-clés qui suffisent seuls à la déclencher ; min_score = score à atteindre (1 par défaut). Un mot présent dans plusieurs compétences (sujet récurrent) ou listé dans strong vaut 1 : il suffit seul. Un mot propre à une seule compétence vaut 0,5 : il en faut deux. Les mots retrouvés seulement dans les 2 messages précédents valent moitié moins, et au moins un mot doit toujours être dans le message actuel. Accents, majuscules, pluriels et conjugaisons sont tolérés. Le fichier est rechargé automatiquement quand tu l'enregistres. Les compétences créées automatiquement (id auto-...) peuvent être corrigées ou désactivées ici.",
+  "version": 1,
+  "memory_imported": true,
+  "skills": [
+    {
+      "id": "exemple",
+      "name": "Exemple (désactivé)",
+      "enabled": false,
+      "triggers": [
+        "motcleexemple",
+        "autremotexemple"
+      ],
+      "strong": [
+        "motcleexemple"
+      ],
+      "content": "Texte court (2-4 phrases) que Maya recevra uniquement quand le message contient le mot-clé."
+    },
+}
