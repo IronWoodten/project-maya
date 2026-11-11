@@ -1,0 +1,828 @@
+/* =========================================================
+   GLOBAL & LAYOUT (CORRIGÉ POUR ÉVITER LA BARRE BLANCHE)
+   ========================================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body { 
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Force le fond global à être transparent nativement */
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #fff; 
+}
+
+button, a {
+    cursor: pointer;
+}
+
+/* Le fond sombre est désormais géré par le container principal, PAS le body */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #111;
+}
+
+/* En mode overlay, le container repasse en transparent */
+body.mode-overlay .app-container {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+.app-layout {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent;
+}
+
+/* =========================================================
+   CHAT SIDEBAR & HEADER
+   ========================================================= */
+.chat-sidebar {
+    width: 340px;
+    min-width: 280px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e1e;
+    border-right: 1px solid #333;
+    z-index: 10;
+}
+
+.chat-header {
+    padding: 12px 15px;
+    background-color: #252525;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 1.05em;
+}
+
+.chat-title i {
+    color: #007acc;
+}
+
+.icon-btn {
+    background: #1e1e1e;
+    border: 1px solid #3d3d3d;
+    color: #ccc;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+    background-color: #007acc;
+    color: #fff;
+    border-color: #007acc;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Voyant Hub Maya */
+.hub-status-badge {
+    width: 10px !important;
+    height: 10px !important;
+    min-width: 10px;
+    min-height: 10px;
+    border-radius: 50% !important;
+    background-color: #ff4d4d !important;
+    display: inline-block !important;
+    margin-left: 8px;
+    vertical-align: middle;
+    box-shadow: 0 0 6px rgba(255, 77, 77, 0.8);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hub-status-badge.connected {
+    background-color: #2ecc71 !important;
+    box-shadow: 0 0 6px rgba(46, 204, 113, 0.8);
+}
+
+/* =========================================================
+   CHAT BODY & BULLES
+   ========================================================= */
+.chat-body {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #181818;
+}
+
+.chat-body > * {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    position: relative;
+}
+
+.chat-body > .user,
+.chat-body > .user-message,
+.chat-body > [data-role="user"] {
+    align-self: flex-end !important;
+    background-color: #005a9e !important;
+    color: #ffffff !important;
+    border-bottom-right-radius: 2px !important;
+    border: 1px solid #0078d4 !important;
+    text-align: left !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+}
+
+.chat-body > *:not(.user):not(.user-message):not([data-role="user"]) {
+    align-self: flex-start !important;
+    background-color: #2b2d3e !important;
+    color: #f1f1f1 !important;
+    border-bottom-left-radius: 2px !important;
+    border: 1px solid #3f425b !important;
+    text-align: left !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+.chat-input {
+    display: flex;
+    padding: 12px;
+    background-color: #252525;
+    border-top: 1px solid #333;
+    gap: 8px;
+    align-items: center;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #181818;
+    color: #fff;
+    outline: none;
+}
+
+.chat-input button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007acc;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================================
+   BARRE D'OUTILS RAPIDE
+   ========================================================= */
+.quick-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: #252525;
+    border-top: 1px solid #333;
+}
+
+.tool-btn {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: #1e1e1e !important;
+    border: 1px solid #3d3d3d !important;
+    color: #ccc !important;
+    height: 34px !important;
+    width: 34px !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0;
+}
+
+.tool-btn:hover {
+    background-color: #007acc !important;
+    color: #ffffff !important;
+    border-color: #007acc !important;
+}
+
+.tool-btn.stop-btn:hover {
+    background-color: #c62828 !important;
+    border-color: #ef5350 !important;
+    color: #ffffff !important;
+}
+
+.screenshot-preview-container {
+    display: none;
+    padding: 8px 12px;
+    background-color: #1e1e1e;
+    border-top: 1px solid #333;
+    position: relative;
+    align-items: center;
+    gap: 12px;
+}
+.screenshot-preview-container.active {
+    display: flex;
+}
+.screenshot-preview-container img {
+    max-height: 60px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+.btn-close-preview {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background 0.2s;
+}
+.btn-close-preview:hover { background: #ff1a1a; }
+
+/* =========================================================
+   ZONE 3D VRM
+   ========================================================= */
+.vrm-character-area {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #222;
+}
+
+.vrm-character-area canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1;
+    display: block;
+    background: transparent !important;
+}
+
+/* =========================================================
+   TIROIRS & OVERLAYS
+   ========================================================= */
+.drawer-overlay, .history-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 9998;
+}
+
+.drawer-overlay.active, .history-overlay.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+.drawer {
+    position: fixed;
+    top: 0;
+    right: -380px;
+    width: 360px;
+    height: 100vh;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+    transition: right 0.3s ease;
+    z-index: 9999;
+    overflow: hidden;
+}
+.drawer.open { right: 0 !important; }
+
+.history-drawer {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100vh;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+    transition: left 0.3s;
+    z-index: 9999;
+}
+.history-drawer.open { left: 0 !important; }
+
+.drawer-header, .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #313244;
+    padding-bottom: 12px;
+    flex-shrink: 0;
+}
+.close-btn { background: none; border: none; color: #a6adc8; font-size: 1.5rem; cursor: pointer; }
+
+.new-chat-btn {
+    background: #89b4fa; color: #11111b; border: none; padding: 10px;
+    border-radius: 8px; font-weight: bold; display: flex; align-items: center;
+    justify-content: center; gap: 8px; width: 100%; cursor: pointer;
+}
+.save-btn {
+    background: #89b4fa; color: #11111b; border: none; padding: 10px;
+    border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer;
+    transition: background 0.2s;
+}
+.save-btn:hover { background: #b4befe; }
+
+.prompt-textarea {
+    width: 100%; height: 120px; background: #11111b; border: 1px solid #45475a;
+    color: #cdd6f4; padding: 10px; border-radius: 6px; outline: none; resize: vertical;
+    font-family: inherit; font-size: 0.85rem; line-height: 1.4; box-sizing: border-box;
+}
+.prompt-textarea:focus { border-color: #89b4fa; }
+
+.bg-upload-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 10px; background: #181825; border: 1px dashed #89b4fa;
+    border-radius: 8px; cursor: pointer;
+}
+
+.option-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.option-group label { font-size: 0.88rem; color: #a6adc8; font-weight: 500; }
+.option-select, .option-input {
+    width: 100%; padding: 10px; background: #11111b; border: 1px solid #45475a;
+    color: #cdd6f4; border-radius: 6px; outline: none; cursor: pointer; font-family: inherit;
+}
+.option-input { cursor: text; }
+
+/* Slider de vitesse TTS */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+#tts-speed-slider {
+    flex-grow: 1;
+    cursor: pointer;
+    accent-color: #89b4fa;
+    background: #11111b;
+    border-radius: 5px;
+    height: 6px;
+}
+
+#tts-speed-display {
+    font-size: 0.88rem;
+    color: #89b4fa;
+    font-weight: bold;
+}
+
+/* Sliders de posture VRM (écart bras / jambes) */
+.pose-slider-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.pose-slider-row input[type="range"] {
+    flex-grow: 1; cursor: pointer; accent-color: #89b4fa;
+    background: #11111b; border-radius: 5px; height: 6px;
+}
+.btn-reset-pose {
+    flex-shrink: 0; background: #313244; border: 1px solid #45475a; color: #a6adc8;
+    width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+}
+.btn-reset-pose:hover { background: #3f425b; border-color: #89b4fa; color: #fff; }
+
+.status-msg { color: #2ecc71; font-size: 0.85rem; font-weight: bold; min-height: 20px; opacity: 0; transition: opacity 0.3s ease; text-align: center; margin-top: 4px; }
+.status-msg.visible { opacity: 1; }
+
+.options-drawer-body { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.options-view { display: none; flex-direction: column; gap: 10px; width: 100%; height: 100%; animation: fadeIn 0.2s ease-in-out; overflow-y: auto; }
+.options-view.active { display: flex; }
+
+.category-menu-list { display: flex; flex-direction: column; gap: 10px; }
+.category-item-btn {
+    background: #2b2d3e; color: #cdd6f4; border: 1px solid #45475a; padding: 14px 16px;
+    border-radius: 8px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center;
+    gap: 12px; width: 100%; text-align: left; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+}
+.category-item-btn:hover { background: #3f425b; border-color: #89b4fa; color: #fff; transform: translateX(-3px); }
+.category-item-btn i:first-child { font-size: 1.1rem; color: #89b4fa; width: 22px; text-align: center; }
+.category-item-btn .arrow-icon, .category-item-btn .external-icon { margin-left: auto; font-size: 0.85rem; color: #a6adc8; }
+
+.options-panel {
+    display: none; flex-direction: column; width: 100%; height: 100%; position: absolute;
+    top: 0; left: 0; background: #1e1e2e; z-index: 5; animation: slideInRight 0.22s ease-out;
+}
+.options-panel.active { display: flex; }
+
+@keyframes slideInRight { from { opacity: 0; transform: translateX(25px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.panel-header { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #313244; padding-bottom: 12px; margin-bottom: 12px; flex-shrink: 0; }
+.panel-header h4 { margin: 0; font-size: 1rem; color: #cdd6f4; }
+.btn-back-category { background: #313244; color: #89b4fa; border: 1px solid #45475a; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+.btn-back-category:hover { background: #45475a; color: #fff; transform: translateX(-2px); }
+.panel-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 2px; }
+.panel-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid #313244; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+
+/* =========================================================
+   MENU CONTEXTUEL CLIC DROIT
+   ========================================================= */
+.context-menu {
+    position: fixed; display: none; background: #1e1e2e; border: 1px solid #45475a;
+    border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); z-index: 10000;
+    min-width: 250px; overflow: visible; backdrop-filter: blur(6px);
+}
+.context-menu.active { display: block; }
+.context-menu .menu-header {
+    padding: 10px 14px; font-size: 0.85rem; font-weight: bold; color: #89b4fa;
+    border-bottom: 1px solid #313244; background: #181825; display: flex; align-items: center;
+    gap: 8px; border-top-left-radius: 8px; border-top-right-radius: 8px;
+}
+.context-menu .menu-list { padding: 6px 0; }
+.context-menu .menu-item {
+    padding: 10px 14px; font-size: 0.88rem; color: #cdd6f4; cursor: pointer;
+    display: flex; align-items: center; gap: 10px; transition: background 0.2s ease, color 0.2s ease; position: relative;
+}
+.context-menu .menu-item:hover { background: #313244; color: #89b4fa; }
+.context-menu .menu-item.highlight-btn { color: #4facfe; font-weight: 600; }
+.context-menu .menu-item.highlight-btn:hover { background: rgba(79, 172, 254, 0.15); color: #60a5fa; }
+.context-menu .menu-divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 4px 0; }
+
+.context-menu .menu-item.has-submenu { justify-content: space-between; }
+.context-menu .menu-item.has-submenu .arrow-icon { font-size: 0.8rem; color: #a6adc8; }
+.context-menu .submenu {
+    display: none; position: absolute; top: -5px; left: 100%; min-width: 240px;
+    background: #1e1e2e; border: 1px solid #45475a; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px); z-index: 10001; overflow: hidden; animation: fadeIn 0.15s ease-out;
+}
+.context-menu .menu-item.has-submenu:hover > .submenu { display: block; }
+.context-menu.align-left .submenu { left: auto; right: 100%; }
+.context-menu .submenu .submenu-list { max-height: 350px; overflow-y: auto; padding: 6px 0; }
+
+/* =========================================================
+   MODE OVERLAY (TRANSPARENT ABSOLU)
+   ========================================================= */
+body.mode-overlay,
+html.mode-overlay {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #fff;
+    overflow: hidden;
+    pointer-events: none !important;
+}
+
+body.mode-overlay .chat-sidebar,
+body.mode-overlay #options-drawer,
+body.mode-overlay #history-drawer,
+body.mode-overlay #vrm-drawer,
+body.mode-overlay #bg-drawer,
+body.mode-overlay .drawer-overlay,
+body.mode-overlay .history-overlay {
+    display: none !important;
+}
+
+body.mode-overlay .app-layout {
+    height: 100vh !important;
+    background: transparent !important;
+}
+
+body.mode-overlay .vrm-character-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999;
+    background: transparent !important;
+    background-color: transparent !important;
+    pointer-events: none !important;
+}
+
+body.mode-overlay .vrm-character-area canvas,
+body.mode-overlay .mini-chat-widget,
+body.mode-overlay .context-menu {
+    pointer-events: auto !important;
+}
+
+/* =========================================================
+   WIDGET OVERLAY (FLOTTANT)
+   ========================================================= */
+.mini-chat-widget {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 380px;
+    max-width: calc(100vw - 60px);
+    height: auto;
+    background: rgba(20, 20, 28, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    z-index: 10000;
+    flex-direction: column;
+    gap: 10px;
+    user-select: none;
+}
+
+body.mode-overlay .mini-chat-widget {
+    display: flex !important;
+    pointer-events: auto !important; /* FORCE l'interaction */
+    z-index: 10001; /* Doit être au dessus de tout */
+}
+
+.mini-widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 6px;
+    cursor: grab;
+}
+
+.mini-widget-header:active {
+    cursor: grabbing;
+}
+
+.mini-widget-title {
+    font-size: 0.88rem;
+    font-weight: bold;
+    color: #89b4fa;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+}
+
+.mini-last-message {
+    font-size: 0.92rem;
+    color: #f1f1f1;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    padding: 10px 12px;
+    height: auto;
+    min-height: 40px;
+    max-height: 280px;
+    overflow-y: auto;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    user-select: text;
+}
+
+.mini-widget-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.mini-widget-controls input {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid #45475a;
+    background: #11111b;
+    color: #fff;
+    font-size: 0.88rem;
+    outline: none;
+}
+
+/* =========================================================
+   BARRE DE TITRE GLOBALE & DÉBORDEMENT (CORRIGÉ)
+   ========================================================= */
+.global-titlebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 38px;
+    z-index: 9999;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    pointer-events: none; /* Laisse passer TOUS les clics vers le fond/chat par défaut */
+    user-select: none;
+    box-shadow: none !important; /* Empêche les ombres d'afficher une ligne blanche */
+}
+
+/* Zone de glisser-déposer : positionnée UNIQUEMENT au centre supérieur de la zone 3D */
+.titlebar-drag-area {
+    position: absolute;
+    top: 0;
+    left: 360px;  /* Démarre après la sidebar du chat (largeur 360px) */
+    right: 140px; /* S'arrête juste avant les 3 boutons de fenêtre */
+    height: 38px;
+    pointer-events: auto; /* Active le drag Tauri uniquement sur cet espace vide */
+    outline: none !important; /* Évite la bordure blanche de focus */
+    border: none !important;
+}
+
+/* Conteneur des 3 boutons de contrôle */
+.titlebar-controls {
+    position: relative;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    pointer-events: auto; /* Active les clics sur les boutons */
+    background: rgba(20, 20, 28, 0.85);
+    backdrop-filter: blur(8px);
+    border-bottom-left-radius: 8px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.win-btn {
+    background: transparent;
+    border: none;
+    color: #a6adc8;
+    width: 44px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    cursor: pointer;
+    pointer-events: auto !important;
+    transition: background 0.2s, color 0.2s;
+}
+
+.win-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+.win-btn.close-btn-win:hover {
+    background: #e81123 !important;
+    color: #ffffff !important;
+}
+
+/* Compatibilité Mode Overlay */
+body.mode-overlay .global-titlebar {
+    pointer-events: none !important;
+}
+
+body.mode-overlay .titlebar-controls,
+body.mode-overlay .titlebar-drag-area {
+    pointer-events: auto !important;
+}
+
+/* =========================================================
+   FENÊTRE « JEUX AVEC MAYA »
+   ========================================================= */
+.games-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10050;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.games-modal.open { display: flex; }
+body.mode-overlay .games-modal { pointer-events: auto !important; }
+
+.games-panel {
+    width: min(720px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #1e1e2e;
+    border: 1px solid #45475a;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    padding: 16px 18px;
+    color: #cdd6f4;
+}
+.games-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #313244;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+}
+.games-header h3 { margin: 0; font-size: 1.05rem; color: #89b4fa; display: flex; align-items: center; gap: 8px; }
+.games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.game-card {
+    background: #181825;
+    border: 1px solid #313244;
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.game-card:hover { border-color: #89b4fa; box-shadow: 0 0 14px rgba(137, 180, 250, 0.18); }
+.game-card-title { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.game-card-title i { color: #89b4fa; }
+.game-card-desc { margin: 0; font-size: 0.85rem; color: #a6adc8; line-height: 1.4; }
+.game-opt { display: flex; flex-direction: column; gap: 4px; }
+.game-opt-label { font-size: 0.72rem; color: #a6adc8; text-transform: uppercase; letter-spacing: 0.5px; }
+.game-seg { display: flex; gap: 6px; }
+.game-seg button {
+    flex: 1;
+    padding: 6px 8px;
+    background: #11111b;
+    color: #cdd6f4;
+    border: 1px solid #45475a;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-family: inherit;
+    transition: all 0.15s;
+}
+.game-seg button:hover { border-color: #89b4fa; }
+.game-seg button.active { background: #89b4fa; color: #11111b; border-color: #89b4fa; font-weight: 700; }
+.game-play-btn {
+    margin-top: auto;
+    background: #89b4fa;
+    color: #11111b;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+.game-play-btn:hover { background: #b4befe; }
+.game-play-btn:disabled { opacity: 0.5; cursor: default; }
+.games-status { min-height: 1.4em; margin-top: 12px; font-size: 0.85rem; color: #a6adc8; }
+.games-status.ok { color: #a6e3a1; }
+.games-status.error { color: #f38ba8; }
+.games-footer { margin-top: 6px; font-size: 0.78rem; color: #6c7086; }
