@@ -26,6 +26,13 @@ export class SpeechManager {
     static isStopped = false;
     static activeAbortController = null;
 
+    // 🔓 Résolveur de la Promise audio en cours : permet à stop() de débloquer
+    // un `await speak()` suspendu (pause() ne déclenche ni onended ni onerror).
+    static _resolveAudio = null;
+    // 🔢 Identifiant de "tour de parole" : invalide les anciennes boucles speak()
+    // débloquées par stop() quand un nouveau speak() a déjà démarré.
+    static _runId = 0;
+
     // 🎯 File d'attente pour le streaming vocal phrase par phrase
     static sentenceQueue = [];
     static isProcessingQueue = false;
@@ -57,6 +64,14 @@ export class SpeechManager {
             this.currentAudio.pause();
             this.currentAudio.currentTime = 0;
             this.currentAudio = null;
+        }
+
+        // Invalide les boucles de parole en cours et débloque la Promise audio en attente
+        this._runId++;
+        if (this._resolveAudio) {
+            const r = this._resolveAudio;
+            this._resolveAudio = null;
+            r();
         }
 
         if (!keepAnimation) {
@@ -119,20 +134,21 @@ export class SpeechManager {
         this.stop(true); // garde l'animation en cours : le 1er step va enchaîner directement
         this.startNewResponse(); // nouveau tour -> ré-autorise le déclenchement d'émotion
         this.isStopped = false;
+        const myRun = this._runId;
 
         console.log("🎙️ SpeechManager : Début de la séquence de parole...");
 
         const steps = emotionEngine.parse(text);
 
         for (const step of steps) {
-            if (this.isStopped) {
+            if (this.isStopped || this._runId !== myRun) {
                 console.log("🛑 SpeechManager : Séquence interrompue.");
                 break;
             }
             await this._processStep(step);
         }
 
-        if (!this.isStopped) {
+        if (!this.isStopped && this._runId === myRun) {
             console.log("🎙️ SpeechManager : Séquence terminée -> Remise en Idle.");
             resetToIdle();
         }
@@ -238,6 +254,13 @@ export class SpeechManager {
             const audio = new Audio(url);
             this.currentAudio = audio;
 
+            // Résolution unique, déclenchable aussi par stop()
+            const done = () => {
+                if (this._resolveAudio === done) this._resolveAudio = null;
+                resolve();
+            };
+            this._resolveAudio = done;
+
             setupAudioLipSync(audio);
 
             // Cleanup "léger" (fin normale) : on ne touche PAS aux expressions du
@@ -258,27 +281,27 @@ export class SpeechManager {
             audio.onended = () => {
                 console.log("✅ Fin de l'audio de cette étape.");
                 cleanup();
-                resolve();
+                done();
             };
 
             audio.onerror = (error) => {
                 console.error("❌ Erreur de lecture audio :", error);
                 cleanupWithReset();
                 resetToIdle();
-                resolve();
+                done();
             };
 
             audio.play().then(() => {
                 if (this.isStopped) {
                     audio.pause();
                     cleanupWithReset();
-                    resolve();
+                    done();
                 }
             }).catch(error => {
                 console.error("❌ Erreur au lancement du play() :", error);
                 cleanupWithReset();
                 resetToIdle();
-                resolve();
+                done();
             });
         });
     }
