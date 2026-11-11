@@ -45,12 +45,66 @@ const TTS_CONFIG = {
                 { id: 'en_US-amy-medium', name: 'Amy (USA - Médium)' }
             ]
         }
+    },
+    'phonon': {
+        languages: [
+            { code: 'fr', name: 'Français (Phonon 40M)' }
+        ],
+        voices: {
+            fr: [
+                { id: 'default', name: 'Voix par défaut (Phonon)' },
+                { id: 'noemie', name: 'Noémie (Femme - France)' },
+                { id: 'coralie', name: 'Coralie (Femme - France)' },
+                { id: 'tiphaine', name: 'Tiphaine (Femme - France)' },
+                { id: 'maelys', name: 'Maëlys (Femme - France)' },
+                { id: 'orianne', name: 'Orianne (Femme - France)' },
+                { id: 'solene', name: 'Solène (Femme - France)' },
+                { id: 'ninon', name: 'Ninon (Femme - France)' },
+                { id: 'lilou', name: 'Lilou (Femme - France)' },
+                { id: 'helene', name: 'Hélène (Femme - France)' },
+                { id: 'augustin', name: 'Augustin (Homme - France)' },
+                { id: 'arnaud', name: 'Arnaud (Homme - France)' },
+                { id: 'jules', name: 'Jules (Homme - France)' },
+                { id: 'baptiste', name: 'Baptiste (Homme - France)' },
+                { id: 'lucien', name: 'Lucien (Homme - France)' },
+                { id: 'marius', name: 'Marius (Homme - France)' }
+            ]
+        }
+    },
+    'neutts': {
+        languages: [
+            { code: 'fr', name: 'Français (NeuTTS)' }
+        ],
+        voices: {
+            fr: [
+                { id: 'neutts-ref', name: 'Voix de référence (neutts_ref/ref.wav)' }
+            ]
+        }
     }
 };
 
 export function initOptionsUI() {
     // Stockage local des détails de chaque dossier de modèle
     let cachedModelDetails = [];
+
+    // Vrai si l'utilisateur a changé le modèle LLM / la vision depuis le dernier chargement de la config
+    let visionTouched = false;
+    // Vrai si la liste d'objectifs a bien été chargée (sinon on ne l'écrase pas à l'enregistrement)
+    let goalsLoaded = false;
+
+    // Sélectionne une valeur dans un menu ; si elle n'existe pas dans la liste, on l'ajoute.
+    // Sans ça, le menu reste VIDE et un enregistrement ultérieur écraserait la valeur par du vide.
+    function setSelectValueSafe(select, value) {
+        if (!select || value === undefined || value === null || value === '') return;
+        const str = String(value);
+        if (!Array.from(select.options).some(o => o.value === str)) {
+            const opt = document.createElement('option');
+            opt.value = str;
+            opt.textContent = str;
+            select.appendChild(opt);
+        }
+        select.value = str;
+    }
 
     function getTavilyInput() {
         return document.querySelector('input[placeholder*="Tavily"]') || 
@@ -300,7 +354,14 @@ export function initOptionsUI() {
     // Changement dynamique au changement de sélection du LLM
     if (ggufSelect) {
         ggufSelect.addEventListener('change', () => {
+            visionTouched = true;
             updateVisionDropdownForSelectedModel();
+        });
+    }
+
+    if (mmprojSelect) {
+        mmprojSelect.addEventListener('change', () => {
+            visionTouched = true;
         });
     }
 
@@ -375,9 +436,10 @@ export function initOptionsUI() {
                 // Synchro du menu vision selon la config enregistrée
                 const savedMmproj = config.selectedMmprojModel || config.selectedMmproj || '';
                 updateVisionDropdownForSelectedModel(savedMmproj);
+                visionTouched = false;
 
-                if (config.contextSize && contextSelect) contextSelect.value = config.contextSize;
-                if (config.maxMessages && maxMsgSelect) maxMsgSelect.value = config.maxMessages;
+                if (config.contextSize) setSelectValueSafe(contextSelect, config.contextSize);
+                if (config.maxMessages) setSelectValueSafe(maxMsgSelect, config.maxMessages);
                 
                 const promptVal = config.systemPrompt || config.system_prompt || '';
                 if (promptInput) promptInput.value = promptVal;
@@ -405,6 +467,7 @@ export function initOptionsUI() {
                 const data = await res.json();
                 const list = data.goals || (Array.isArray(data) ? data : []);
                 if (Array.isArray(list)) {
+                    goalsLoaded = true;
                     goalsInput.value = list.map(g => typeof g === 'object' ? (g.name || g.description || '') : String(g)).filter(Boolean).join('\n');
                 }
             }
@@ -449,27 +512,60 @@ export function initOptionsUI() {
             ? promptInput.value 
             : (existingConfig.system_prompt || existingConfig.systemPrompt || '');
 
-        // Payload complet envoyé avec double-compatibilité de nommage
-        const configData = {
-            ...existingConfig,
-            temperature: tempSlider ? parseFloat(tempSlider.value) : (existingConfig.temperature ?? 0.7),
-            ttsEngine: ttsEngineSelect ? ttsEngineSelect.value : (existingConfig.ttsEngine || 'edge-tts'),
-            ttsLang: ttsLangSelect ? ttsLangSelect.value : (existingConfig.ttsLang || 'fr'),
-            ttsVoice: ttsVoiceSelect ? ttsVoiceSelect.value : (existingConfig.ttsVoice || ''),
-            ttsSpeed: ttsSpeedSlider ? parseFloat(ttsSpeedSlider.value) : (existingConfig.ttsSpeed || 1.0),
-            tts_speed: ttsSpeedSlider ? parseFloat(ttsSpeedSlider.value) : (existingConfig.tts_speed || 1.0),
-            selectedGgufModel: ggufSelect ? ggufSelect.value : (existingConfig.selectedGgufModel || ''),
-            selectedMmprojModel: mmprojSelect ? mmprojSelect.value : (existingConfig.selectedMmprojModel || ''),
-            contextSize: contextSelect ? parseInt(contextSelect.value, 10) : (existingConfig.contextSize || 4096),
-            maxMessages: maxMsgSelect ? parseInt(maxMsgSelect.value, 10) : (existingConfig.maxMessages || 25),
-            systemPrompt: promptVal,
-            system_prompt: promptVal,
-            interactionMode: modeSelect ? modeSelect.value : (existingConfig.interactionMode || 'passif'),
-            interaction_mode: modeSelect ? modeSelect.value : (existingConfig.interaction_mode || 'passif'),
-            inactivityDelay: delayInput ? parseInt(delayInput.value, 10) : (existingConfig.inactivityDelay || 30),
-            inactivity_delay: delayInput ? parseInt(delayInput.value, 10) : (existingConfig.inactivity_delay || 30),
-            tavily_api_key: currentTavilyKey
+        // Payload envoyé avec double-compatibilité de nommage.
+        // RÈGLE ANTI-PERTE : on part de la config déjà enregistrée, et un champ de l'interface ne la
+        // remplace QUE s'il contient une vraie valeur. Un menu vide ou sans option correspondante
+        // (modèle absent de la liste, valeur non proposée...) renvoie '' ou NaN : on garde alors
+        // l'ancienne valeur au lieu de la vider. Ainsi, enregistrer depuis un tiroir ne vide jamais les autres.
+        const configData = { ...existingConfig };
+        const keep = (key, value) => {
+            if (value === undefined || value === null) return;
+            if (typeof value === 'string' && value.trim() === '') return;
+            if (typeof value === 'number' && Number.isNaN(value)) return;
+            configData[key] = value;
         };
+        const toInt = (el) => (el ? parseInt(el.value, 10) : undefined);
+        const toFloat = (el) => (el ? parseFloat(el.value) : undefined);
+
+        keep('temperature', toFloat(tempSlider));
+        keep('ttsEngine', ttsEngineSelect ? ttsEngineSelect.value : undefined);
+        keep('ttsLang', ttsLangSelect ? ttsLangSelect.value : undefined);
+        keep('ttsVoice', ttsVoiceSelect ? ttsVoiceSelect.value : undefined);
+        const speedVal = toFloat(ttsSpeedSlider);
+        keep('ttsSpeed', speedVal);
+        keep('tts_speed', speedVal);
+        keep('selectedGgufModel', ggufSelect ? ggufSelect.value : undefined);
+        keep('contextSize', toInt(contextSelect));
+        keep('maxMessages', toInt(maxMsgSelect));
+        keep('systemPrompt', promptVal);
+        keep('system_prompt', promptVal);
+        const modeVal = modeSelect ? modeSelect.value : undefined;
+        keep('interactionMode', modeVal);
+        keep('interaction_mode', modeVal);
+        const delayVal = toInt(delayInput);
+        keep('inactivityDelay', delayVal);
+        keep('inactivity_delay', delayVal);
+        keep('tavily_api_key', currentTavilyKey);
+
+        // Vision : '' est une valeur LÉGITIME ("Aucun"), mais on ne l'écrit que si l'utilisateur
+        // a réellement changé le modèle ou la vision. Sinon on conserve la valeur enregistrée.
+        if (visionTouched && mmprojSelect && ggufSelect && ggufSelect.value) {
+            configData.selectedMmprojModel = mmprojSelect.value;
+            configData.selectedMmproj = mmprojSelect.value;
+        }
+
+        // Valeurs par défaut uniquement si rien n'existe (config vide ou abîmée)
+        const defaults = {
+            temperature: 0.7, ttsEngine: 'edge-tts', ttsLang: 'fr', ttsSpeed: 1.0, tts_speed: 1.0,
+            contextSize: 4096, maxMessages: 25, interactionMode: 'passif', interaction_mode: 'passif',
+            inactivityDelay: 30, inactivity_delay: 30
+        };
+        Object.keys(defaults).forEach(k => {
+            const v = configData[k];
+            if (v === undefined || v === null || (typeof v === 'number' && Number.isNaN(v))) {
+                configData[k] = defaults[k];
+            }
+        });
 
         const rawGoals = goalsInput ? goalsInput.value.split('\n') : [];
         const goalsData = rawGoals
@@ -483,11 +579,15 @@ export function initOptionsUI() {
                 body: JSON.stringify(configData)
             });
 
-            const resGoals = await fetch('/api/goals', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ goals: goalsData })
-            });
+            // N'écrase les objectifs que s'ils ont bien été chargés (sinon une liste vide effacerait le fichier)
+            let resGoals = { ok: true };
+            if (goalsInput && goalsLoaded) {
+                resGoals = await fetch('/api/goals', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ goals: goalsData })
+                });
+            }
 
             // Synchronisation directe vers Tauri (s'il est présent) avec l'objet COMPLET fusionné
             if (window.__TAURI__?.core?.invoke) {
@@ -502,6 +602,7 @@ export function initOptionsUI() {
             }
 
             if (resConfig.ok && resGoals.ok) {
+                visionTouched = false;
                 // 🤖 Rechargement immédiat et relance du timer d'inactivité
                 await loadActiveModeSettings();
                 resetInactivityTimer();
