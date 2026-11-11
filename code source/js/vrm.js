@@ -641,6 +641,289 @@ export function triggerEmotion(tag) {
         .catch((err) => console.warn("⚠️ Impossible de charger l'animation VRMA :", targetAnimation, err));
 }
 
+// =========================================================
+// HABITS : couches de vêtements affichables / masquables (menu clic droit)
+// Les couches sont détectées automatiquement via les noms de matériaux VRoid
+// (N00_<slot>_<..>_<Pièce>_<..>_<TYPE>) : tout ce qui n'est pas SKIN / EYE / FACE / HAIR
+// est une couche. Coût : 0 Mo de VRAM en plus, < 1 ms par bascule (simple visible = false).
+// =========================================================
+const OUTFIT_KEY_PREFIX = 'maya_vrm_outfit_hidden:';
+const OUTFIT_NON_LAYER_KINDS = ['SKIN', 'EYE', 'FACE', 'HAIR'];
+const OUTFIT_LABELS_FR = {
+    Onepiece: 'Robe', Tops: 'Haut', Bottoms: 'Bas', Shoes: 'Chaussures',
+    Socks: 'Chaussettes', Legwear: 'Collants', Gloves: 'Gants', Accessory: 'Accessoire'
+};
+const OUTFIT_HIDDEN_LAYER = 31; // couche three.js que la caméra ne voit pas (et que le raycaster ignore)
+
+let outfitLayers = [];
+let outfitModelUrl = '';
+
+// Certains VRoid exportent la peau du corps "trouée" (alpha = 0) sous les vêtements (bras, torse).
+// Si on retire le vêtement, on voit alors à travers le corps. Dès qu'une couche est masquée,
+// on ignore donc l'alpha de la peau du corps (alphaTest = 0) ; tout remis = réglage d'origine.
+let outfitBodySkinMats = [];       // { mat, origAlphaTest }
+let outfitSkinOpaqueApplied = false;
+
+function refreshBodySkinAlpha() {
+    const anyHidden = outfitLayers.some(l => !l.visible && !l.legs);
+    if (anyHidden === outfitSkinOpaqueApplied) return;
+    outfitSkinOpaqueApplied = anyHidden;
+    outfitBodySkinMats.forEach(e => {
+        e.mat.alphaTest = anyHidden ? 0 : e.origAlphaTest;
+        e.mat.needsUpdate = true; // recompile le shader une fois (micro-saccade possible à la 1re bascule)
+    });
+}
+
+function readHiddenOutfit(url) {
+    try {
+        const arr = JSON.parse(localStorage.getItem(OUTFIT_KEY_PREFIX + url) || '[]');
+        return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+}
+
+function saveHiddenOutfit() {
+    const hidden = outfitLayers.filter(l => !l.visible).map(l => l.id);
+    try {
+        if (hidden.length) localStorage.setItem(OUTFIT_KEY_PREFIX + outfitModelUrl, JSON.stringify(hidden));
+        else localStorage.removeItem(OUTFIT_KEY_PREFIX + outfitModelUrl);
+    } catch (e) { /* stockage indisponible : on ignore */ }
+}
+
+// ---------------------------------------------------------
+// Chaussettes / collants : dans les VRM VRoid ils sont PEINTS dans la texture de la peau du corps
+// (ce ne sont pas des objets séparés). On génère donc une 2e version de la texture où les jambes
+// sont repeintes couleur peau, et la couche « Chaussettes / collants » échange les deux textures.
+// Coût : VRAM constante (seule la texture utilisée est sur le GPU, l'autre est libérée),
+// ~16 Mo de RAM (CPU) en plus, génération unique au chargement (~100-200 ms),
+// puis < 20 ms par bascule (ré-envoi de la texture au GPU).
+// ---------------------------------------------------------
+const OUTFIT_LEGS_ID = '__legs__';
+const OUTFIT_LEGS_LABEL = 'Chaussettes / collants';
+const OUTFIT_LEGS_CUT_RATIO = 0.9;    // on repeint les triangles du corps situés sous 90 % de la hauteur de hanche
+const OUTFIT_LEGS_MIN_PAINTED = 0.2;  // la couche n'est proposée que si ≥ 20 % des triangles de jambe sont "peints"
+let outfitLegs = null;                // { origMap, bareMap }
+
+function copyTextureParams(dst, src) {
+    ['wrapS', 'wrapT', 'magFilter', 'minFilter', 'anisotropy', 'flipY', 'rotation', 'channel'].forEach(k => {
+        if (k in src && src[k] !== undefined) dst[k] = src[k];
+    });
+    if ('colorSpace' in src) dst.colorSpace = src.colorSpace;
+    if ('encoding' in src) dst.encoding = src.encoding;
+    if (src.offset) dst.offset.copy(src.offset);
+    if (src.repeat) dst.repeat.copy(src.repeat);
+    if (src.center) dst.center.copy(src.center);
+}
+
+function setupLegsLayer(vrm, bodyMesh) {
+    if (outfitLegs && outfitLegs.bareMap) outfitLegs.bareMap.dispose();
+    outfitLegs = null;
+    if (!bodyMesh || !outfitBodySkinMats.length) return null;
+
+    const mainMat = outfitBodySkinMats[0].mat;
+    const map = mainMat.map;
+    const img = map && map.image;
+    const w = img && (img.width || img.naturalWidth);
+    const h = img && (img.height || img.naturalHeight);
+    if (!w || !h) return null;
+
+    const hum = vrm.humanoid;
+    const bone = hum && ((hum.getRawBoneNode && hum.getRawBoneNode('leftUpperLeg')) || (hum.getBoneNode && hum.getBoneNode('leftUpperLeg')));
+    if (!bone) return null;
+    vrm.scene.updateMatrixWorld(true);
+    const hipY = bodyMesh.worldToLocal(bone.getWorldPosition(new THREE.Vector3())).y;
+    if (!(hipY > 0.1)) return null;
+    const cutY = hipY * OUTFIT_LEGS_CUT_RATIO;
+
+    const geo = bodyMesh.geometry;
+    const idx = geo.index, pos = geo.attributes.position, uv = geo.attributes.uv;
+    if (!idx || !pos || !uv) return null;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, w, h);
+    const data = ctx.getImageData(0, 0, w, h).data;
+    const flip = !!map.flipY;
+    const frac = (x) => x - Math.floor(x);
+
+    // 1) couleur de chaque triangle (échantillon au centre) + couleur de peau dominante
+    const tris = [];
+    const buckets = new Map();
+    for (let t = 0; t < idx.count; t += 3) {
+        const a = idx.getX(t), b = idx.getX(t + 1), c = idx.getX(t + 2);
+        const u = [uv.getX(a), uv.getX(b), uv.getX(c)];
+        const v = [uv.getY(a), uv.getY(b), uv.getY(c)];
+        const cu = (u[0] + u[1] + u[2]) / 3, cv = (v[0] + v[1] + v[2]) / 3;
+        const px = Math.min(w - 1, Math.floor(frac(cu) * w));
+        const py = Math.min(h - 1, Math.floor(frac(flip ? 1 - cv : cv) * h));
+        const o = (py * w + px) * 4;
+        const r = data[o], g = data[o + 1], bl = data[o + 2], al = data[o + 3];
+        const cy = (pos.getY(a) + pos.getY(b) + pos.getY(c)) / 3;
+        tris.push({ cy, u, v, r, g, b: bl, a: al });
+        if (al > 200) {
+            const key = ((r >> 4) << 8) | ((g >> 4) << 4) | (bl >> 4);
+            const e = buckets.get(key) || { n: 0, r: 0, g: 0, b: 0 };
+            e.n++; e.r += r; e.g += g; e.b += bl;
+            buckets.set(key, e);
+        }
+    }
+    let best = null;
+    buckets.forEach(e => { if (!best || e.n > best.n) best = e; });
+    if (!best) return null;
+    const sr = Math.round(best.r / best.n), sg = Math.round(best.g / best.n), sb = Math.round(best.b / best.n);
+
+    // 2) triangles de jambe et part "peinte" (couleur éloignée de la peau)
+    const legs = tris.filter(t => t.cy < cutY);
+    if (legs.length < 50) return null;
+    const painted = legs.filter(t => t.a > 200 && Math.max(Math.abs(t.r - sr), Math.abs(t.g - sg), Math.abs(t.b - sb)) > 45).length;
+    if (painted / legs.length < OUTFIT_LEGS_MIN_PAINTED) return null;
+
+    // 3) repeint les jambes en couleur peau (léger contour pour couvrir les bords des îlots UV)
+    ctx.fillStyle = ctx.strokeStyle = `rgb(${sr},${sg},${sb})`;
+    ctx.lineWidth = 7;
+    ctx.lineJoin = 'round';
+    legs.forEach(t => {
+        ctx.beginPath();
+        for (let k = 0; k < 3; k++) {
+            const X = t.u[k] * w, Y = (flip ? 1 - t.v[k] : t.v[k]) * h;
+            if (k === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    });
+
+    const bare = new THREE.CanvasTexture(canvas);
+    copyTextureParams(bare, map);
+    bare.needsUpdate = true;
+
+    // Texture d'ombre MToon : si c'est la même image que la couleur, elle doit aussi être "sans chaussettes"
+    // (sinon les chaussettes réapparaissent dans les zones d'ombre). clone() partage la source → un seul envoi GPU.
+    const shadeTex = mainMat.shadeMultiplyTexture;
+    let origShade = null, bareShade = null;
+    if (shadeTex && shadeTex !== map && shadeTex.image === map.image) {
+        origShade = shadeTex;
+        bareShade = bare.clone();
+        copyTextureParams(bareShade, shadeTex);
+        bareShade.needsUpdate = true;
+    }
+
+    outfitLegs = { origMap: map, bareMap: bare, origShade, bareShade };
+    console.log(`🧦 Jambes peintes détectées : ${painted}/${legs.length} triangles (peau ${sr},${sg},${sb}, coupe y<${cutY.toFixed(2)})`);
+    return { id: OUTFIT_LEGS_ID, label: OUTFIT_LEGS_LABEL, legs: true, visible: true, meshes: [] };
+}
+
+function applyLegsLayer(layer, visible) {
+    layer.visible = visible;
+    if (!outfitLegs) return;
+    const { origMap, bareMap, origShade, bareShade } = outfitLegs;
+    const useMap = visible ? origMap : bareMap;
+    const useShade = visible ? origShade : bareShade;
+    outfitBodySkinMats.forEach(e => {
+        const m = e.mat;
+        if (m.map === origMap || m.map === bareMap) m.map = useMap;
+        if (origShade && (m.shadeMultiplyTexture === origShade || m.shadeMultiplyTexture === bareShade)) m.shadeMultiplyTexture = useShade;
+        else if (m.shadeMultiplyTexture === origMap || m.shadeMultiplyTexture === bareMap) m.shadeMultiplyTexture = useMap;
+    });
+    // libère la copie GPU inutilisée : VRAM constante
+    (visible ? bareMap : origMap).dispose();
+    if (origShade) (visible ? bareShade : origShade).dispose();
+}
+
+function applyOutfitLayer(layer, visible) {
+    if (layer.legs) { applyLegsLayer(layer, visible); return; }
+    layer.visible = visible;
+    layer.meshes.forEach(mesh => {
+        if (visible) {
+            mesh.visible = true;
+            mesh.layers.mask = mesh.userData._outfitOrigMask ?? 1;
+        } else {
+            if (mesh.userData._outfitOrigMask === undefined) mesh.userData._outfitOrigMask = mesh.layers.mask;
+            mesh.visible = false;
+            mesh.layers.set(OUTFIT_HIDDEN_LAYER);
+        }
+    });
+    refreshBodySkinAlpha();
+}
+
+function setupOutfitLayers(vrm, url) {
+    outfitLayers = [];
+    outfitModelUrl = url;
+    outfitBodySkinMats = [];
+    outfitSkinOpaqueApplied = false;
+    let bodySkinMesh = null;
+    const byId = new Map();
+
+    vrm.scene.traverse((obj) => {
+        if (!obj.isMesh) return;
+        const mat = Array.isArray(obj.material) ? obj.material[0] : obj.material;
+        if (!mat || !mat.name) return;
+        const baseName = mat.name.replace(/ \(Instance\)$/, '');
+        const m = baseName.match(/^N\d+_(\d+)_\d+_([A-Za-z0-9]+)_\d+_([A-Z]+)(?:_\d+)?$/);
+        if (!m) return;
+        const slot = m[1], part = m[2], kind = m[3];
+        if (kind === 'SKIN' && part === 'Body') {
+            if (!bodySkinMesh) bodySkinMesh = obj;
+            const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+            mats.forEach(mm => {
+                if (mm && !outfitBodySkinMats.some(e => e.mat === mm)) outfitBodySkinMats.push({ mat: mm, origAlphaTest: mm.alphaTest });
+            });
+        }
+        if (OUTFIT_NON_LAYER_KINDS.includes(kind)) return;
+        const id = `${slot}_${part}`;
+        if (!byId.has(id)) byId.set(id, { id, slot, part, visible: true, meshes: [] });
+        byId.get(id).meshes.push(obj);
+    });
+
+    const layers = Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id));
+    const labelCount = {};
+    layers.forEach(l => {
+        l.label = OUTFIT_LABELS_FR[l.part] || l.part;
+        labelCount[l.label] = (labelCount[l.label] || 0) + 1;
+    });
+    layers.forEach(l => { if (labelCount[l.label] > 1) l.label = `${l.label} (${l.slot})`; });
+    outfitLayers = layers;
+
+    try {
+        const legsLayer = setupLegsLayer(vrm, bodySkinMesh);
+        if (legsLayer) outfitLayers.push(legsLayer);
+    } catch (e) { console.warn('⚠️ Couche chaussettes/collants non initialisée :', e); }
+
+    // Restaure les couches masquées lors de la session précédente (par modèle)
+    const hidden = readHiddenOutfit(url);
+    outfitLayers.forEach(l => { if (hidden.includes(l.id)) applyOutfitLayer(l, false); });
+
+    console.log('👗 Couches d\'habits détectées :', outfitLayers.map(l => `${l.id} = ${l.label} (${l.meshes.length} mesh)`));
+    window.dispatchEvent(new CustomEvent('vrm-outfit-loaded', { detail: getVrmOutfitLayers() }));
+}
+
+export function getVrmOutfitLayers() {
+    return outfitLayers.map(l => ({ id: l.id, label: l.label, visible: l.visible }));
+}
+
+export function setVrmOutfitLayerVisible(id, visible) {
+    const layer = outfitLayers.find(l => l.id === id);
+    if (!layer) return;
+    applyOutfitLayer(layer, !!visible);
+    saveHiddenOutfit();
+}
+
+export function toggleVrmOutfitLayer(id) {
+    const layer = outfitLayers.find(l => l.id === id);
+    if (!layer) return;
+    setVrmOutfitLayerVisible(id, !layer.visible);
+}
+
+export function showAllVrmOutfitLayers() {
+    outfitLayers.forEach(l => applyOutfitLayer(l, true));
+    saveHiddenOutfit();
+}
+
+window.getVrmOutfitLayers = getVrmOutfitLayers;
+window.setVrmOutfitLayerVisible = setVrmOutfitLayerVisible;
+window.toggleVrmOutfitLayer = toggleVrmOutfitLayer;
+window.showAllVrmOutfitLayers = showAllVrmOutfitLayers;
+
 export function loadVRMModel(url) {
     if (!url) return;
     localStorage.setItem(ACTIVE_VRM_KEY, url);
@@ -698,6 +981,9 @@ export function loadVRMModel(url) {
                 setArmSpread(poseOffset.arm);
                 setLegSpread(poseOffset.leg);
                 window.dispatchEvent(new CustomEvent('vrm-pose-loaded', { detail: poseOffset }));
+
+                // Couches d'habits (menu clic droit > Habits)
+                try { setupOutfitLayers(vrm, url); } catch (e) { console.warn('⚠️ Habits VRM non initialisés :', e); }
 
                 console.log("✅ Modèle VRM chargé et centré :", url);
                 resetToIdle();
