@@ -37,6 +37,7 @@ UTILISATION STRICTE DES ASTÉRISQUES (* *) :
 - Les astérisques servent EXCLUSIVEMENT à décrire des actions ou gestes physiques (ex: *sourit doucement*, *regarde ailleurs*).
 - INTERDICTION ABSOLUE d'utiliser les astérisques pour mettre en valeur, insister ou emphase sur des mots parlés. Si un mot est parlé, écris-le normalement sans aucun astérisque.
 - INTERDICTION ABSOLUE d'utiliser les points de suspensions "...".
+- INTERDICTION ABSOLUE de répondre en plus de 2 paragraphes.
 
 RÈGLES DE COMPORTEMENT :
 1. Commence SYSTÉMATIQUEMENT ta réponse par une de ces balises au tout début.
@@ -47,9 +48,10 @@ RÈGLES DE COMPORTEMENT :
 let customPersona = DEFAULT_PERSONA;
 let mayaCore = "";    // Stocke le contenu de Maya_core.txt
 let mayaJournal = ""; // Stocke le contenu du journal récent (Maya_journal.txt)
+let mayaMensuel = ""; // Stocke les résumés mensuels (journal_mensuel.txt)
 
 /**
- * Charge la personnalité, le Core et le Journal depuis le SERVEUR
+ * Charge la personnalité, le Core, les résumés mensuels et le Journal depuis le SERVEUR
  */
 export async function loadCustomPersona() {
     try {
@@ -64,12 +66,13 @@ export async function loadCustomPersona() {
             }
         }
 
-        // 2. Chargement dynamique de la Mémoire globale (Core + Journal récent)
+        // 2. Chargement dynamique de la Mémoire globale (Core + Résumés mensuels + Journal récent)
         const resMemory = await fetch('/api/memory');
         if (resMemory.ok) {
             const data = await resMemory.json();
             mayaCore = data.core || "";
             mayaJournal = data.journal || "";
+            mayaMensuel = data.mensuel || "";
         }
     } catch (err) {
         console.warn("⚠️ Impossible de charger la configuration ou la mémoire depuis le serveur.", err);
@@ -82,7 +85,7 @@ loadCustomPersona();
 
 /**
  * Garantit le rechargement de la mémoire puis retourne le System Prompt complet :
- * Moteur Fixe + Personnalité Utilisateur + Core Évolutif + Journal Récent
+ * Moteur Fixe + Personnalité Utilisateur + Core Évolutif + Résumés mensuels + Journal Récent
  */
 export async function getFullSystemPrompt() {
     await loadCustomPersona();
@@ -93,11 +96,17 @@ export async function getFullSystemPrompt() {
         fullPrompt += `\n\nMÉMOIRE PERMANENTE DE MAYA (CORE) :\n${mayaCore.trim()}`;
     }
 
+    // Placé AVANT le journal récent : le contenu stable reste en tête du prompt
+    // (meilleur réemploi du cache de llama-server entre deux messages).
+    if (mayaMensuel.trim() !== "") {
+        fullPrompt += `\n\nSOUVENIRS DES MOIS PASSÉS (RÉSUMÉS MENSUELS DE MAYA) :\n${mayaMensuel.trim()}`;
+    }
+
     if (mayaJournal.trim() !== "") {
         fullPrompt += `\n\nJOURNAL RÉCENT / ÉVÉNEMENTS RÉCENTS DE MAYA :\n${mayaJournal.trim()}`;
     }
 
-    fullPrompt += `\n\nCONSIGNE MÉMOIRE : Toutes les informations listées ci-dessus dans la MÉMOIRE et le JOURNAL sont déjà enregistrées dans ton esprit. Tu n'as PAS besoin d'appeler d'outils pour y accéder.`;
+    fullPrompt += `\n\nCONSIGNE MÉMOIRE : Toutes les informations listées ci-dessus dans la MÉMOIRE, les SOUVENIRS DES MOIS PASSÉS et le JOURNAL sont déjà enregistrées dans ton esprit. Tu n'as PAS besoin d'appeler d'outils pour y accéder.`;
 
     return fullPrompt;
 }
