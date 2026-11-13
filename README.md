@@ -24,7 +24,7 @@ https://github.com/user-attachments/assets/e5225b2f-67a3-4a25-b4a1-f3c50d88b0cf
 
 ---
 
-# 🖥️ État actuel — Maya v1.4
+# 🖥️ État actuel — Maya v1.5
 
 Maya est une **application native Windows** (Tauri) avec installateur clé en main.
 
@@ -38,11 +38,14 @@ Maya est une **application native Windows** (Tauri) avec installateur clé en ma
 - Mini-chat overlay réductible / masquable
 - Espace de discussion modulable
 - Indicateurs visuels en temps réel (Hub, LLM, TTS, STT)
-- Moteur vocal hybride (Piper TTS local + Edge-TTS) + STT amélioré
+- Moteur vocal hybride (Piper TTS local + Edge-TTS) + **STT amélioré**
 - Modes **Actif / Passif**
 - Jeux intégrés jouables avec Maya
 - Historique des conversations + Options UI dynamiques
 - Hub central (DeepSearch, FileSystem, MEMORY, Auto-Learning, Timer…)
+- **Accès privé depuis le téléphone** via Tailscale (sans serveur)
+- **Quantification du KV Cache** (réduction de VRAM)
+- **Déchargement GPU réglable** dans les options
 
 ### Interface Maya (mode classique)
 
@@ -60,26 +63,20 @@ Le **Maya Hub** reste la couche centrale (DeepSearch, FileSystem, MEMORY, Auto-L
 
 ---
 
-#### ⚡ Prise en main rapide — Utiliser les nouveautés de la v1.4
+#### ⚡ Prise en main rapide — Nouveautés de la v1.5
 
-##### 1. 🧠 Le nouveau journal de mémoire
+##### 1. 🎙️ STT amélioré
+* La reconnaissance vocale a été patchée pour être plus précise et réactive.
+* Les conversations parlées deviennent plus naturelles et fluides.
 
-* **Utilisation au quotidien** : Vos moments forts et événements marquants s'enregistrent proprement au fil de la journée.
-* **Mise à jour des émotions** : Les états émotionnels se réécrivent dynamiquement pour éviter toute accumulation de doublons.
-* **Bonne pratique** : Cliquez sur l'icône **Disquette** en fin de session (au minimum une fois par jour d'utilisation). Le journal épuré optimise la fenêtre de contexte sans saturer la mémoire.
+##### 2. 📱 Accès privé depuis le téléphone (Tailscale)
+* Tu peux maintenant accéder à Maya depuis ton téléphone directement sur ton PC.
+* Aucun serveur intermédiaire : connexion privée via Tailscale.
+* Idéal pour interagir avec Maya à distance tout en restant 100 % local.
 
-##### 2. 🎓 Le système de compétences (`skills.json`)
-
-* **Connaissances structurées** : Maya conserve ses savoirs permanents dans un fichier dédié, avec niveau de confiance et déclencheurs (*triggers*) ciblés.
-* **Injection discrète** : Lorsqu'un sujet connu est abordé, la compétence s'active en arrière-plan sans polluer ni alourdir l'historique du chat.
-* **Personnalisation** : Vous pouvez consulter ou ajuster les compétences directement dans le fichier de configuration.
-
-##### 3. 📄 Ingestion directe de documents (PDF & DOCX)
-
-* **Mode d'emploi** : Cliquez sur l'icône **trombone**, puis sélectionnez un fichier `.pdf` ou `.docx`.
-* **Apprentissage & réponse** : Maya lit le document, le transforme automatiquement en compétence permanente et peut répondre immédiatement à vos questions.
-* **Propreté du système** : Le document brut ne reste ni dans l'historique de discussion ni dans le journal.
-
+##### 3. ⚙️ Optimisations GPU & VRAM
+* **Nouvelle option de quantification du KV Cache** → réduit significativement la consommation de VRAM.
+* **Déchargement GPU désormais modifiable** dans les options → adapte Maya à ta machine.
 ---
 
 ## 📦 Installation
@@ -92,6 +89,12 @@ Le **Maya Hub** reste la couche centrale (DeepSearch, FileSystem, MEMORY, Auto-L
 ---
 
 ## 📅 Changelog récent
+
+### Maya 1.5
+- STT amélioré (meilleure précision et fluidité vocale)
+- Accès privé depuis le téléphone via Tailscale (sans serveur)
+- Nouvelle option de quantification du KV Cache (économie de VRAM)
+- Déchargement GPU désormais réglable dans les options
 
 ### Maya 1.4
 - Nouveau système de mémoire : moments forts propres + émotions qui se mettent à jour (plus d’accumulation)
@@ -283,12 +286,14 @@ La mémoire est séparée en plusieurs couches :
 - 🧬 **Core de personnalité** : identité profonde de Maya
 - 📈 **Auto-évolution** : compétences et connaissances acquises
 
-### Aujourd’hui (v1.4)
+### Aujourd’hui (v1.5)
 - Moments forts ajoutés proprement
 - Émotions mises à jour dynamiquement (plus d’accumulation)
 - Journal optimisé et économe en contexte
 - Système de compétences structuré (`skills.json`)
 - Ingestion de documents (PDF/DOCX → compétence permanente)
+- STT amélioré + accès distant privé (Tailscale)
+- Optimisations VRAM (quantification KV) et contrôle du déchargement GPU
 
 ---
 
